@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d7c4084e26d942c6111e640596b9158e",
+    "content-hash": "af995a4bdddab3f0f92ca9010b891514",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -1508,16 +1508,16 @@
         },
         {
             "name": "laravel/fortify",
-            "version": "v1.37.2",
+            "version": "v1.37.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/fortify.git",
-                "reference": "5d4b6a53527edd19ecc4f13e8e74ec91bdefab0c"
+                "reference": "66b9503330e7c18b3edebb9c3b4087037826573b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/fortify/zipball/5d4b6a53527edd19ecc4f13e8e74ec91bdefab0c",
-                "reference": "5d4b6a53527edd19ecc4f13e8e74ec91bdefab0c",
+                "url": "https://api.github.com/repos/laravel/fortify/zipball/66b9503330e7c18b3edebb9c3b4087037826573b",
+                "reference": "66b9503330e7c18b3edebb9c3b4087037826573b",
                 "shasum": ""
             },
             "require": {
@@ -1568,20 +1568,20 @@
                 "issues": "https://github.com/laravel/fortify/issues",
                 "source": "https://github.com/laravel/fortify"
             },
-            "time": "2026-05-15T22:59:10+00:00"
+            "time": "2026-06-29T16:22:02+00:00"
         },
         {
             "name": "laravel/framework",
-            "version": "v13.20.0",
+            "version": "v13.21.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "b9d1bccad5fbc32578dca22566bb11e7c0e545d7"
+                "reference": "303b5f8dc899f89e8c38c350b639b8fbd193ed16"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/b9d1bccad5fbc32578dca22566bb11e7c0e545d7",
-                "reference": "b9d1bccad5fbc32578dca22566bb11e7c0e545d7",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/303b5f8dc899f89e8c38c350b639b8fbd193ed16",
+                "reference": "303b5f8dc899f89e8c38c350b639b8fbd193ed16",
                 "shasum": ""
             },
             "require": {
@@ -1795,7 +1795,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2026-07-14T14:22:22+00:00"
+            "time": "2026-07-21T14:27:35+00:00"
         },
         {
             "name": "laravel/passkeys",
@@ -1926,16 +1926,16 @@
         },
         {
             "name": "laravel/serializable-closure",
-            "version": "v2.0.13",
+            "version": "v2.0.14",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/serializable-closure.git",
-                "reference": "b566ee0dd251f3c4078bed003a7ce015f5ea6dce"
+                "reference": "97a77d2cc80578c28bccf97829af73db658ffb97"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/serializable-closure/zipball/b566ee0dd251f3c4078bed003a7ce015f5ea6dce",
-                "reference": "b566ee0dd251f3c4078bed003a7ce015f5ea6dce",
+                "url": "https://api.github.com/repos/laravel/serializable-closure/zipball/97a77d2cc80578c28bccf97829af73db658ffb97",
+                "reference": "97a77d2cc80578c28bccf97829af73db658ffb97",
                 "shasum": ""
             },
             "require": {
@@ -1983,7 +1983,7 @@
                 "issues": "https://github.com/laravel/serializable-closure/issues",
                 "source": "https://github.com/laravel/serializable-closure"
             },
-            "time": "2026-04-16T14:03:50+00:00"
+            "time": "2026-06-24T18:49:39+00:00"
         },
         {
             "name": "laravel/tinker",
@@ -4634,9 +4634,9 @@
         {
             "name": "rushing/laravel-popcorn",
             "version": "dev-main",
-            "dist": {
-                "type": "path",
-                "url": "../../packages/rushing/laravel-popcorn",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/stephenr85/laravel-popcorn.git",
                 "reference": "8e84fbb6aabdbcadee53ba95176bd67071d55e24"
             },
             "require": {
@@ -4649,6 +4649,7 @@
                 "orchestra/testbench": "^9.0",
                 "pestphp/pest": "^3.0"
             },
+            "default-branch": true,
             "type": "library",
             "extra": {
                 "laravel": {
@@ -4690,17 +4691,14 @@
                 "registry",
                 "strategy"
             ],
-            "transport-options": {
-                "symlink": true,
-                "relative": true
-            }
+            "time": "2026-07-17T04:30:57+00:00"
         },
         {
             "name": "schemastud/laravel-data-schemas",
             "version": "dev-main",
-            "dist": {
-                "type": "path",
-                "url": "../../packages/schemastud/laravel-data-schemas",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/schemastud/laravel-data-schemas.git",
                 "reference": "79478471c48d32b4f81510b55e5f632490ed28df"
             },
             "require": {
@@ -4718,6 +4716,7 @@
                 "orchestra/testbench": "^9.0|^10.0|^11.0",
                 "phpunit/phpunit": "^11.0|^12.0"
             },
+            "default-branch": true,
             "type": "library",
             "extra": {
                 "laravel": {
@@ -4762,17 +4761,14 @@
                 "spatie",
                 "validation"
             ],
-            "transport-options": {
-                "symlink": true,
-                "relative": true
-            }
+            "time": "2026-07-20T23:08:20+00:00"
         },
         {
             "name": "schemastud/laravel-doctor",
             "version": "dev-main",
-            "dist": {
-                "type": "path",
-                "url": "../../packages/schemastud/laravel-doctor",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/schemastud/laravel-doctor.git",
                 "reference": "b739bdd1dfa17e82507beb504d609c9631957a98"
             },
             "require": {
@@ -4784,6 +4780,7 @@
                 "orchestra/testbench": "^9.0|^10.0|^11.0",
                 "pestphp/pest": "^2.0|^3.0"
             },
+            "default-branch": true,
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -4830,17 +4827,14 @@
                 "readiness",
                 "schemastud"
             ],
-            "transport-options": {
-                "symlink": true,
-                "relative": true
-            }
+            "time": "2026-07-21T00:55:17+00:00"
         },
         {
             "name": "schemastud/laravel-frame",
             "version": "dev-main",
-            "dist": {
-                "type": "path",
-                "url": "../../packages/schemastud/laravel-frame",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/schemastud/laravel-frame.git",
                 "reference": "4f2741f471781bd093cafcc73f3a4b7829ce1c39"
             },
             "require": {
@@ -4863,6 +4857,7 @@
                 "rushing/laravel-data-filters": "Reuse a resource's data-filters query/filter schema for the ListShell facets bar.",
                 "spatie/laravel-typescript-transformer": "Emit the AdminResourceDefinition TS type so the frontend manifest entry IS the backend projection."
             },
+            "default-branch": true,
             "type": "library",
             "extra": {
                 "laravel": {
@@ -4893,17 +4888,14 @@
                 "MIT"
             ],
             "description": "The batteries-UX backend rung for schema-driven admin editors: the #[AdminResource] registry (AdminResourceDefinition), the #[Widget] -> x-stud-widget projector, #[ReadOnlyField], and a served GET /frame/manifest. Sits one level above a filter-schema controller; resolves a resource key to its whole editor wiring. Pairs with @schemastud/frame on the JS side.",
-            "transport-options": {
-                "symlink": true,
-                "relative": true
-            }
+            "time": "2026-07-19T13:47:23+00:00"
         },
         {
             "name": "schemastud/laravel-schema-forms",
             "version": "dev-main",
-            "dist": {
-                "type": "path",
-                "url": "../../packages/schemastud/laravel-schema-forms",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/schemastud/laravel-schema-forms.git",
                 "reference": "d54d8a7668bd1dccf739f7a4c4e554ccd143fcc9"
             },
             "require": {
@@ -4923,6 +4915,7 @@
                 "pestphp/pest": "^2.0|^3.0",
                 "wikimedia/composer-merge-plugin": "^2.1"
             },
+            "default-branch": true,
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -4977,10 +4970,7 @@
                 "outbox",
                 "submissions"
             ],
-            "transport-options": {
-                "symlink": true,
-                "relative": true
-            }
+            "time": "2026-07-19T13:47:23+00:00"
         },
         {
             "name": "spatie/file-system-watcher",
@@ -5729,9 +5719,9 @@
         {
             "name": "splicewire/laravel-beam",
             "version": "dev-main",
-            "dist": {
-                "type": "path",
-                "url": "../../packages/splicewire/laravel-beam",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/splicewire/laravel-beam.git",
                 "reference": "693dffe28e49aa45378453d3b2bcc39147f26568"
             },
             "require": {
@@ -5750,6 +5740,7 @@
                 "phpunit/phpunit": "^11.0|^12.0",
                 "wikimedia/composer-merge-plugin": "^2.1"
             },
+            "default-branch": true,
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -5788,17 +5779,14 @@
                 "MIT"
             ],
             "description": "The app-substrate rung an application stands on with or without an editor: the runtime home of the generic schema-record + media model traits and the host-hook registries (webhook / sitemap / doctor). Boots headless — frame (the editor rung) depends on beam, never the reverse (ADR-0082 layering). No Beam model is minted; beam is a substrate, not an instance.",
-            "transport-options": {
-                "symlink": true,
-                "relative": true
-            }
+            "time": "2026-07-21T01:40:40+00:00"
         },
         {
             "name": "splicewire/laravel-beam-mdx",
             "version": "dev-main",
-            "dist": {
-                "type": "path",
-                "url": "../../packages/splicewire/laravel-beam-mdx",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/splicewire/laravel-beam-mdx.git",
                 "reference": "05339a3e3fc026d0b1104bc1f3b2e1d2a150e9a7"
             },
             "require": {
@@ -5814,6 +5802,7 @@
                 "orchestra/testbench": "^9.0|^10.0|^11.0",
                 "phpunit/phpunit": "^11.0|^12.0"
             },
+            "default-branch": true,
             "type": "library",
             "extra": {
                 "laravel": {
@@ -5844,10 +5833,7 @@
                 "MIT"
             ],
             "description": "The Laravel companion to @splicewire/beam-mdx: the server-side twin of the build-time draft gate. A catch-all content/essay route macro (Route::beamMdxShow) that 404s a draft slug outside the preview allowlist, a preview-only route middleware, the shared Mdx visibility gate, and a `beam-mdx:doctor` command asserting the MDX plane is wired and no draft is reachable in a production build.",
-            "transport-options": {
-                "symlink": true,
-                "relative": true
-            }
+            "time": "2026-07-19T13:47:22+00:00"
         },
         {
             "name": "spomky-labs/cbor-php",
@@ -9963,16 +9949,16 @@
         },
         {
             "name": "laravel/sail",
-            "version": "v1.63.0",
+            "version": "v1.64.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/sail.git",
-                "reference": "51bbce3f803c1d386cabbb44e618c955a12ff5fc"
+                "reference": "08cacd3e72d6798df3fa8bd4b5d55d0f7f920625"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/sail/zipball/51bbce3f803c1d386cabbb44e618c955a12ff5fc",
-                "reference": "51bbce3f803c1d386cabbb44e618c955a12ff5fc",
+                "url": "https://api.github.com/repos/laravel/sail/zipball/08cacd3e72d6798df3fa8bd4b5d55d0f7f920625",
+                "reference": "08cacd3e72d6798df3fa8bd4b5d55d0f7f920625",
                 "shasum": ""
             },
             "require": {
@@ -10022,7 +10008,7 @@
                 "issues": "https://github.com/laravel/sail/issues",
                 "source": "https://github.com/laravel/sail"
             },
-            "time": "2026-06-18T08:54:14+00:00"
+            "time": "2026-07-17T15:09:35+00:00"
         },
         {
             "name": "mockery/mockery",
