@@ -36,6 +36,14 @@
         {
             "type": "git",
             "url": "https://github.com/stephenr85/laravel-popcorn.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/stephenr85/laravel-package-topology.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/stephenr85/laravel-graphine.git"
         }
     ],
     "require": {
@@ -62,7 +70,8 @@
         "laravel/sail": "^1.53",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.9.3",
-        "phpunit/phpunit": "^12.5.23"
+        "phpunit/phpunit": "^12.5.23",
+        "rushing/laravel-package-topology": "dev-main"
     },
     "autoload": {
         "psr-4": {
@@ -110,6 +119,9 @@
             "@lint:check",
             "@types:check",
             "@php artisan test"
+        ],
+        "test:packages": [
+            "@php bin/test-packages"
         ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
