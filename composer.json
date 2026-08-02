@@ -90,7 +90,7 @@
             "composer install",
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
             "@php artisan key:generate",
-            "@php artisan migrate --force",
+            "@php artisan splicewire:beam:install --no-interaction --force",
             "npm install",
             "npm run build"
         ],

@@ -8,6 +8,31 @@ Inertia allows you to build modern, single-page React applications using classic
 
 This React starter kit utilizes React 19, TypeScript, Tailwind, and the [shadcn/ui](https://ui.shadcn.com) and [radix-ui](https://www.radix-ui.com) component libraries.
 
+## Install (beam tier)
+
+`composer setup` runs the beam tier installer — **`splicewire:beam:install`** — instead of a bare
+`migrate`. The installer walks the `BeamInstallManifest` core-first (each beam-* package's publish tags),
+then migrates once, so the beam stack lands in one command:
+
+```bash
+composer setup
+# or, standalone, after key:generate:
+php artisan splicewire:beam:install --no-interaction --force
+```
+
+## Co-dev overlay (local package dev)
+
+To develop against your local package checkouts in `~/Workspaces/laravel/packages/**` (symlinked into
+`vendor/` — path repos win over the git `repositories` via `wikimedia/composer-merge-plugin`):
+
+```bash
+cp composer.local.json.off composer.local.json   # engage the overlay (gitignored active copy)
+composer update                                   # resolve to local checkouts
+php artisan splicewire:beam:install --no-interaction --force
+
+rm composer.local.json && composer update         # reset to git-resolved
+```
+
 ## Official Documentation
 
 Documentation for all Laravel starter kits can be found on the [Laravel website](https://laravel.com/docs/starter-kits).
