@@ -23,10 +23,6 @@
         },
         {
             "type": "git",
-            "url": "https://github.com/schemastud/laravel-schema-forms.git"
-        },
-        {
-            "type": "git",
             "url": "https://github.com/schemastud/laravel-doctor.git"
         },
         {
@@ -57,7 +53,6 @@
         "splicewire/laravel-beam": "*",
         "splicewire/laravel-beam-mdx": "*",
         "schemastud/laravel-frame": "*",
-        "schemastud/laravel-schema-forms": "*",
         "schemastud/laravel-data-schemas": "*",
         "wikimedia/composer-merge-plugin": "^2.1"
     },
