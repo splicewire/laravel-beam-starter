@@ -20,6 +20,14 @@ composer setup
 php artisan splicewire:beam:install --no-interaction --force
 ```
 
+**Prototyping ships in the bare install.** The starter requires
+`splicewire/laravel-beam-ux-prototype`, so `splicewire:beam:install` also stamps the rushing-prototype
+scaffold (`ui/src/_prototype/**` starter + `_chrome/nav.ts`) and the host-bound
+`docs/agents/rushing-prototype.convention.template.md` — the package self-registers its step into
+`BeamInstallManifest`. Confirm the wiring landed with `splicewire:beam:doctor` (the prototype audit
+reports advisory), or drive the prototype tooling directly via
+`php artisan splicewire:beam:ux:prototype:{install,doctor}`.
+
 ## Exposing a model in the admin — drop one annotated Data class
 
 A model shows up in the Frame admin by dropping **one** `#[ParticleResource]`-annotated Data class into
