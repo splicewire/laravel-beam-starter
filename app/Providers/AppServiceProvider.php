@@ -16,7 +16,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Bind the host account-shell provider over beam-accounts' NullAccountShellProvider default,
+        // so the packaged <AccountShell> renders real (neutral demo) plan/profile data OOTB.
+        $this->app->bind(
+            \Splicewire\Beam\Accounts\Contracts\AccountShellProvider::class,
+            \App\Account\StarterAccountShell::class,
+        );
     }
 
     /**
