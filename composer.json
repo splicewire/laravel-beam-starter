@@ -23,6 +23,42 @@
         },
         {
             "type": "git",
+            "url": "https://github.com/splicewire/laravel-beam-ux.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/splicewire/laravel-beam-accounts.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/splicewire/laravel-beam-sitemap.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/splicewire/laravel-beam-taxonomy.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/splicewire/laravel-beam-workflows.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/stephenr85/laravel-data-nav.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/stephenr85/laravel-data-schemas-scribe.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/stephenr85/laravel-permission-cascade.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/stephenr85/laravel-marquee.git"
+        },
+        {
+            "type": "git",
             "url": "https://github.com/schemastud/laravel-frame.git"
         },
         {
@@ -56,6 +92,9 @@
         "laravel/wayfinder": "^0.1.14",
         "splicewire/laravel-beam": "*",
         "splicewire/laravel-beam-mdx": "*",
+        "splicewire/laravel-beam-ux": "*",
+        "splicewire/laravel-beam-accounts": "*",
+        "splicewire/laravel-beam-sitemap": "*",
         "splicewire/laravel-beam-ux-prototype": "*",
         "schemastud/laravel-frame": "*",
         "schemastud/laravel-data-schemas": "*",
