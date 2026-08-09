@@ -4,6 +4,7 @@ import { TooltipProvider } from '@/components/ui/tooltip';
 import { initializeTheme } from '@/hooks/use-appearance';
 import AppLayout from '@/layouts/app-layout';
 import AuthLayout from '@/layouts/auth-layout';
+import BeamAccountLayout from '@/layouts/beam-account-layout';
 import SettingsLayout from '@/layouts/settings/layout';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
@@ -14,6 +15,13 @@ createInertiaApp({
         switch (true) {
             case name === 'welcome':
                 return null;
+            // Site-realm pages carry their own <SiteLayout> internally (the OOTB site chrome), so no
+            // wrapping layout here.
+            case name.startsWith('site/'):
+                return null;
+            // Account-realm pages mount the OOTB <AccountShell> via BeamAccountLayout.
+            case name.startsWith('account/'):
+                return BeamAccountLayout;
             case name.startsWith('auth/'):
                 return AuthLayout;
             case name.startsWith('settings/'):
