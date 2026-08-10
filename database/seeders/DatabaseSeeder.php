@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Splicewire\Beam\Accounts\Database\Seeders\DemoTeamSeeder;
 use Splicewire\Beam\Accounts\Support\Demo;
 
 class DatabaseSeeder extends Seeder
@@ -30,13 +29,18 @@ class DatabaseSeeder extends Seeder
             'email' => 'staff@example.com',
         ]);
 
-        // The OOTB beam-accounts demo team (owner/admin/member/solo) — the subjects the login page's
-        // quick-login buttons enter via `account/login-as/{subject}` (Demo::keys()). Deterministic creds,
-        // auto-skips in production. The seeder creates the demo USERS (all this app needs for login-as),
-        // then assigns team ROLES — which needs the full beam-accounts permission estate this starter does
-        // NOT adopt (register_auth_migrations=false). So rescue the role step: the users still land, and
-        // the buttons work; role assignment is simply a no-op here.
-        rescue(fn () => $this->call(DemoTeamSeeder::class), report: false);
+        // Run EVERY beam-* package's registered seeder from ONE command (the package-registered seed
+        // manifest): beam-accounts contributes its DemoTeamSeeder (gated by beam.accounts.demo.seed_users →
+        // on outside production), beam-ux its content-nav seeder, etc. This host no longer hand-calls any
+        // package seeder by class — a new beam package's data lands automatically once it registers.
+        //
+        // The accounts DemoTeamSeeder creates the demo USERS (all this app needs for login-as via the
+        // login page's quick-login buttons), then assigns team ROLES — which needs the full beam-accounts
+        // permission estate this starter does NOT adopt (register_auth_migrations=false), so that step
+        // throws here. splicewire:beam:seed tolerates a seeder throwing (reports + continues), so the users
+        // still land and the buttons work; role assignment is simply a no-op in this starter.
+        // (Invoked as an artisan COMMAND, not Seeder::call — the manifest, not this host, names the seeders.)
+        $this->command->call('splicewire:beam:seed');
 
         // Demo convenience: the demo OWNER doubles as staff so its quick-login reaches the staff-gated
         // /os + /operator too (a single-tenant demo's proprietor is also its operator).
