@@ -22,4 +22,17 @@
 return [
     'register_auth_migrations' => false,
     'register_migrations' => false,
+
+    // Entitlement bundles (Frame OS ADR-0013 §3). The DefaultEntitlementResolver grants a STAFF principal
+    // (a truthy `is_staff`) the `staff` bundle below — the operator/OS/authoring capabilities — so /operator
+    // + /os resolve OOTB for the seeded staff user. Declared in full because mergeConfigFrom is shallow at
+    // this level (must restate default_staff_bundle / staff_roles alongside `bundles`). Keep the keys in
+    // sync with config/app.php `entitlements` and config/beam/core.php `realm_gates`.
+    'entitlements' => [
+        'bundles' => [
+            'staff' => ['author-ux', 'os.enter', 'app-operator'],
+        ],
+        'default_staff_bundle' => 'staff',
+        'staff_roles' => ['staff', 'operator'],
+    ],
 ];

@@ -39,6 +39,17 @@ class UserFactory extends Factory
     }
 
     /**
+     * Indicate that the user is STAFF — the DefaultEntitlementResolver reads `is_staff` to grant the
+     * staff bundle (author-ux/os.enter/app-operator), opening the operator + OS realms/gates.
+     */
+    public function staff(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'is_staff' => true,
+        ]);
+    }
+
+    /**
      * Indicate that the model's email address should be unverified.
      */
     public function unverified(): static

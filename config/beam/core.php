@@ -128,7 +128,12 @@ return [
     |   'studio' => ['entitlement' => 'go-songwriter', 'mode' => 'soft',
     |               'upsell' => ['title' => 'Go Songwriter', 'cta' => 'Upgrade']],
     */
-    'realm_gates' => [],
+    'realm_gates' => [
+        // Hard-gate the operator realm: an unentitled principal never sees it in the projected manifest.
+        'operator' => ['entitlement' => 'app-operator', 'mode' => 'hard'],
+        // Hard-gate the OS-shell realm on `os.enter` (a non-staff user's manifest omits it entirely).
+        'os' => ['entitlement' => 'os.enter', 'mode' => 'hard'],
+    ],
 
     /*
     | Entitlement (feature-plane) wiring (Frame OS ticket 08, ADR-0013 §2). beam is the authority that
