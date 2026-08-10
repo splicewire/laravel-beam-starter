@@ -57,6 +57,21 @@ export default function SiteLayout({ children }: { children: ReactNode }) {
                     <style dangerouslySetInnerHTML={{ __html: CSS }} />
                 </>
             }
+            footerBrand={brand}
+            footerStyle={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: 16,
+                marginTop: 48,
+                padding: '28px clamp(18px,5vw,56px)',
+                borderTop: '1px solid rgba(15,23,42,.08)',
+                color: '#64748b',
+                fontSize: 13,
+            }}
+            footerLinkClassName="navlink"
+            footerLinkStyle={{ marginLeft: 18 }}
             className="st-site"
             style={{
                 background: '#f8fafc',
