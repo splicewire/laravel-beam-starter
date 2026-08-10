@@ -4,9 +4,14 @@
     "type": "module",
     "pnpm": {
         "overrides": {
-            "@schemastud/mainframe": "file:../../../js/packages/schemastud/mainframe",
+            "@schemastud/blockdoc": "file:../../../js/packages/schemastud/blockdoc",
+            "@schemastud/chat": "file:../../../js/packages/schemastud/chat",
+            "@schemastud/facets": "file:../../../js/packages/schemastud/facets",
+            "@schemastud/frame": "file:../../../js/packages/schemastud/frame",
             "@schemastud/frame-remote": "file:../../../js/packages/schemastud/frame-remote",
-            "@schemastud/seam": "file:../../../js/packages/schemastud/seam"
+            "@schemastud/mainframe": "file:../../../js/packages/schemastud/mainframe",
+            "@schemastud/seam": "file:../../../js/packages/schemastud/seam",
+            "@splicewire/_resources": "file:../../../js/packages/splicewire/_resources"
         }
     },
     "scripts": {

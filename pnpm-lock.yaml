@@ -5,9 +5,14 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  '@schemastud/mainframe': file:../../../js/packages/schemastud/mainframe
+  '@schemastud/blockdoc': file:../../../js/packages/schemastud/blockdoc
+  '@schemastud/chat': file:../../../js/packages/schemastud/chat
+  '@schemastud/facets': file:../../../js/packages/schemastud/facets
+  '@schemastud/frame': file:../../../js/packages/schemastud/frame
   '@schemastud/frame-remote': file:../../../js/packages/schemastud/frame-remote
+  '@schemastud/mainframe': file:../../../js/packages/schemastud/mainframe
   '@schemastud/seam': file:../../../js/packages/schemastud/seam
+  '@splicewire/_resources': file:../../../js/packages/splicewire/_resources
 
 importers:
 
@@ -1189,8 +1194,8 @@ packages:
     hasBin: true
     peerDependencies:
       '@measured/puck': '>=0.20'
-      '@schemastud/chat': '*'
-      '@schemastud/frame': '*'
+      '@schemastud/chat': file:/Users/stephen/Workspaces/js/packages/schemastud/chat
+      '@schemastud/frame': file:/Users/stephen/Workspaces/js/packages/schemastud/frame
       '@schemastud/mainframe': file:/Users/stephen/Workspaces/js/packages/schemastud/mainframe
       '@schemastud/seam': file:/Users/stephen/Workspaces/js/packages/schemastud/seam
       '@schemastud/ui': '*'
