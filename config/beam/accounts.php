@@ -20,8 +20,15 @@
 */
 
 return [
+    // Auth estate OFF — this laravel-starter-kit app owns its OWN auth schema (bigint users, its own
+    // passkeys table, no spatie roles). The beam-accounts auth estate (uuid users + its passkeys + a
+    // uuid-keyed spatie roles table) conflicts with it, so adopting it is a deeper migration than a
+    // starter warrants. Consequence: the OOTB DemoTeamSeeder seeds its demo USERS (enough for the
+    // login-as buttons) but its team-ROLE assignment is skipped (see DatabaseSeeder).
     'register_auth_migrations' => false,
-    'register_migrations' => false,
+    // Teams estate ON — the engine's teams/memberships/invitations tables, needed by the OOTB
+    // beam-accounts demo team (login-as subjects) the login page's quick-login buttons enter.
+    'register_migrations' => true,
 
     // Entitlement bundles (Frame OS ADR-0013 §3). The DefaultEntitlementResolver grants a STAFF principal
     // (a truthy `is_staff`) the `staff` bundle below — the operator/OS/authoring capabilities — so /operator

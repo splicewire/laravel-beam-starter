@@ -16,12 +16,17 @@ import { request } from '@/routes/password';
 import PasskeyVerify from '@/components/passkey-verify';
 /* @end-chisel-passkeys */
 
+type DemoAccount = { key: string; label: string; url: string };
+
 type Props = {
     status?: string;
     canResetPassword: boolean;
+    // Controller-provided (FortifyServiceProvider → the OOTB beam-accounts login-as affordance). Empty in
+    // production / when demo is off, so the block below doesn't render. Each `url` is a signed login-as link.
+    demoAccounts?: DemoAccount[];
 };
 
-export default function Login({ status, canResetPassword }: Props) {
+export default function Login({ status, canResetPassword, demoAccounts = [] }: Props) {
     return (
         <>
             <Head title="Log in" />
@@ -113,6 +118,27 @@ export default function Login({ status, canResetPassword }: Props) {
             {status && (
                 <div className="mb-4 text-center text-sm font-medium text-green-600">
                     {status}
+                </div>
+            )}
+
+            {demoAccounts.length > 0 && (
+                <div className="mt-2 flex flex-col gap-3">
+                    <div className="relative text-center text-xs uppercase text-muted-foreground">
+                        <span className="relative z-10 bg-background px-2">Or try a demo account</span>
+                        <span className="absolute inset-x-0 top-1/2 border-t" aria-hidden />
+                    </div>
+                    <div className="grid gap-2">
+                        {demoAccounts.map((account) => (
+                            // A signed OOTB login-as link (beam-accounts `account/login-as/{subject}`); a full
+                            // GET so the server signs you in and redirects. Guarded server-side by Demo::enabled().
+                            <a key={account.key} href={account.url} className="w-full">
+                                <Button type="button" variant="outline" className="w-full">
+                                    Sign in as {account.label}
+                                </Button>
+                            </a>
+                        ))}
+                    </div>
+                    <p className="text-center text-xs text-muted-foreground">Dev only — hidden in production.</p>
                 </div>
             )}
         </>

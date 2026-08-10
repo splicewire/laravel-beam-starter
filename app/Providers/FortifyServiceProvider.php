@@ -10,12 +10,14 @@ use App\Actions\Fortify\ResetUserPassword;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
 use Laravel\Fortify\Fortify;
+use Splicewire\Beam\Accounts\Support\Demo;
 
 class FortifyServiceProvider extends ServiceProvider
 {
@@ -56,6 +58,10 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::loginView(fn (Request $request) => Inertia::render('auth/login', [
             'canResetPassword' => Features::enabled(Features::resetPasswords()),
             'status' => $request->session()->get('status'),
+            // Controller-provided quick demo sign-in — the OOTB beam-accounts login-as affordance
+            // (Splicewire\Beam\Accounts\Support\Demo + the signed `account/login-as/{subject}` route).
+            // Empty in production / when demo is off, so the login page's demo block simply doesn't render.
+            'demoAccounts' => $this->demoAccounts(),
         ]));
 
         Fortify::resetPasswordView(fn (Request $request) => Inertia::render('auth/reset-password', [
@@ -87,6 +93,28 @@ class FortifyServiceProvider extends ServiceProvider
         /* @chisel-password-confirmation */
         Fortify::confirmPasswordView(fn () => Inertia::render('auth/confirm-password'));
         /* @end-chisel-password-confirmation */
+    }
+
+    /**
+     * The demo sign-in buttons for the login page — the OOTB beam-accounts login-as affordance. Each is a
+     * SIGNED link to `account/login-as/{subject}` (the signature is ignored in local/testing but keeps the
+     * links valid in a preview deploy, where `LoginAsController` requires one). Empty ⇒ no buttons: the set
+     * is `Demo::keys()` when `Demo::enabled()` (non-production by default), else nothing. The subjects are
+     * provisioned by the package `DemoTeamSeeder` (called from DatabaseSeeder).
+     *
+     * @return list<array{key: string, label: string, url: string}>
+     */
+    private function demoAccounts(): array
+    {
+        if (! Demo::enabled()) {
+            return [];
+        }
+
+        return array_map(fn (string $key): array => [
+            'key' => $key,
+            'label' => Demo::name($key),
+            'url' => URL::signedRoute('splicewire.account.login-as', ['subject' => $key]),
+        ], Demo::keys());
     }
 
     /**
