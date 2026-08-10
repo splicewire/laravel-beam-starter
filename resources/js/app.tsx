@@ -5,6 +5,7 @@ import { initializeTheme } from '@/hooks/use-appearance';
 import AppLayout from '@/layouts/app-layout';
 import AuthLayout from '@/layouts/auth-layout';
 import BeamAccountLayout from '@/layouts/beam-account-layout';
+import MainframeHost from '@/layouts/beam-ux/mainframe-host';
 import SettingsLayout from '@/layouts/settings/layout';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
@@ -15,10 +16,17 @@ createInertiaApp({
         switch (true) {
             case name === 'welcome':
                 return null;
-            // Site-realm pages carry their own <SiteLayout> internally (the OOTB site chrome), so no
-            // wrapping layout here.
-            case name.startsWith('site/'):
+            // The OS-shell desktop is fully self-chromed (menu bar + dock + windows) — no wrapping layout.
+            case name === 'os':
                 return null;
+            // Site-realm pages carry their own <SiteLayout> internally (the OOTB site chrome). Wrapped in
+            // MainframeHost so an author (`author-ux`) can edit the page in place; a reader falls through
+            // to the self-chromed page (readMode: 'page' is a no-op swap).
+            case name.startsWith('site/'):
+                return MainframeHost;
+            // The OPERATOR front-end realm — framed by the promoted <MainframeHost> (beam-mainframe).
+            case name.startsWith('operator/'):
+                return MainframeHost;
             // Account-realm pages mount the OOTB <AccountShell> via BeamAccountLayout.
             case name.startsWith('account/'):
                 return BeamAccountLayout;
