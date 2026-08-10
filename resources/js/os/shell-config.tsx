@@ -17,16 +17,23 @@ import type { Mainframe, MainframeInjection } from '@schemastud/mainframe';
 import type { PersistedWorkspace } from '@schemastud/mainframe/os';
 import { buildAppsFromManifest, buildDesktopChrome, Clock } from '@splicewire/beam-ux/shell';
 import type { DesktopApp, RealmManifestEntry, RealmSurfaceBinding } from '@splicewire/beam-ux/shell';
-import { Component } from 'react';
+import { Component, Suspense, lazy } from 'react';
 import type { ErrorInfo, ReactNode } from 'react';
 
 // The REAL realm surfaces — their actual page components (WYSIWYG). Each mounted inside a window reads
 // shared props (auth/accountShell) from the /os Inertia context; page-specific props fall back to designed
 // defaults. NEVER a mock, NEVER an iframe.
+//
+// LAZY-imported (not static) on purpose: the per-page `@vite("pages/{component}.tsx")` directive resolves
+// each page against the build manifest, so a page must stay its OWN chunk. A static import here would
+// INLINE the page into the shell chunk (the "INEFFECTIVE_DYNAMIC_IMPORT" collision), dropping its manifest
+// entry — so a DIRECT visit to `/operator` 500s ("not in Vite manifest") in a build. Lazy keeps each page a
+// standalone entry, reachable both directly and framed in an OS window.
 import BeamAccountLayout from '@/layouts/beam-account-layout';
-import AccountHome from '@/pages/account/home';
-import OperatorDashboard from '@/pages/operator/dashboard';
-import SiteHome from '@/pages/site/home';
+
+const AccountHome = lazy(() => import('@/pages/account/home'));
+const OperatorDashboard = lazy(() => import('@/pages/operator/dashboard'));
+const SiteHome = lazy(() => import('@/pages/site/home'));
 
 export type { RealmManifestEntry } from '@splicewire/beam-ux/shell';
 
@@ -154,7 +161,7 @@ export const SURFACE_MAP: Record<string, RealmSurfaceBinding> = {
         subtitle: 'Public · marketing',
         accent: '#3b82f6',
         geometry: { x: 60, y: 70, width: 640, height: 540 },
-        render: () => <SiteHome />,
+        render: () => <Suspense fallback={null}><SiteHome /></Suspense>,
     },
     user: {
         label: 'Account',
@@ -163,9 +170,11 @@ export const SURFACE_MAP: Record<string, RealmSurfaceBinding> = {
         accent: '#10b981',
         geometry: { x: 180, y: 150, width: 760, height: 500 },
         render: () => (
-            <BeamAccountLayout>
-                <AccountHome />
-            </BeamAccountLayout>
+            <Suspense fallback={null}>
+                <BeamAccountLayout>
+                    <AccountHome />
+                </BeamAccountLayout>
+            </Suspense>
         ),
     },
     operator: {
@@ -174,7 +183,7 @@ export const SURFACE_MAP: Record<string, RealmSurfaceBinding> = {
         subtitle: 'Frame · back-office',
         accent: '#f59e0b',
         geometry: { x: 220, y: 90, width: 720, height: 540 },
-        render: () => <OperatorDashboard />,
+        render: () => <Suspense fallback={null}><OperatorDashboard /></Suspense>,
     },
 };
 
