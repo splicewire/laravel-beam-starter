@@ -6,16 +6,14 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Splicewire\Beam\Ux\Models\Sitemap;
 
-Route::inertia('/', 'welcome')->name('home');
-
-// OOTB front-end surface demos (frontend-surfaces wiring). The site-realm page renders the promoted
-// <SiteLayout> chrome (public) AND — behind the author-ux seam — mounts the in-place visual editor
-// (@/editor). The account-realm page renders the promoted <AccountShell> (authed).
-Route::inertia('preview', 'site/home')->name('site.preview');
+// The FRONT DOOR is the OOTB site realm: `/` renders the promoted <SiteLayout> chrome (public) AND —
+// behind the author-ux seam — mounts the in-place visual editor (@/editor). (frontend-surfaces wiring.)
+Route::inertia('/', 'site/home')->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::inertia('dashboard', 'dashboard')->name('dashboard');
-    Route::inertia('account-home', 'account/home')->name('account.home');
+    // The authed home IS the OOTB account realm: <AccountShell> (@splicewire/beam-ux/account). Fortify
+    // redirects login here (`config/fortify.php` home => /dashboard).
+    Route::inertia('dashboard', 'account/home')->name('dashboard');
 
     // The host-owned Frame resource edit page for the editable sitemap (kind A).
     // Frame ships only frame/manifest; the host binds each resource's edit route.

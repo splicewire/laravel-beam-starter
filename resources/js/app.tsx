@@ -14,8 +14,6 @@ createInertiaApp({
     title: (title) => (title ? `${title} - ${appName}` : appName),
     layout: (name) => {
         switch (true) {
-            case name === 'welcome':
-                return null;
             // The OS-shell desktop is fully self-chromed (menu bar + dock + windows) — no wrapping layout.
             case name === 'os':
                 return null;

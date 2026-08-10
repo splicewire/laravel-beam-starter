@@ -157,7 +157,7 @@ function surfaceInjection(title: string, route: string, render: () => ReactNode)
 export const SURFACE_MAP: Record<string, RealmSurfaceBinding> = {
     site: {
         label: 'Site',
-        route: '/preview',
+        route: '/',
         subtitle: 'Public · marketing',
         accent: '#3b82f6',
         geometry: { x: 60, y: 70, width: 640, height: 540 },
