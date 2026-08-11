@@ -37,6 +37,52 @@ const SiteHome = lazy(() => import('@/pages/site/home'));
 
 export type { RealmManifestEntry } from '@splicewire/beam-ux/shell';
 
+/**
+ * theme-entries-and-authoring ticket `str-01`: a THIRD, theme-driven `--shell-*` remap, layered
+ * ADDITIVELY after {@see OS_SHELL_CSS} (same selector/specificity — CSS cascade means this wins by
+ * source order, never by touching `OS_SHELL_CSS` itself). Reads `page.props.theme.shell` (the
+ * `ThemeResolver` cascade — package default → central → tenant); renders nothing when the prop is
+ * absent (a stale build / degrade path), leaving `OS_SHELL_CSS`'s own neutral defaults as the floor.
+ */
+function ThemeShellStyle() {
+    const page = usePage<{ theme?: { shell?: ShellThemeTokens } }>();
+    const shell = page.props.theme?.shell;
+
+    if (!shell) {
+        return null;
+    }
+
+    return <style dangerouslySetInnerHTML={{ __html: shellThemeCss(shell) }} />;
+}
+
+interface ShellThemeTokens {
+    surface: string;
+    surfaceRaised: string;
+    fg: string;
+    fgMuted: string;
+    accent: string;
+    edge: string;
+    radius: string;
+    shadow: string;
+    font: string;
+    fontMono: string;
+}
+
+function shellThemeCss(shell: ShellThemeTokens): string {
+    return `.st-os-root [data-shell-root]{
+  --shell-surface:${shell.surface};
+  --shell-surface-raised:${shell.surfaceRaised};
+  --shell-fg:${shell.fg};
+  --shell-fg-muted:${shell.fgMuted};
+  --shell-accent:${shell.accent};
+  --shell-edge:${shell.edge};
+  --shell-radius:${shell.radius};
+  --shell-shadow:${shell.shadow};
+  --shell-font:${shell.font};
+  --shell-font-mono:${shell.fontMono};
+}`;
+}
+
 // ── NEUTRAL CHROME theme (host-local `--shell-*` remap) ─────────────────────────────────────────────
 // A plain slate/neutral set (NOT a brand palette). A second host restyles ONLY these `--shell-*` tokens.
 export const OS_SHELL_CSS = `
@@ -303,6 +349,7 @@ function AppFirstSurface({ apps }: { apps: DesktopApp[] }) {
     return (
         <>
             <style dangerouslySetInnerHTML={{ __html: OS_SHELL_CSS }} />
+            <ThemeShellStyle />
             <div className="st-app-root">
                 {primary && binding ? (
                     <SurfaceBoundary title={primary.title} route={primary.route ?? '/'}>
@@ -362,6 +409,7 @@ export function OsShellDesktop() {
     return (
         <>
             <style dangerouslySetInnerHTML={{ __html: OS_SHELL_CSS }} />
+            <ThemeShellStyle />
             <MainframeProvider injection={osInjection}>
                 <div className="st-os-root" style={{ position: 'fixed', inset: 0, overflow: 'hidden' }}>
                     <MainframeOutlet

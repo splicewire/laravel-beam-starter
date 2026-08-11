@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Splicewire\Beam\Models\BeamParticle;
 use Splicewire\Beam\Ux\Format\UxFormat;
@@ -28,13 +29,22 @@ use Splicewire\Beam\Ux\Format\UxFormat;
  * tenant pass. The package never `loadMigrationsFrom`'s or runs migrations at runtime.
  *
  * Residency is `context-following` (default): an entry lives wherever it is authored. `realm` is the
- * containment root (defaults to the public `site` realm); `sitemap_id`/`parent_id`/`segment` are the
+ * containment root (defaults to the public `site` realm); `realms`/`parent_id`/`segment` are the
  * adjacency-list containment tree (decoupled from `namespace`, which is disk-only build grouping — the
- * "two trees"). `format`/`body_style` are the body-language axis (sibling to `type`). `placement_ref`/
+ * "two trees"). `realms` is the ordered fallback stack (theme-entries-and-authoring ticket 03) an entry
+ * is reachable under — `realm` stays the primary/first entry, `realms` the full ordered membership.
+ * `format`/`body_style` are the body-language axis (sibling to `type`). `placement_ref`/
  * `driver_ref` are the S2 storage precedence refs. `workflow_marking`/`workflow_version` make the entry
  * an OPTIONAL subject of the free-tier `laravel-beam-workflows` engine. `schema_is_draft` marks an
- * inferred (vs. authored) `schema_ref`. `composable` gates the WYSIWYG edit chrome (free composition vs.
- * a fixed template around a sealed behavior island).
+ * inferred (vs. authored) `schema_ref`.
+ *
+ * `deleted_at` (theme-entries-and-authoring ticket 06): `SoftDeletes` — a delete is reversible (Frame's
+ * RowActions "delete" is a confirm-guarded soft-delete, never a hard one) and independent of workflow
+ * governance (opt-in per creatable type, never forced on just to get delete/restore). The
+ * `[namespace, slug]` uniqueness becomes a PARTIAL index (`WHERE deleted_at IS NULL`) on drivers that
+ * support one (sqlite, pgsql — the two this fleet actually runs), so a deleted entry's slug can be
+ * reused; other drivers fall back to the plain (non-excluding) unique constraint, where a deleted
+ * entry's slug stays reserved — a documented limitation, not a silent gap.
  */
 return new class extends Migration
 {
@@ -65,15 +75,15 @@ return new class extends Migration
             $table->boolean('schema_is_draft')->default(false)->index();
             $table->string('facade_ref')->nullable();
 
-            // type ∈ {layout, template, page, component}. format is the sibling body-language/codec axis
-            // (ADR-0164) — which codec compiles/renders the body and which extension it materializes to.
-            // body_style is a tsx-codec-local flavor, meaningless for other formats. composable gates
-            // whether the body is free structural composition or a fixed template (default true —
-            // backward-compatible; a host demotes a behavior realm to false at seed time).
+            // type ∈ {layout, template, page, component, theme}. format is the sibling body-language/
+            // codec axis (ADR-0164) — which codec compiles/renders the body and which extension it
+            // materializes to. body_style is a tsx-codec-local flavor, meaningless for other formats.
+            // The former `composable` flag (editability tier) is retired (theme-entries-and-authoring
+            // ticket 04) — fully subsumed by ADR-0016's per-node opacity overlay, computed per node in
+            // the canvas, not a coarser entry-level gate.
             $table->string('type')->index();
             $table->string('format')->default(UxFormat::Tsx->value)->index();
             $table->string('body_style')->nullable();
-            $table->boolean('composable')->default(true);
 
             // namespace is the dot-nestable BUILD grouping (disk placement only, NOT URL/taxonomy).
             // placement_ref/driver_ref are the S2 per-entry storage precedence refs (fall through to the
@@ -86,13 +96,15 @@ return new class extends Migration
             $table->string('residency_mode')->default('context-following')->index();
 
             // Containment: the organization spine deriving the entry's PUBLIC URL — decoupled from
-            // `namespace` (the "two trees"). realm is the public route root (defaults to `site`).
-            // sitemap_id/parent_id are plain indexed uuids (not DB-constrained FKs, portable central +
-            // tenant) resolved via their model relations. segment composes DOWN the tree (bare/`./` is
-            // parent-relative, `/` resets to the realm/sitemap root). nav_order is an optional sibling
-            // sort key the NavProjector orders by when present, falling back to slug otherwise.
+            // `namespace` (the "two trees"). realm is the public route root (defaults to `site`) and
+            // stays the primary/first realm; realms is the full ordered fallback stack an entry is
+            // reachable under (theme-entries-and-authoring ticket 03). parent_id is a plain indexed
+            // uuid (not a DB-constrained FK, portable central + tenant) resolved via its model relation.
+            // segment composes DOWN the tree (bare/`./` is parent-relative, `/` resets to the realm
+            // root). nav_order is an optional sibling sort key the NavProjector orders by when present,
+            // falling back to slug otherwise.
             $table->string('realm')->default('site')->index();
-            $table->uuid('sitemap_id')->nullable()->index();
+            $table->json('realms')->nullable();
             $table->uuid('parent_id')->nullable()->index();
             $table->string('segment')->nullable();
             $table->integer('nav_order')->nullable();
@@ -104,10 +116,24 @@ return new class extends Migration
             $table->string('workflow_version')->nullable();
 
             $table->timestamps();
-
-            // One entry per slug within a build namespace.
-            $table->unique(['namespace', 'slug']);
+            $table->softDeletes();
         });
+
+        // One entry per slug within a build namespace — but a soft-deleted row must not block
+        // reusing its slug (ticket 06). Partial unique index on the drivers that support one;
+        // plain unique constraint elsewhere (deleted slugs stay reserved there).
+        $driver = Schema::getConnection()->getDriverName();
+
+        if (in_array($driver, ['sqlite', 'pgsql'], true)) {
+            DB::statement(
+                'create unique index beam_ux_entries_namespace_slug_active_unique '
+                .'on beam_ux_entries (namespace, slug) where deleted_at is null'
+            );
+        } else {
+            Schema::table('beam_ux_entries', function (Blueprint $table) {
+                $table->unique(['namespace', 'slug']);
+            });
+        }
     }
 
     public function down(): void

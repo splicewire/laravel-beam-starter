@@ -11,6 +11,7 @@ use Splicewire\Beam\Accounts\Data\AccountShellData;
 use Splicewire\Beam\Entitlements\CanMapBuilder;
 use Splicewire\Beam\Realm\RealmManifestProjector;
 use Splicewire\Beam\Ux\Containment\NavProjector;
+use Splicewire\Beam\Ux\Theme\ThemeResolver;
 use Throwable;
 
 class HandleInertiaRequests extends Middleware
@@ -64,6 +65,10 @@ class HandleInertiaRequests extends Middleware
             'can' => $this->canMap($request),
             // The per-principal realm MANIFEST the launcher renders — hard-gated realms ABSENT.
             'realmManifest' => $this->realmManifest($request),
+            // The resolved theme (package default → central → tenant, ThemeResolver — ticket
+            // theme-entries-and-authoring/01) — {canvas, shell, site}. Consumed by editor/theme.ts's
+            // swap off NEUTRAL_THEME and the shell/site CSS-var <style> blocks.
+            'theme' => $this->theme(),
         ];
     }
 
@@ -141,6 +146,24 @@ class HandleInertiaRequests extends Middleware
             return app(NavProjector::class)->project('account');
         } catch (Throwable) {
             return NavTree::make([]);
+        }
+    }
+
+    /**
+     * Resolve the cascaded theme (package default → central → tenant, {@see ThemeResolver}).
+     * Degrades to an empty array on failure — {@see ThemeResolver::resolve()} already never throws,
+     * but this stays defensive like every other share() lookup here (an absent/missing entry still
+     * resolves through schema defaults inside the resolver itself, so this catch is belt-and-suspenders
+     * against a future change, not the resolver's actual degrade path).
+     *
+     * @return array<string, mixed>
+     */
+    protected function theme(): array
+    {
+        try {
+            return app(ThemeResolver::class)->resolve();
+        } catch (Throwable) {
+            return [];
         }
     }
 }

@@ -45,5 +45,10 @@ class DatabaseSeeder extends Seeder
         // Demo convenience: the demo OWNER doubles as staff so its quick-login reaches the staff-gated
         // /os + /operator too (a single-tenant demo's proprietor is also its operator).
         User::query()->where('email', Demo::email('owner'))->update(['is_staff' => true]);
+
+        // This host's central theme entry — today's shipped canvas/shell/site values, so migrate+seed
+        // renders unchanged output before any author touches the theme (theme-entries-and-authoring
+        // ticket str-01).
+        $this->call(ThemeSeeder::class);
     }
 }

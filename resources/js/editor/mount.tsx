@@ -2,8 +2,10 @@
 // VisualEditor. Loads the entry's body (JsonDoc) through the host transport, edits it, and saves back. A
 // body that isn't a JsonDoc yet (or none) starts from the slug default (or an empty root). Mounted by the
 // Mainframe host's window (author) mode.
+import { usePage } from '@inertiajs/react';
 import type { JsonDoc } from '@splicewire/beam-ux/blockdoc/json';
 import { CanvasProvider, VisualEditor } from '@splicewire/beam-ux/canvas';
+import type { CanvasTheme } from '@splicewire/beam-ux/canvas';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { canvasConfig } from './canvas-config';
@@ -16,6 +18,11 @@ const EMPTY: JsonDoc = [{ kind: 'block', name: 'div', isComponent: false, dynami
 
 export function VisualEditorMount({ slug }: { slug: string }) {
     const [doc, setDoc] = useState<JsonDoc | null>(null);
+    // theme-entries-and-authoring ticket `str-01`: the server-resolved theme (ThemeResolver cascade)
+    // replaces the static NEUTRAL_THEME import — NEUTRAL_THEME stays as the degrade-safe fallback for
+    // when the prop is absent (a stale build, or a request that never reached HandleInertiaRequests).
+    const page = usePage<{ theme?: { canvas?: Partial<CanvasTheme> } }>();
+    const theme = page.props.theme?.canvas ?? NEUTRAL_THEME;
 
     useEffect(() => {
         let live = true;
@@ -51,7 +58,7 @@ export function VisualEditorMount({ slug }: { slug: string }) {
 
     return (
         <CanvasProvider config={canvasConfig}>
-            <VisualEditor value={doc} onChange={setDoc} onSave={save} theme={NEUTRAL_THEME} brand="beam-starter · visual editor" />
+            <VisualEditor value={doc} onChange={setDoc} onSave={save} theme={theme} brand="beam-starter · visual editor" />
         </CanvasProvider>
     );
 }
