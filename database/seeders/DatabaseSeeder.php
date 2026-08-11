@@ -50,5 +50,10 @@ class DatabaseSeeder extends Seeder
         // renders unchanged output before any author touches the theme (theme-entries-and-authoring
         // ticket str-01).
         $this->call(ThemeSeeder::class);
+
+        // The 7 promoted auth-page entries (theme-entries-and-authoring ticket str-03) — so migrate+seed
+        // renders through the beam-ux entry-resolution path from a fresh install, not App\Beam\EntryBody's
+        // degrade-to-client-default path.
+        $this->call(AuthPagesSeeder::class);
     }
 }

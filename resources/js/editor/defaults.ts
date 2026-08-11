@@ -16,7 +16,41 @@ const island = (name: string): JsonBlock => ({
     dynamic: false,
 });
 
-const str = (name: string, value: string) => ({ name, kind: 'string' as const, value });
+const str = (name: string, value: string) => ({
+    name,
+    kind: 'string' as const,
+    value,
+});
+
+// theme-entries-and-authoring STR-03: `[heading, description, island]` — mirrors
+// `database/seeders/AuthPagesSeeder.php`'s `body()` shape exactly, so the client fallback (an
+// unseeded/fresh-DB install) and the DB-seeded body stay interchangeable. `text-center` on the
+// heading compensates for the lost `layouts/auth/auth-simple-layout.tsx` parent wrapper that used to
+// center it; `text-xl font-medium`/`text-center text-sm text-muted-foreground` match that layout's own
+// original `<h1>`/`<p>` classes.
+const authPage = (
+    heading: string,
+    description: string,
+    islandName: string,
+): JsonDoc => [
+    {
+        kind: 'block',
+        name: 'h1',
+        isComponent: false,
+        dynamic: false,
+        props: [str('className', 'text-xl font-medium text-center')],
+        children: [{ kind: 'text', value: heading }],
+    },
+    {
+        kind: 'block',
+        name: 'p',
+        isComponent: false,
+        dynamic: false,
+        props: [str('className', 'text-center text-sm text-muted-foreground')],
+        children: [{ kind: 'text', value: description }],
+    },
+    island(islandName),
+];
 
 export const DEFAULT_TREES: Record<string, JsonDoc> = {
     // The public site home — a demo hero island + a copy paragraph + a feature-row island.
@@ -26,7 +60,10 @@ export const DEFAULT_TREES: Record<string, JsonDoc> = {
             name: 'div',
             isComponent: false,
             dynamic: false,
-            props: [str('className', 'st-editable-home'), str('style', 'max-width:900px;margin:0 auto;padding:24px')],
+            props: [
+                str('className', 'st-editable-home'),
+                str('style', 'max-width:900px;margin:0 auto;padding:24px'),
+            ],
             children: [
                 island('DemoHero'),
                 {
@@ -34,12 +71,16 @@ export const DEFAULT_TREES: Record<string, JsonDoc> = {
                     name: 'p',
                     isComponent: false,
                     dynamic: false,
-                    props: [str('style', 'font-size:16px;line-height:1.6;color:#475569;margin:28px 0')],
+                    props: [
+                        str(
+                            'style',
+                            'font-size:16px;line-height:1.6;color:#475569;margin:28px 0',
+                        ),
+                    ],
                     children: [
                         {
                             kind: 'text',
-                            value:
-                                'This page is editable in place through the promoted @splicewire/beam-ux/canvas. Everything you see is one JsonDoc body — the same tree the read view renders and the editor edits.',
+                            value: 'This page is editable in place through the promoted @splicewire/beam-ux/canvas. Everything you see is one JsonDoc body — the same tree the read view renders and the editor edits.',
                         },
                     ],
                 },
@@ -47,6 +88,44 @@ export const DEFAULT_TREES: Record<string, JsonDoc> = {
             ],
         },
     ],
+
+    // theme-entries-and-authoring STR-03: the 7 promoted auth pages — a heading + description (ordinary
+    // editable text blocks, matching AuthPagesSeeder's DB-seeded shape exactly) followed by the sealed
+    // island (the real Fortify-bound form). An author holding `author-ux-auth` can retext/reorder/add
+    // content around the island via the visual editor; the form itself is never decomposed.
+    // `two-factor-challenge` carries no heading/description — its title toggles on local session state
+    // (authentication-code ⇄ recovery-code), not editorial copy; its own island sets it directly.
+    login: authPage(
+        'Log in to your account',
+        'Enter your email and password below to log in',
+        'AuthLogin',
+    ),
+    register: authPage(
+        'Create an account',
+        'Enter your details below to create your account',
+        'AuthRegister',
+    ),
+    'forgot-password': authPage(
+        'Forgot password',
+        'Enter your email to receive a password reset link',
+        'AuthForgotPassword',
+    ),
+    'reset-password': authPage(
+        'Reset password',
+        'Please enter your new password below',
+        'AuthResetPassword',
+    ),
+    'confirm-password': authPage(
+        'Confirm password',
+        'This is a secure area of the application. Please confirm your password before continuing.',
+        'AuthConfirmPassword',
+    ),
+    'two-factor-challenge': [island('AuthTwoFactorChallenge')],
+    'verify-email': authPage(
+        'Email verification',
+        'Please verify your email address by clicking on the link we just emailed to you.',
+        'AuthVerifyEmail',
+    ),
 };
 
 export function defaultTreeFor(slug: string): JsonDoc | null {

@@ -7,6 +7,7 @@ namespace App\Providers;
 use App\Actions\Fortify\CreateNewUser;
 /* @end-chisel-registration */
 use App\Actions\Fortify\ResetUserPassword;
+use App\Beam\EntryBody;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
@@ -32,10 +33,10 @@ class FortifyServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot(): void
+    public function boot(EntryBody $entryBody): void
     {
         $this->configureActions();
-        $this->configureViews();
+        $this->configureViews($entryBody);
         $this->configureRateLimiting();
     }
 
@@ -52,10 +53,20 @@ class FortifyServiceProvider extends ServiceProvider
 
     /**
      * Configure Fortify views.
+     *
+     * theme-entries-and-authoring STR-03: every view renders the SAME beam-ux entry-resolution page
+     * (`auth/entry`), differentiated by `slug` — the `BeamUxEntry` `App\Beam\EntryBody::forSlug()`
+     * resolves. Every prop these views computed before (`canResetPassword`, `status`, `demoAccounts`,
+     * `email`, `token`, `passwordRules`) still flows exactly as before; the sealed form island reads
+     * them via `usePage()` instead of receiving them as direct page-component props (it's no longer the
+     * top-level Inertia page — `resources/js/editor/registry.tsx`). Routes/controllers/business guards
+     * (password-reset token validity, 2FA challenge session, etc.) are untouched — view-selection only.
      */
-    private function configureViews(): void
+    private function configureViews(EntryBody $entryBody): void
     {
-        Fortify::loginView(fn (Request $request) => Inertia::render('auth/login', [
+        Fortify::loginView(fn (Request $request) => Inertia::render('auth/entry', [
+            'slug' => 'login',
+            'body' => $entryBody->forSlug('login'),
             'canResetPassword' => Features::enabled(Features::resetPasswords()),
             'status' => $request->session()->get('status'),
             // Controller-provided quick demo sign-in — the OOTB beam-accounts login-as affordance
@@ -64,34 +75,48 @@ class FortifyServiceProvider extends ServiceProvider
             'demoAccounts' => $this->demoAccounts(),
         ]));
 
-        Fortify::resetPasswordView(fn (Request $request) => Inertia::render('auth/reset-password', [
+        Fortify::resetPasswordView(fn (Request $request) => Inertia::render('auth/entry', [
+            'slug' => 'reset-password',
+            'body' => $entryBody->forSlug('reset-password'),
             'email' => $request->email,
             'token' => $request->route('token'),
             'passwordRules' => Password::defaults()->toPasswordRulesString(),
         ]));
 
-        Fortify::requestPasswordResetLinkView(fn (Request $request) => Inertia::render('auth/forgot-password', [
+        Fortify::requestPasswordResetLinkView(fn (Request $request) => Inertia::render('auth/entry', [
+            'slug' => 'forgot-password',
+            'body' => $entryBody->forSlug('forgot-password'),
             'status' => $request->session()->get('status'),
         ]));
 
         /* @chisel-email-verification */
-        Fortify::verifyEmailView(fn (Request $request) => Inertia::render('auth/verify-email', [
+        Fortify::verifyEmailView(fn (Request $request) => Inertia::render('auth/entry', [
+            'slug' => 'verify-email',
+            'body' => $entryBody->forSlug('verify-email'),
             'status' => $request->session()->get('status'),
         ]));
         /* @end-chisel-email-verification */
 
         /* @chisel-registration */
-        Fortify::registerView(fn () => Inertia::render('auth/register', [
+        Fortify::registerView(fn () => Inertia::render('auth/entry', [
+            'slug' => 'register',
+            'body' => $entryBody->forSlug('register'),
             'passwordRules' => Password::defaults()->toPasswordRulesString(),
         ]));
         /* @end-chisel-registration */
 
         /* @chisel-2fa */
-        Fortify::twoFactorChallengeView(fn () => Inertia::render('auth/two-factor-challenge'));
+        Fortify::twoFactorChallengeView(fn () => Inertia::render('auth/entry', [
+            'slug' => 'two-factor-challenge',
+            'body' => $entryBody->forSlug('two-factor-challenge'),
+        ]));
         /* @end-chisel-2fa */
 
         /* @chisel-password-confirmation */
-        Fortify::confirmPasswordView(fn () => Inertia::render('auth/confirm-password'));
+        Fortify::confirmPasswordView(fn () => Inertia::render('auth/entry', [
+            'slug' => 'confirm-password',
+            'body' => $entryBody->forSlug('confirm-password'),
+        ]));
         /* @end-chisel-password-confirmation */
     }
 

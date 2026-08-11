@@ -11,6 +11,15 @@ use Splicewire\Beam\Ux\Models\Sitemap;
 Route::inertia('/', 'site/home')->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
+    // The beam-ux entry-body transport (beam.ux.entries.body.*) — load/save a page entry's particle
+    // body, the server half `resources/js/editor`'s in-place editor (VisualEditorMount) round-trips
+    // through (theme-entries-and-authoring STR-03: needed so an `author-ux-auth` holder can actually
+    // edit the promoted auth pages' chrome). The macro + controller live in the beam-ux PACKAGE; this
+    // app only mounts it, inside its own auth group — the package's PolicyWriteGate is permissive
+    // (any authed user), the ROUTE's `auth` middleware is the gate, mirroring `rushing/audiostud`'s
+    // identical mount.
+    Route::beamUxEntries();
+
     // The authed home IS the OOTB account realm: <AccountShell> (@splicewire/beam-ux/account). Fortify
     // redirects login here (`config/fortify.php` home => /dashboard).
     Route::inertia('dashboard', 'account/home')->name('dashboard');

@@ -1,4 +1,4 @@
-import { Form, Head } from '@inertiajs/react';
+import { Form, usePage } from '@inertiajs/react';
 import InputError from '@/components/input-error';
 import PasswordInput from '@/components/password-input';
 import TextLink from '@/components/text-link';
@@ -26,11 +26,18 @@ type Props = {
     demoAccounts?: DemoAccount[];
 };
 
-export default function Login({ status, canResetPassword, demoAccounts = [] }: Props) {
+// theme-entries-and-authoring STR-03: a sealed island (editor/registry.tsx), no longer the top-level
+// Inertia page — these are FortifyServiceProvider's per-request props, still flowing exactly as
+// before, read via usePage() instead of received as direct component props.
+export default function Login() {
+    const {
+        status,
+        canResetPassword,
+        demoAccounts = [],
+    } = usePage<Props>().props;
+
     return (
         <>
-            <Head title="Log in" />
-
             {/* @chisel-passkeys */}
             <PasskeyVerify />
             {/* @end-chisel-passkeys */}
@@ -123,29 +130,39 @@ export default function Login({ status, canResetPassword, demoAccounts = [] }: P
 
             {demoAccounts.length > 0 && (
                 <div className="mt-2 flex flex-col gap-3">
-                    <div className="relative text-center text-xs uppercase text-muted-foreground">
-                        <span className="relative z-10 bg-background px-2">Or try a demo account</span>
-                        <span className="absolute inset-x-0 top-1/2 border-t" aria-hidden />
+                    <div className="relative text-center text-xs text-muted-foreground uppercase">
+                        <span className="relative z-10 bg-background px-2">
+                            Or try a demo account
+                        </span>
+                        <span
+                            className="absolute inset-x-0 top-1/2 border-t"
+                            aria-hidden
+                        />
                     </div>
                     <div className="grid gap-2">
                         {demoAccounts.map((account) => (
                             // A signed OOTB login-as link (beam-accounts `account/login-as/{subject}`); a full
                             // GET so the server signs you in and redirects. Guarded server-side by Demo::enabled().
-                            <a key={account.key} href={account.url} className="w-full">
-                                <Button type="button" variant="outline" className="w-full">
+                            <a
+                                key={account.key}
+                                href={account.url}
+                                className="w-full"
+                            >
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    className="w-full"
+                                >
                                     Sign in as {account.label}
                                 </Button>
                             </a>
                         ))}
                     </div>
-                    <p className="text-center text-xs text-muted-foreground">Dev only — hidden in production.</p>
+                    <p className="text-center text-xs text-muted-foreground">
+                        Dev only — hidden in production.
+                    </p>
                 </div>
             )}
         </>
     );
 }
-
-Login.layout = {
-    title: 'Log in to your account',
-    description: 'Enter your email and password below to log in',
-};
