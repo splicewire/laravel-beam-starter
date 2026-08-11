@@ -11,7 +11,6 @@ use Splicewire\Beam\Accounts\Data\AccountShellData;
 use Splicewire\Beam\Entitlements\CanMapBuilder;
 use Splicewire\Beam\Realm\RealmManifestProjector;
 use Splicewire\Beam\Ux\Containment\NavProjector;
-use Splicewire\Beam\Ux\Models\Sitemap;
 use Throwable;
 
 class HandleInertiaRequests extends Middleware
@@ -116,19 +115,21 @@ class HandleInertiaRequests extends Middleware
     }
 
     /**
-     * Project the `site` sitemap into a NavTree, degrading to an empty tree on any failure.
+     * Project the `site` realm's containment tree into a NavTree, degrading to an empty tree on any
+     * failure.
      */
     protected function siteNav(): NavTree
     {
         try {
-            return app(NavProjector::class)->project(Sitemap::forRealm('site'));
+            return app(NavProjector::class)->project('site');
         } catch (Throwable) {
             return NavTree::make([]);
         }
     }
 
     /**
-     * Project the `account` sitemap for a signed-in user only. A guest gets an empty tree.
+     * Project the `account` realm's containment tree for a signed-in user only. A guest gets an empty
+     * tree.
      */
     protected function accountNav(): NavTree
     {
@@ -137,7 +138,7 @@ class HandleInertiaRequests extends Middleware
         }
 
         try {
-            return app(NavProjector::class)->project(Sitemap::forRealm('account'));
+            return app(NavProjector::class)->project('account');
         } catch (Throwable) {
             return NavTree::make([]);
         }

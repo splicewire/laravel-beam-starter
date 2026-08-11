@@ -2,12 +2,17 @@
 
 namespace App\Providers;
 
+use App\Account\StarterAccountShell;
+use App\Beam\RealmRegistry;
 use App\Data\SitemapData;
+use App\Models\User;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
+use Splicewire\Beam\Accounts\Contracts\AccountShellProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,8 +24,8 @@ class AppServiceProvider extends ServiceProvider
         // Bind the host account-shell provider over beam-accounts' NullAccountShellProvider default,
         // so the packaged <AccountShell> renders real (neutral demo) plan/profile data OOTB.
         $this->app->bind(
-            \Splicewire\Beam\Accounts\Contracts\AccountShellProvider::class,
-            \App\Account\StarterAccountShell::class,
+            AccountShellProvider::class,
+            StarterAccountShell::class,
         );
     }
 
@@ -37,6 +42,30 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->configureDefaults();
         $this->registerSharedMigrations();
+        $this->registerAuthoringGates();
+    }
+
+    /**
+     * Register the authoring gates (theme-entries-and-authoring ticket 02, porting
+     * `rushing/audiostud`'s `AppServiceProvider::registerRealmAuthoringGates()`): the flat global
+     * `author-ux` ability (today resolves off `is_staff` — a site admin authors the UX; the internals
+     * become `laravel-beam-accounts`' grant-cascade in a later ticket, not this one) plus one
+     * `author-ux-{realm}` ability per {@see RealmRegistry::realms()} entry.
+     *
+     * **Backward-compatible with `author-ux`.** A holder of the global `author-ux` ability authors
+     * EVERY realm (the per-realm gate returns true when `author-ux` passes) — the SEAM is now in place
+     * to grant realm-scoped authoring (e.g. `author-ux-site` but not `author-ux-auth`) without a reshape.
+     */
+    protected function registerAuthoringGates(): void
+    {
+        Gate::define('author-ux', fn (User $user): bool => (bool) $user->is_staff);
+
+        foreach (RealmRegistry::realms() as $realm) {
+            Gate::define(
+                RealmRegistry::authorAbility($realm),
+                fn (User $user): bool => $user->can('author-ux') || (bool) $user->is_staff,
+            );
+        }
     }
 
     /**
