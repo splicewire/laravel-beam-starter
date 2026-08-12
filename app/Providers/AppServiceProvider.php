@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
+use Rushing\PermissionCascade\Contracts\EntitlementResolver;
 use Splicewire\Beam\Accounts\Contracts\AccountShellProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -47,23 +48,37 @@ class AppServiceProvider extends ServiceProvider
 
     /**
      * Register the authoring gates (theme-entries-and-authoring ticket 02, porting
-     * `rushing/audiostud`'s `AppServiceProvider::registerRealmAuthoringGates()`): the flat global
-     * `author-ux` ability (today resolves off `is_staff` — a site admin authors the UX; the internals
-     * become `laravel-beam-accounts`' grant-cascade in a later ticket, not this one) plus one
-     * `author-ux-{realm}` ability per {@see RealmRegistry::realms()} entry.
+     * `rushing/audiostud`'s `AppServiceProvider::registerRealmAuthoringGates()`, AUD-02's retired
+     * form): the flat global `author-ux` ability resolves through `entitlement:author-ux` — the Gate
+     * `beam`'s `registerEntitlementAbilities()` already registers off `config('app.entitlements')`,
+     * fed by `laravel-beam-accounts`' `DefaultEntitlementResolver` (ACC-01's realm-grant cascade: an
+     * Owner/Admin-held Team's `manage` grant on a realm's root). No `is_staff` — this host never bound
+     * its own resolver, so it already rides the package default; only the Gate SURFACE needed fixing.
      *
-     * **Backward-compatible with `author-ux`.** A holder of the global `author-ux` ability authors
-     * EVERY realm (the per-realm gate returns true when `author-ux` passes) — the SEAM is now in place
-     * to grant realm-scoped authoring (e.g. `author-ux-site` but not `author-ux-auth`) without a reshape.
+     * `author-ux-{realm}` reads the resolver's raw key list directly — there is no
+     * `entitlement:author-ux-{realm}` Gate (beam only registers abilities for the flat keys in
+     * `config('app.entitlements')`, and `author-ux-{realm}` is realm-parameterized, not flat).
+     *
+     * **Deliberately does NOT fall back to `author-ux` for the per-realm check.**
+     * `DefaultEntitlementResolver` composes the coarse `author-ux` key as soon as ANY single realm is
+     * granted (mirroring old blanket-staff semantics for a Team holding EVERY realm's grant) — an
+     * `author-ux-{realm} = author-ux || ...` shortcut would let a grant on just ONE realm leak
+     * authoring into every OTHER realm too, defeating the per-realm grain this Gate exists for. A
+     * grantee of every realm still authors every realm (each `author-ux-{realm}` key composes
+     * independently); a narrowly-granted principal now correctly stays narrow.
      */
     protected function registerAuthoringGates(): void
     {
-        Gate::define('author-ux', fn (User $user): bool => (bool) $user->is_staff);
+        Gate::define('author-ux', fn (User $user): bool => $user->can('entitlement:author-ux'));
 
         foreach (RealmRegistry::realms() as $realm) {
             Gate::define(
                 RealmRegistry::authorAbility($realm),
-                fn (User $user): bool => $user->can('author-ux') || (bool) $user->is_staff,
+                fn (User $user): bool => in_array(
+                    RealmRegistry::authorAbility($realm),
+                    app(EntitlementResolver::class)->entitlementsFor($user),
+                    true,
+                ),
             );
         }
     }

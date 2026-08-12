@@ -62,6 +62,13 @@ class AuthPagesSeeder extends Seeder
 
     public function run(): void
     {
+        // The `auth` realm's canonical root — nothing else in this host provisions it (it has no
+        // nav.yml entry, unlike site/account/operator): without this, `author-ux-auth` (and the
+        // realm-grant cascade generally) can never resolve TRUE for anyone, no matter how broad their
+        // grant, since `DefaultEntitlementResolver` only composes a realm key a grantee holds `manage`
+        // on a REAL root row for.
+        BeamUxEntry::rootFor(RealmRegistry::REALM_AUTH);
+
         foreach (self::PAGES as $slug => [$title, $island, $heading, $description]) {
             $this->seedOne($slug, $title, $island, $heading, $description);
         }
