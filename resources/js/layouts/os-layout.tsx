@@ -1,11 +1,26 @@
-// beam·os — the OS layout. The full floating-window OS DESKTOP is the opt-in `/os` route (pages/os.tsx).
-// This layout is the seam a host wraps its OTHER authed surfaces in when it wants the OS to be the
-// persistent authed chrome (a WordPress-admin-bar-style strip, or the desktop staged on the current
-// route's realm — see audiostud's os-layout for the full pattern). The starter keeps it a pass-through:
-// the OS is reachable ONLY via `/os`, and every other page renders standalone. A host that wants the
-// persistent OS chrome thickens this file (read `can['os.enter']`, wrap `children` in an OS strip/stage).
+// beam·os — the OS layout, thickened per this file's own prior invitation ("a host that wants the
+// persistent OS chrome thickens this file... see audiostud's os-layout for the full pattern").
+//
+// A logged-in user WITH `os.enter` (staff/operator) gets the operator meta-editor overlay on EVERY
+// authed page: the REAL page renders normally underneath (its own chrome, scroll, interaction intact),
+// with a floating operator dock + tool windows ON TOP. A guest / non-`os.enter` principal falls through
+// to the plain standalone page, unchanged. The full floating-window OS DESKTOP stays the separate,
+// opt-in `/os` route (pages/os.tsx) — this is the lighter always-on overlay, not a replacement for it.
+import { usePage } from '@inertiajs/react';
 import type { ReactNode } from 'react';
+import OperatorDesk from '@/os/operator-desk';
+
+const OS_ENTER_KEY = 'os.enter';
 
 export default function OsLayout({ children }: { children: ReactNode }) {
-    return <>{children}</>;
+    const page = usePage<{ can?: Record<string, boolean> }>();
+    const can = (page.props.can as Record<string, boolean> | undefined) ?? {};
+    const entitled = !!can[OS_ENTER_KEY];
+
+    return (
+        <>
+            {children}
+            {entitled && <OperatorDesk />}
+        </>
+    );
 }

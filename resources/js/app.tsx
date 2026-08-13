@@ -6,6 +6,7 @@ import AppLayout from '@/layouts/app-layout';
 import AuthLayout from '@/layouts/auth-layout';
 import BeamAccountLayout from '@/layouts/beam-account-layout';
 import MainframeHost from '@/layouts/beam-ux/mainframe-host';
+import OsLayout from '@/layouts/os-layout';
 import SettingsLayout from '@/layouts/settings/layout';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
@@ -14,26 +15,29 @@ createInertiaApp({
     title: (title) => (title ? `${title} - ${appName}` : appName),
     layout: (name) => {
         switch (true) {
-            // The OS-shell desktop is fully self-chromed (menu bar + dock + windows) — no wrapping layout.
+            // The OS-shell desktop is fully self-chromed (menu bar + dock + windows) — no wrapping layout,
+            // never (re-)wrapped by the persistent OsLayout overlay either (it mounts its OWN operator
+            // chrome — see os/shell-config.tsx).
             case name === 'os':
                 return null;
             // Site-realm pages carry their own <SiteLayout> internally (the OOTB site chrome). Wrapped in
             // MainframeHost so an author (`author-ux`) can edit the page in place; a reader falls through
-            // to the self-chromed page (readMode: 'page' is a no-op swap).
+            // to the self-chromed page (readMode: 'page' is a no-op swap). OsLayout OUTERMOST: an
+            // `os.enter` principal gets the persistent operator dock overlay on top of the real page.
             case name.startsWith('site/'):
-                return MainframeHost;
+                return [OsLayout, MainframeHost];
             // The OPERATOR front-end realm — framed by the promoted <MainframeHost> (beam-mainframe).
             case name.startsWith('operator/'):
-                return MainframeHost;
+                return [OsLayout, MainframeHost];
             // Account-realm pages mount the OOTB <AccountShell> via BeamAccountLayout.
             case name.startsWith('account/'):
-                return BeamAccountLayout;
+                return [OsLayout, BeamAccountLayout];
             case name.startsWith('auth/'):
                 return AuthLayout;
             case name.startsWith('settings/'):
-                return [AppLayout, SettingsLayout];
+                return [OsLayout, AppLayout, SettingsLayout];
             default:
-                return AppLayout;
+                return [OsLayout, AppLayout];
         }
     },
     strictMode: true,
