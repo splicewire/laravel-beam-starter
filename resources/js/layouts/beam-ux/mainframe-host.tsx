@@ -43,6 +43,10 @@ export function useBeamUxEntry() {
  */
 const COMPONENT_TO_ENTRY: Record<string, string> = {
     'site/home': 'home',
+    // /dashboard renders the `account/home` component, but the seeded entry (DatabaseSeeder's
+    // splicewire:beam:ux:seed-nav) is named `dashboard` (the route's own name) - the slash-swap
+    // fallback would look for a nonexistent `account-home` entry instead.
+    'account/home': 'dashboard',
 };
 
 // No on-page ribbon by default — authoring is driven from the operator/OS chrome. `() => null` keeps the

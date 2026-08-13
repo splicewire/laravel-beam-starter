@@ -29,15 +29,18 @@ createInertiaApp({
             // The OPERATOR front-end realm — framed by the promoted <MainframeHost> (beam-mainframe).
             case name.startsWith('operator/'):
                 return [OsLayout, MainframeHost];
-            // Account-realm pages mount the OOTB <AccountShell> via BeamAccountLayout.
+            // Account-realm pages mount the OOTB <AccountShell> via BeamAccountLayout, MainframeHost
+            // INNERMOST (wraps just the page content, inside the AccountShell chrome) so every account
+            // page is editable too — matches rushing/audiostud's own layout switch, which includes
+            // MainframeHost in every case but the null `/os` one.
             case name.startsWith('account/'):
-                return [OsLayout, BeamAccountLayout];
+                return [OsLayout, BeamAccountLayout, MainframeHost];
             case name.startsWith('auth/'):
                 return AuthLayout;
             case name.startsWith('settings/'):
-                return [OsLayout, AppLayout, SettingsLayout];
+                return [OsLayout, AppLayout, SettingsLayout, MainframeHost];
             default:
-                return [OsLayout, AppLayout];
+                return [OsLayout, AppLayout, MainframeHost];
         }
     },
     strictMode: true,

@@ -77,6 +77,8 @@ const OP_DESK_CSS = `
 .op-menu .head{padding:8px 10px 6px;color:#94a3b8;font-family:ui-monospace,monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase}
 .op-menu button,.op-menu a{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:9px 11px;border-radius:9px;border:none;background:none;color:#e2e8f0;cursor:pointer;font:inherit;font-size:13px;text-decoration:none}
 .op-menu button:hover,.op-menu a:hover{background:rgba(255,255,255,.07);color:#fff}
+.op-menu button:disabled{opacity:.4;cursor:default}
+.op-menu button:disabled:hover{background:none;color:#e2e8f0}
 .op-menu button.active{color:#fff;background:rgba(15,23,42,.4)}
 .op-menu .glyph{width:10px;height:10px;border-radius:30%;flex:none}
 .op-menu .ico{width:16px;text-align:center;flex:none;opacity:.85}
@@ -109,7 +111,11 @@ function StartMenu({
                 <button
                     type="button"
                     className={editing ? 'active' : undefined}
+                    disabled={!editing && !pageEditable}
                     onClick={() => {
+                        if (!editing && !pageEditable) {
+                            return;
+                        }
                         onClose();
                         onEditToggle();
                     }}
@@ -137,9 +143,6 @@ function StartMenu({
                     </button>
                 ))}
                 <div className="op-div" />
-                <a href="/os">
-                    <span className="ico">▦</span> OS Desktop
-                </a>
                 {inOperator ? (
                     <a href="/">
                         <span className="ico">◱</span> Front-end

@@ -89,7 +89,7 @@ importers:
         version: file:../../../js/packages/beam/beam-mainframe(@preact/signals-core@1.14.4)(@rjsf/core@6.7.1(@rjsf/utils@6.7.1(react@19.2.8))(react@19.2.8))(@rjsf/shadcn@6.7.1(@rjsf/core@6.7.1(@rjsf/utils@6.7.1(react@19.2.8))(react@19.2.8))(@rjsf/utils@6.7.1(react@19.2.8))(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tailwindcss@4.3.3))(@rjsf/utils@6.7.1(react@19.2.8))(@rjsf/validator-ajv8@6.7.1(@rjsf/utils@6.7.1(react@19.2.8)))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@splicewire/beam-ux':
         specifier: file:../../../js/packages/beam/beam-ux
-        version: file:../../../js/packages/beam/beam-ux(hyww5osebwphtyppvmryvm7hx4)
+        version: file:../../../js/packages/beam/beam-ux(7vfs6kpzjt75qe3ebzioon6in4)
       '@tailwindcss/vite':
         specifier: ^4.1.11
         version: 4.3.3(vite@8.2.1(@types/node@22.20.1)(jiti@2.7.0))
@@ -1193,7 +1193,6 @@ packages:
     resolution: {directory: ../../../js/packages/beam/beam-ux, type: directory}
     hasBin: true
     peerDependencies:
-      '@measured/puck': '>=0.20'
       '@schemastud/chat': file:/Users/stephen/Workspaces/js/packages/schemastud/chat
       '@schemastud/frame': file:/Users/stephen/Workspaces/js/packages/schemastud/frame
       '@schemastud/mainframe': file:/Users/stephen/Workspaces/js/packages/schemastud/mainframe
@@ -1203,8 +1202,6 @@ packages:
       lucide-react: '>=0.400.0'
       react: '>=18'
     peerDependenciesMeta:
-      '@measured/puck':
-        optional: true
       '@schemastud/chat':
         optional: true
       '@schemastud/frame':
@@ -4299,7 +4296,7 @@ snapshots:
       - preact
       - react-dom
 
-  '@splicewire/beam-ux@file:../../../js/packages/beam/beam-ux(hyww5osebwphtyppvmryvm7hx4)':
+  '@splicewire/beam-ux@file:../../../js/packages/beam/beam-ux(7vfs6kpzjt75qe3ebzioon6in4)':
     dependencies:
       '@babel/parser': 7.29.8
       '@babel/types': 7.29.8
@@ -4311,7 +4308,6 @@ snapshots:
       react: 19.2.8
       recast: 0.23.19
     optionalDependencies:
-      '@measured/puck': 0.20.2(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@schemastud/mainframe': file:../../../js/packages/schemastud/mainframe(@preact/signals-core@1.14.4)(@rjsf/core@6.7.1(@rjsf/utils@6.7.1(react@19.2.8))(react@19.2.8))(@rjsf/shadcn@6.7.1(@rjsf/core@6.7.1(@rjsf/utils@6.7.1(react@19.2.8))(react@19.2.8))(@rjsf/utils@6.7.1(react@19.2.8))(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tailwindcss@4.3.3))(@rjsf/utils@6.7.1(react@19.2.8))(@rjsf/validator-ajv8@6.7.1(@rjsf/utils@6.7.1(react@19.2.8)))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
 
   '@stylistic/eslint-plugin@5.10.0(eslint@9.39.5(jiti@2.7.0))':
