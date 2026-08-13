@@ -26,7 +26,7 @@ return new class extends Migration
 
         if (! Schema::hasColumn($table, 'invited_by')) {
             Schema::table($table, function (Blueprint $t): void {
-                $t->unsignedBigInteger('invited_by')->nullable();
+                $t->uuid('invited_by')->nullable();
             });
         }
 

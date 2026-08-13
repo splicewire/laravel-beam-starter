@@ -45,7 +45,7 @@ return new class extends Migration
         // Fresh install: neither name present in this schema — create the target directly.
         Schema::create($this->target(), function (Blueprint $table): void {
             $table->id();
-            $table->unsignedBigInteger('user_id')->index();
+            $table->uuid('user_id')->index();
             $table->string('name');
             $table->boolean('personal_team')->default(false)->index();
             $table->timestamps();

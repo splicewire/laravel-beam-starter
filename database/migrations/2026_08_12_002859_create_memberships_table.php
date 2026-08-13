@@ -45,7 +45,7 @@ return new class extends Migration
         Schema::create($this->target(), function (Blueprint $table): void {
             $table->id();
             $table->foreignId('team_id')->constrained(Beam::table('teams'))->cascadeOnDelete();
-            $table->unsignedBigInteger('user_id');
+            $table->uuid('user_id');
             $table->string('role')->default('member');
             $table->timestamps();
 
