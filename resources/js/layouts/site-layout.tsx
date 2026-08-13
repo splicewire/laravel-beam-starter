@@ -3,6 +3,7 @@ import { SiteLayout as BeamSiteLayout } from '@splicewire/beam-ux/site';
 import type { ReactNode } from 'react';
 import AppLogoIcon from '@/components/app-logo-icon';
 import SiteNav from '@/components/site-nav';
+import { dashboard, logout } from '@/routes';
 
 /**
  * The public-site chrome (header + footer) for the starter, in a NEUTRAL theme. The STRUCTURE comes
@@ -71,29 +72,64 @@ const brand = (
     </Link>
 );
 
+// This site's ONE chrome renders for guests AND signed-in principals alike (SiteLayout has no separate
+// authed variant) - the guest "Sign in"/"Dashboard" pair below must reflect real auth state, not a fixed
+// guest assumption. `AuthNavLinks` is the one piece of the header that reads `usePage()`.
+function AuthNavLinks() {
+    const page = usePage<{ auth: { user: { name: string } | null }; can?: Record<string, boolean> }>();
+    const { auth, can } = page.props;
+
+    if (!auth.user) {
+        return (
+            <>
+                <a className="navlink" href="/login">
+                    Sign in
+                </a>
+                <a className="btn-primary" href="/dashboard">
+                    Dashboard
+                </a>
+            </>
+        );
+    }
+
+    return (
+        <>
+            {can?.['app:operator'] && (
+                <a className="navlink" href="/operator">
+                    Operator
+                </a>
+            )}
+            <Link className="navlink" href={dashboard()}>
+                Dashboard
+            </Link>
+            <Link className="navlink" href={logout()} as="button">
+                Log out
+            </Link>
+        </>
+    );
+}
+
 const nav = (
     <div style={{ display: 'flex', alignItems: 'center', gap: 22, marginLeft: 'auto', flexWrap: 'wrap' }}>
         <SiteNav />
-        <a className="navlink" href="/login">
-            Sign in
-        </a>
-        <a className="btn-primary" href="/dashboard">
-            Dashboard
-        </a>
+        <AuthNavLinks />
     </div>
 );
 
 export default function SiteLayout({ children }: { children: ReactNode }) {
+    const page = usePage<{ auth: { user: unknown } }>();
+    const footerLinks = [
+        { title: 'Home', href: '/' },
+        { title: 'About', href: '/about' },
+        page.props.auth.user ? { title: 'Dashboard', href: '/dashboard' } : { title: 'Sign in', href: '/login' },
+    ];
+
     return (
         <BeamSiteLayout
             linkComponent={Link}
             brand={brand}
             nav={nav}
-            footerLinks={[
-                { title: 'Home', href: '/' },
-                { title: 'About', href: '/about' },
-                { title: 'Sign in', href: '/login' },
-            ]}
+            footerLinks={footerLinks}
             head={
                 <>
                     <Head title="Beam Starter" />

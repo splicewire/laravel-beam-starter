@@ -4,7 +4,7 @@ use App\Http\Controllers\SitemapResourceController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use Splicewire\Beam\Ux\Models\Sitemap;
+use Splicewire\Beam\Ux\Models\BeamUxEntry;
 
 // The FRONT DOOR is the OOTB site realm: `/` renders the promoted <SiteLayout> chrome (public) AND —
 // behind the author-ux seam — mounts the in-place visual editor (@/editor). (frontend-surfaces wiring.)
@@ -37,8 +37,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         'staff' => fn () => ['name' => request()->user()->name, 'email' => request()->user()->email],
         'stats' => fn () => [
             'users' => User::count(),
-            'sitemaps' => Sitemap::count(),
-            'entries' => rescue(fn () => Sitemap::query()->withCount('entries')->get()->sum('entries_count'), 0, false),
+            // Sitemap was retired (theme-entries-and-authoring BUX-03) - BeamUxEntry's own namespace='realms'
+            // rows are the realm-root replacement; "entries" is every entry (root or not) in that stack.
+            'sitemaps' => BeamUxEntry::where('namespace', 'realms')->count(),
+            'entries' => rescue(fn () => BeamUxEntry::count(), 0, false),
         ],
     ]))->middleware('can:entitlement:app-operator')->name('operator.home');
 
