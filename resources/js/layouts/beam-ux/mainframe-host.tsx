@@ -49,6 +49,20 @@ const COMPONENT_TO_ENTRY: Record<string, string> = {
     'account/home': 'dashboard',
 };
 
+// Components that embed `PageEditor` (`@splicewire/beam-ux/canvas`) directly and already listen to
+// the SAME `beam-ux:mode`/`edit`/`exit` broadcast this factory uses, swapping their OWN internal
+// canvas in place - `site/home.tsx` is the one page here that does. Overlaying the generic
+// renderEditor/renderInspector on TOP of one of these double-mounts a second, competing editor
+// instance for the same slug; since it loads independently and can render blank/stale before the
+// real (working) PageEditor underneath, the visible symptom is "the editor works, then goes blank".
+// Read via a plain module variable (not a prop threaded through renderEditor/renderInspector,
+// which only ever receive `{slug}`) set during `usePageContext`'s own render, same bridge pattern
+// rushing/audiostud's `os/authoring-context.ts` already uses for an equivalent cross-cutting need -
+// calling `usePage()` again inside renderEditor/renderInspector themselves would violate the rules
+// of hooks (they're plain functions, not components).
+const SELF_MANAGED_COMPONENTS = new Set(['site/home']);
+let currentComponent = '';
+
 // No on-page ribbon by default — authoring is driven from the operator/OS chrome. `() => null` keeps the
 // browsing AND editing surfaces free of beam-ux frame chrome; the editor itself is the only author surface.
 const ribbon: RibbonRender = () => null;
@@ -72,6 +86,7 @@ export default createMainframeHost({
     readMode: 'page',
     usePageContext: () => {
         const page = usePage<{ auth: { canAuthorUx?: boolean }; slug?: string }>();
+        currentComponent = page.component;
 
         return {
             component: page.component,
@@ -81,17 +96,19 @@ export default createMainframeHost({
     },
     loadEntryBody,
     ribbon,
-    renderEditor: ({ slug }: { slug: string }) => (
-        <Suspense fallback={<div className="p-6 text-sm text-slate-500">Loading editor…</div>}>
-            <VisualEditorMount slug={slug} />
-        </Suspense>
-    ),
+    renderEditor: ({ slug }: { slug: string }) =>
+        SELF_MANAGED_COMPONENTS.has(currentComponent) ? null : (
+            <Suspense fallback={<div className="p-6 text-sm text-slate-500">Loading editor…</div>}>
+                <VisualEditorMount slug={slug} />
+            </Suspense>
+        ),
     // readMode: 'page' means the read fork renders the real page, never this — so it's a no-op. Kept only
     // to satisfy the factory's renderer contract.
     renderRead: () => null,
-    renderInspector: ({ slug }: { slug: string }) => (
-        <Suspense fallback={null}>
-            <VisualEditorMount slug={slug} />
-        </Suspense>
-    ),
+    renderInspector: ({ slug }: { slug: string }) =>
+        SELF_MANAGED_COMPONENTS.has(currentComponent) ? null : (
+            <Suspense fallback={null}>
+                <VisualEditorMount slug={slug} />
+            </Suspense>
+        ),
 });
