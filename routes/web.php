@@ -7,13 +7,13 @@ use Inertia\Inertia;
 use Splicewire\Beam\Ux\Models\BeamUxEntry;
 
 // The FRONT DOOR is the OOTB site realm: `/` renders the promoted <SiteLayout> chrome (public) AND —
-// behind the author-ux seam — mounts the in-place visual editor (@/editor). (frontend-surfaces wiring.)
+// behind the ux.author seam — mounts the in-place visual editor (@/editor). (frontend-surfaces wiring.)
 Route::inertia('/', 'site/home')->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     // The beam-ux entry-body transport (beam.ux.entries.body.*) — load/save a page entry's particle
     // body, the server half `resources/js/editor`'s in-place editor (VisualEditorMount) round-trips
-    // through (theme-entries-and-authoring STR-03: needed so an `author-ux-auth` holder can actually
+    // through (theme-entries-and-authoring STR-03: needed so an `ux.auth.author` holder can actually
     // edit the promoted auth pages' chrome). The macro + controller live in the beam-ux PACKAGE; this
     // app only mounts it, inside its own auth group — the package's PolicyWriteGate is permissive
     // (any authed user), the ROUTE's `auth` middleware is the gate, mirroring `rushing/audiostud`'s
@@ -31,7 +31,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // The OPERATOR front-end realm (frontend-surfaces.md). A thin stats roll-up landing framed by the
     // promoted @splicewire/beam-mainframe host; resource lists ride Frame's generic particle CRUD socket.
-    // Gated on the `app-operator` entitlement: the DefaultEntitlementResolver (laravel-beam-accounts) grants
+    // Gated on the `os.operate` entitlement: the DefaultEntitlementResolver (laravel-beam-accounts) grants
     // it to a staff principal (`is_staff`), so the seeded staff user reaches it and a non-staff user is 403'd.
     Route::get('operator', fn () => Inertia::render('operator/dashboard', [
         'staff' => fn () => ['name' => request()->user()->name, 'email' => request()->user()->email],
@@ -42,7 +42,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             'sitemaps' => BeamUxEntry::where('namespace', 'realms')->count(),
             'entries' => rescue(fn () => BeamUxEntry::count(), 0, false),
         ],
-    ]))->middleware('can:entitlement:app-operator')->name('operator.home');
+    ]))->middleware('can:entitlement:os.operate')->name('operator.home');
 
     // The OS-SHELL desktop (frontend-surfaces.md). The windowed realm composer. Route-gated on the
     // projected `os.enter` entitlement (`can:entitlement:os.enter`); the shell itself does the fusion pivot

@@ -14,7 +14,7 @@ import { bodyClient } from '@/editor/transport';
  * Two modes (child-swap-under-a-stable-host):
  *   - `domain` (read) — the page renders as the Mainframe `main` payload. `readMode: 'page'` means the
  *     real Inertia page renders unchanged (it carries its own chrome), so read mode is a no-op swap.
- *   - `window` (author WYSIWYG) — for a signed-in author (`author-ux`), `main` swaps to the in-place
+ *   - `window` (author WYSIWYG) — for a signed-in author (`ux.author`), `main` swaps to the in-place
  *     visual editor (@/editor).
  */
 

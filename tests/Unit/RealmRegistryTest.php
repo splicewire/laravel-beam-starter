@@ -26,7 +26,7 @@ class RealmRegistryTest extends TestCase
 
     public function test_author_ability_naming_is_unaffected_by_the_retirement(): void
     {
-        $this->assertSame('author-ux-auth', RealmRegistry::authorAbility('auth'));
-        $this->assertSame('author-ux-operator', RealmRegistry::authorAbility('operator'));
+        $this->assertSame('ux.auth.author', RealmRegistry::authorAbility('auth'));
+        $this->assertSame('ux.operator.author', RealmRegistry::authorAbility('operator'));
     }
 }

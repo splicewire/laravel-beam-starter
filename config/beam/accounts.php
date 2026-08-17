@@ -37,7 +37,7 @@ return [
     // sync with config/app.php `entitlements` and config/beam/core.php `realm_gates`.
     'entitlements' => [
         'bundles' => [
-            'staff' => ['author-ux', 'os.enter', 'app-operator'],
+            'staff' => ['ux.author', 'os.enter', 'os.operate'],
         ],
         'default_staff_bundle' => 'staff',
         'staff_roles' => ['staff', 'operator'],

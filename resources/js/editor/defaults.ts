@@ -91,7 +91,7 @@ export const DEFAULT_TREES: Record<string, JsonDoc> = {
 
     // theme-entries-and-authoring STR-03: the 7 promoted auth pages — a heading + description (ordinary
     // editable text blocks, matching AuthPagesSeeder's DB-seeded shape exactly) followed by the sealed
-    // island (the real Fortify-bound form). An author holding `author-ux-auth` can retext/reorder/add
+    // island (the real Fortify-bound form). An author holding `ux.auth.author` can retext/reorder/add
     // content around the island via the visual editor; the form itself is never decomposed.
     // `two-factor-challenge` carries no heading/description — its title toggles on local session state
     // (authentication-code ⇄ recovery-code), not editorial copy; its own island sets it directly.

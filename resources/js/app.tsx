@@ -21,7 +21,7 @@ createInertiaApp({
             case name === 'os':
                 return null;
             // Site-realm pages carry their own <SiteLayout> internally (the OOTB site chrome). Wrapped in
-            // MainframeHost so an author (`author-ux`) can edit the page in place; a reader falls through
+            // MainframeHost so an author (`ux.author`) can edit the page in place; a reader falls through
             // to the self-chromed page (readMode: 'page' is a no-op swap). OsLayout OUTERMOST: an
             // `os.enter` principal gets the persistent operator dock overlay on top of the real page.
             case name.startsWith('site/'):

@@ -137,9 +137,9 @@ return [
     */
 
     'entitlements' => [
-        'author-ux' => [],
+        'ux.author' => [],
         'os.enter' => [],
-        'app-operator' => [],
+        'os.operate' => [],
     ],
 
 ];

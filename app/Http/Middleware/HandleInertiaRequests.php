@@ -50,7 +50,7 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
                 // Drives the in-place authoring chrome gate (only a site admin sees the edit UI).
-                'canAuthorUx' => $request->user()?->can('author-ux') ?? false,
+                'canAuthorUx' => $request->user()?->can('ux.author') ?? false,
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
             // Data-driven SITE nav — the `site` sitemap projected via beam-ux's NavProjector. Consumed

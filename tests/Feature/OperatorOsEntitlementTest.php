@@ -42,12 +42,12 @@ class OperatorOsEntitlementTest extends TestCase
         // The OS-shell page is a built Vite entry — a granted principal passes the `os.enter` gate and renders.
         $this->actingAs($staff)->get(route('os.shell'))->assertOk();
 
-        // The grantee passes the `app-operator` gate — a passing gate is what this test asserts, so the
+        // The grantee passes the `os.operate` gate — a passing gate is what this test asserts, so the
         // response is NOT the 403 an ungranted user gets. (The operator Inertia page is not yet a static
         // Vite build input in the starter, a pre-existing bundler gap downstream of and orthogonal to the
         // gate, so a full render may 500 on the manifest lookup — either way the gate let it through.)
         $status = $this->actingAs($staff)->get(route('operator.home'))->baseResponse->getStatusCode();
-        $this->assertNotSame(403, $status, 'a granted principal should pass the app-operator gate');
+        $this->assertNotSame(403, $status, 'a granted principal should pass the os.operate gate');
     }
 
     public function test_a_non_staff_user_is_forbidden_from_operator_and_os(): void
@@ -68,7 +68,7 @@ class OperatorOsEntitlementTest extends TestCase
         $staffCan = app(CanMapBuilder::class)->withFeatureKeys(['os.enter'])->forPrincipal($staff);
         $demoCan = app(CanMapBuilder::class)->withFeatureKeys(['os.enter'])->forPrincipal($demo);
 
-        foreach (['app-operator', 'os.enter', 'author-ux'] as $key) {
+        foreach (['os.operate', 'os.enter', 'ux.author'] as $key) {
             $this->assertTrue($staffCan[$key] ?? false, "a granted principal should hold {$key}");
             $this->assertFalse($demoCan[$key] ?? false, "an ungranted principal should not hold {$key}");
         }

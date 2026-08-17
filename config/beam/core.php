@@ -124,13 +124,13 @@ return [
     |    `upsell` metadata, so a launcher can render it as lockable.
     |
     | Example:
-    |   'operator' => ['entitlement' => 'app-operator', 'mode' => 'hard'],
+    |   'operator' => ['entitlement' => 'os.operate', 'mode' => 'hard'],
     |   'studio' => ['entitlement' => 'go-songwriter', 'mode' => 'soft',
     |               'upsell' => ['title' => 'Go Songwriter', 'cta' => 'Upgrade']],
     */
     'realm_gates' => [
         // Hard-gate the operator realm: an unentitled principal never sees it in the projected manifest.
-        'operator' => ['entitlement' => 'app-operator', 'mode' => 'hard'],
+        'operator' => ['entitlement' => 'os.operate', 'mode' => 'hard'],
         // Hard-gate the OS-shell realm on `os.enter` (a non-staff user's manifest omits it entirely).
         'os' => ['entitlement' => 'os.enter', 'mode' => 'hard'],
     ],

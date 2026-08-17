@@ -14,12 +14,12 @@ use Splicewire\Beam\Ux\Models\BeamUxEntry;
 use Tests\TestCase;
 
 /**
- * Ticket 02 (theme-entries-and-authoring): the `author-ux-{realm}` per-realm authoring gates, ported
+ * Ticket 02 (theme-entries-and-authoring): the `ux.{realm}.author` per-realm authoring gates, ported
  * from `rushing/audiostud`'s `AppServiceProvider::registerRealmAuthoringGates()`. Proves the same shape:
  * a per-realm ability for every {@see RealmRegistry::realms()} entry, backward-compatible with the flat
- * `author-ux` ability (a global holder authors every realm).
+ * `ux.author` ability (a global holder authors every realm).
  *
- * theme-entries-and-authoring: `author-ux`/`author-ux-{realm}` resolve through the realm-grant cascade
+ * theme-entries-and-authoring: `ux.author`/`ux.{realm}.author` resolve through the realm-grant cascade
  * (an Owner/Admin of a Team holding `manage` on a realm's root entry, {@see grantRealmReach()}) — no
  * more `is_staff` boolean anywhere in this repo's Gate surface.
  */
@@ -56,18 +56,18 @@ class RealmAuthoringGatesTest extends TestCase
         $this->grantRealmReach($staff, RealmRegistry::realms());
         $staff = $staff->fresh();
 
-        $this->assertTrue($staff->can('author-ux'));
-        $this->assertTrue($staff->can('author-ux-site'));
-        $this->assertTrue($staff->can('author-ux-account'));
-        $this->assertTrue($staff->can('author-ux-auth'));
-        $this->assertTrue($staff->can('author-ux-operator'));
+        $this->assertTrue($staff->can('ux.author'));
+        $this->assertTrue($staff->can('ux.site.author'));
+        $this->assertTrue($staff->can('ux.account.author'));
+        $this->assertTrue($staff->can('ux.auth.author'));
+        $this->assertTrue($staff->can('ux.operator.author'));
     }
 
     public function test_a_non_staff_user_is_denied_every_realm_authoring_ability(): void
     {
         $user = User::factory()->create();
 
-        $this->assertFalse($user->can('author-ux'));
+        $this->assertFalse($user->can('ux.author'));
 
         foreach (RealmRegistry::realms() as $realm) {
             $this->assertFalse($user->can(RealmRegistry::authorAbility($realm)));

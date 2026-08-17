@@ -8,7 +8,7 @@ import PageEditor from '@/editor/page-editor';
  * `BeamUxEntry` the tree/body belongs to). The real Fortify-bound form (`Login`/`Register`/etc,
  * unchanged, still at `pages/auth/{slug}.tsx`) is a SEALED island inside the tree
  * (`editor/registry.tsx`) — position/delete-only in the visual editor, never decomposed. Everything
- * else in the tree is ordinary composable content an author holding `author-ux-auth` can edit.
+ * else in the tree is ordinary composable content an author holding `ux.auth.author` can edit.
  *
  * `name.startsWith('auth/')` still matches this page's name (`auth/entry`), so `app.tsx`'s layout
  * resolver still wraps it in the existing `<AuthLayout>` automatically — no new layout-selection case

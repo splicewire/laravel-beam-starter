@@ -8,7 +8,7 @@ use Splicewire\Beam\Ux\Models\BeamUxEntry;
  * The starter's realm registry (mirrors audiostud's beam Model-B ticket 14). A realm is a URL/nav/
  * permission grouping of beam-ux entries (`site`, `account`, `operator`, `auth`, …).
  *
- * `authorAbility($realm)` — the per-realm authoring ability name (`author-ux-{realm}`) gating who may
+ * `authorAbility($realm)` — the per-realm authoring ability name (`ux.{realm}.author`) gating who may
  * edit that realm's entries.
  *
  * **`composable` is retired (theme-entries-and-authoring ticket 04)** — fully subsumed by ADR-0016's
@@ -29,10 +29,10 @@ class RealmRegistry
     /** The staff back-office realm. */
     public const REALM_OPERATOR = 'operator';
 
-    /** The per-realm authoring ability name — `author-ux-{realm}`. */
+    /** The per-realm authoring ability name — `ux.{realm}.author`. */
     public static function authorAbility(string $realm): string
     {
-        return "author-ux-{$realm}";
+        return "ux.{$realm}.author";
     }
 
     /**
