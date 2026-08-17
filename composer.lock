@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "af995a4bdddab3f0f92ca9010b891514",
+    "content-hash": "f8f9e04c5c63aa23fbd332b81812adf6",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -1409,50 +1409,6 @@
                 "source": "https://github.com/inertiajs/inertia-laravel/tree/v3.1.1"
             },
             "time": "2026-07-02T12:45:54+00:00"
-        },
-        {
-            "name": "jetbrains/phpstorm-stubs",
-            "version": "v2026.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/JetBrains/phpstorm-stubs",
-                "reference": "2cdd054c4109dfb76667c9198bf9427606354243"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/JetBrains/phpstorm-stubs/zipball/2cdd054c4109dfb76667c9198bf9427606354243",
-                "reference": "2cdd054c4109dfb76667c9198bf9427606354243",
-                "shasum": ""
-            },
-            "require-dev": {
-                "friendsofphp/php-cs-fixer": "^v3.86",
-                "nikic/php-parser": "^v5.6",
-                "phpdocumentor/reflection-docblock": "^5.6",
-                "phpunit/phpunit": "^12.3"
-            },
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "PhpStormStubsMap.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "Apache-2.0"
-            ],
-            "description": "PHP runtime & extensions header files for PhpStorm",
-            "homepage": "https://www.jetbrains.com/phpstorm",
-            "keywords": [
-                "autocomplete",
-                "code",
-                "inference",
-                "inspection",
-                "jetbrains",
-                "phpstorm",
-                "stubs",
-                "type"
-            ],
-            "time": "2026-02-19T20:12:01+00:00"
         },
         {
             "name": "laravel/chisel",
@@ -4563,73 +4519,70 @@
             "time": "2026-06-18T03:57:49+00:00"
         },
         {
-            "name": "roave/better-reflection",
-            "version": "6.71.0",
+            "name": "rushing/laravel-doctor",
+            "version": "dev-main",
             "source": {
                 "type": "git",
-                "url": "https://github.com/Roave/BetterReflection.git",
-                "reference": "3ec176d4a161b4e8764edc625d69ff624ca390b1"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Roave/BetterReflection/zipball/3ec176d4a161b4e8764edc625d69ff624ca390b1",
-                "reference": "3ec176d4a161b4e8764edc625d69ff624ca390b1",
-                "shasum": ""
+                "url": "https://github.com/stephenr85/laravel-doctor.git",
+                "reference": "b58ac75089b2830087c044a3063cf5623f698779"
             },
             "require": {
-                "ext-json": "*",
-                "jetbrains/phpstorm-stubs": "2026.1",
-                "nikic/php-parser": "^5.7.0",
-                "php": "~8.4.1 || ~8.5.0"
-            },
-            "conflict": {
-                "thecodingmachine/safe": "<1.1.3"
+                "illuminate/support": "^11.0|^12.0|^13.0",
+                "php": "^8.2"
             },
             "require-dev": {
-                "phpbench/phpbench": "^1.6.1",
-                "phpunit/phpunit": "^13.1.8"
+                "laravel/pint": "^1.0",
+                "orchestra/testbench": "^9.0|^10.0|^11.0",
+                "pestphp/pest": "^2.0|^3.0"
             },
-            "suggest": {
-                "composer/composer": "Required to use the ComposerSourceLocator"
-            },
+            "default-branch": true,
             "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Roave\\BetterReflection\\": "src"
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "1.0.x-dev"
+                },
+                "laravel": {
+                    "providers": [
+                        "Rushing\\Doctor\\ServiceProvider"
+                    ]
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "autoload": {
+                "psr-4": {
+                    "Rushing\\Doctor\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Rushing\\Doctor\\Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "vendor/bin/pest"
+                ],
+                "pint": [
+                    "@php -d memory_limit=512M vendor/bin/pint"
+                ]
+            },
             "license": [
-                "MIT"
+                "proprietary"
             ],
             "authors": [
                 {
-                    "name": "James Titcumb",
-                    "email": "james@asgrim.com",
-                    "homepage": "https://github.com/asgrim"
-                },
-                {
-                    "name": "Marco Pivetta",
-                    "email": "ocramius@gmail.com",
-                    "homepage": "https://ocramius.github.io/"
-                },
-                {
-                    "name": "Gary Hockin",
-                    "email": "gary@roave.com",
-                    "homepage": "https://github.com/geeh"
-                },
-                {
-                    "name": "Jaroslav Hanslík",
-                    "email": "kukulich@kukulich.cz",
-                    "homepage": "https://github.com/kukulich"
+                    "name": "Stephen Rushing",
+                    "email": "stephenr85@gmail.com"
                 }
             ],
-            "description": "Better Reflection - an improved code reflection API",
-            "support": {
-                "issues": "https://github.com/Roave/BetterReflection/issues",
-                "source": "https://github.com/Roave/BetterReflection/tree/6.71.0"
-            },
-            "time": "2026-05-02T10:56:00+00:00"
+            "description": "Moat-free doctor-audit primitives: the Finding value object and the Pass/Warn/Fail DoctorStatus vocabulary that every readiness doctor (foundation Beam and the paid satellite) reports in. Foundation-vendor, zero product dependency (ADR-0095).",
+            "keywords": [
+                "audit",
+                "doctor",
+                "laravel",
+                "readiness",
+                "schemastud"
+            ],
+            "time": "2026-08-13T20:00:39+00:00"
         },
         {
             "name": "rushing/laravel-popcorn",
@@ -4637,12 +4590,14 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/stephenr85/laravel-popcorn.git",
-                "reference": "8e84fbb6aabdbcadee53ba95176bd67071d55e24"
+                "reference": "c5b5c227f7d525cdf5e91ff6df697bbf48690848"
             },
             "require": {
                 "illuminate/contracts": "^11.0|^12.0|^13.0",
                 "illuminate/support": "^11.0|^12.0|^13.0",
-                "php": "^8.3"
+                "php": "^8.3",
+                "rushing/php-popcorn": "dev-main",
+                "symfony/finder": "^6.0|^7.0|^8.0"
             },
             "require-dev": {
                 "laravel/pint": "^1.0",
@@ -4654,13 +4609,13 @@
             "extra": {
                 "laravel": {
                     "providers": [
-                        "Rushing\\Popcorn\\PopcornServiceProvider"
+                        "Rushing\\Popcorn\\Laravel\\PopcornServiceProvider"
                     ]
                 }
             },
             "autoload": {
                 "psr-4": {
-                    "Rushing\\Popcorn\\": "src/"
+                    "Rushing\\Popcorn\\Laravel\\": "src/"
                 }
             },
             "autoload-dev": {
@@ -4671,6 +4626,9 @@
             "scripts": {
                 "pint": [
                     "@php -d memory_limit=512M vendor/bin/pint"
+                ],
+                "test": [
+                    "@php vendor/bin/pest"
                 ]
             },
             "license": [
@@ -4691,7 +4649,69 @@
                 "registry",
                 "strategy"
             ],
-            "time": "2026-07-17T04:30:57+00:00"
+            "time": "2026-08-10T23:06:35+00:00"
+        },
+        {
+            "name": "rushing/php-popcorn",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/stephenr85/php-popcorn.git",
+                "reference": "6900c7e4e2b0276a0328ef671883fcc3e2ca19dd"
+            },
+            "require": {
+                "php": "^8.3",
+                "symfony/finder": "^6.0|^7.0|^8.0"
+            },
+            "require-dev": {
+                "laravel/pint": "^1.0",
+                "pestphp/pest": "^3.0"
+            },
+            "default-branch": true,
+            "type": "library",
+            "extra": {
+                "package-topology": {
+                    "mustNotRequire": [
+                        "illuminate/*"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Rushing\\Popcorn\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Rushing\\Popcorn\\Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "pint": [
+                    "@php -d memory_limit=512M vendor/bin/pint"
+                ],
+                "test": [
+                    "@php vendor/bin/pest"
+                ]
+            },
+            "license": [
+                "proprietary"
+            ],
+            "authors": [
+                {
+                    "name": "Stephen Rushing",
+                    "email": "stephenr85@gmail.com"
+                }
+            ],
+            "description": "Framework-free core for transport-agnostic invocable capabilities and self-validating strategy ladders — the invocable kernel behind rushing/laravel-popcorn.",
+            "keywords": [
+                "binding",
+                "capability",
+                "invocable",
+                "registry",
+                "strategy"
+            ],
+            "time": "2026-08-10T02:27:43+00:00"
         },
         {
             "name": "schemastud/laravel-data-schemas",
@@ -4889,146 +4909,6 @@
             ],
             "description": "The batteries-UX backend rung for schema-driven admin editors: the #[AdminResource] registry (AdminResourceDefinition), the #[Widget] -> x-stud-widget projector, #[ReadOnlyField], and a served GET /frame/manifest. Sits one level above a filter-schema controller; resolves a resource key to its whole editor wiring. Pairs with @schemastud/frame on the JS side.",
             "time": "2026-07-19T13:47:23+00:00"
-        },
-        {
-            "name": "schemastud/laravel-schema-forms",
-            "version": "dev-main",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/schemastud/laravel-schema-forms.git",
-                "reference": "d54d8a7668bd1dccf739f7a4c4e554ccd143fcc9"
-            },
-            "require": {
-                "illuminate/contracts": "^11.0|^12.0|^13.0",
-                "illuminate/database": "^11.0|^12.0|^13.0",
-                "illuminate/support": "^11.0|^12.0|^13.0",
-                "opis/json-schema": "^2.3",
-                "php": "^8.2",
-                "schemastud/laravel-data-schemas": "dev-main",
-                "spatie/laravel-data": "^4.0|^5.0",
-                "spatie/typescript-transformer": "^3.3",
-                "splicewire/laravel-beam": "dev-main"
-            },
-            "require-dev": {
-                "laravel/pint": "^1.0",
-                "orchestra/testbench": "^9.0|^10.0|^11.0",
-                "pestphp/pest": "^2.0|^3.0",
-                "wikimedia/composer-merge-plugin": "^2.1"
-            },
-            "default-branch": true,
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-main": "1.0.x-dev"
-                },
-                "laravel": {
-                    "providers": [
-                        "Splicewire\\SchemaForms\\SchemaFormsServiceProvider"
-                    ]
-                },
-                "merge-plugin": {
-                    "include": [
-                        "composer.local.json"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Splicewire\\SchemaForms\\": "src/"
-                }
-            },
-            "autoload-dev": {
-                "psr-4": {
-                    "Splicewire\\SchemaForms\\Tests\\": "tests/"
-                }
-            },
-            "scripts": {
-                "test": [
-                    "vendor/bin/pest"
-                ],
-                "pint": [
-                    "@php -d memory_limit=512M vendor/bin/pint"
-                ]
-            },
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Stephen Rushing",
-                    "email": "stephen@rushing.dev"
-                }
-            ],
-            "description": "Host-agnostic schema-form primitive: a JSON-Schema-defined form is validated (opis), stored via a swappable FormSubmission model, and optionally notified through a tenant-swappable SubmissionNotifier seam with a record-before-deliver notification outbox (track + replay). Owns the x-swf-notify keyword.",
-            "keywords": [
-                "forms",
-                "intake",
-                "json-schema",
-                "laravel",
-                "leads",
-                "notifications",
-                "outbox",
-                "submissions"
-            ],
-            "time": "2026-07-19T13:47:23+00:00"
-        },
-        {
-            "name": "spatie/file-system-watcher",
-            "version": "1.2.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/spatie/file-system-watcher.git",
-                "reference": "2fe96de88af6660b3ab7658a8f1d41b10ad0aff6"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/spatie/file-system-watcher/zipball/2fe96de88af6660b3ab7658a8f1d41b10ad0aff6",
-                "reference": "2fe96de88af6660b3ab7658a8f1d41b10ad0aff6",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^8.3",
-                "symfony/process": "^7.0|^8.0"
-            },
-            "require-dev": {
-                "pestphp/pest": "^4.0",
-                "spatie/ray": "^1.22",
-                "spatie/temporary-directory": "^2.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Spatie\\Watcher\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Freek Van der Herten",
-                    "email": "freek@spatie.be",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Watch changes in the file system using PHP",
-            "homepage": "https://github.com/spatie/file-system-watcher",
-            "keywords": [
-                "file-system-watcher",
-                "spatie"
-            ],
-            "support": {
-                "issues": "https://github.com/spatie/file-system-watcher/issues",
-                "source": "https://github.com/spatie/file-system-watcher/tree/1.2.1"
-            },
-            "funding": [
-                {
-                    "url": "https://github.com/spatie",
-                    "type": "github"
-                }
-            ],
-            "time": "2025-11-26T10:41:42+00:00"
         },
         {
             "name": "spatie/image",
@@ -5649,74 +5529,6 @@
             "time": "2026-06-22T07:55:44+00:00"
         },
         {
-            "name": "spatie/typescript-transformer",
-            "version": "3.3.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/spatie/typescript-transformer.git",
-                "reference": "025f73d12a4c0b44d0ceb3e472d56ec540286697"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/spatie/typescript-transformer/zipball/025f73d12a4c0b44d0ceb3e472d56ec540286697",
-                "reference": "025f73d12a4c0b44d0ceb3e472d56ec540286697",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^8.2",
-                "phpstan/phpdoc-parser": "^2.3",
-                "roave/better-reflection": "^6.41",
-                "spatie/file-system-watcher": "^1.1",
-                "spatie/php-structure-discoverer": "^2.2",
-                "symfony/process": "^7.0|^8.0"
-            },
-            "require-dev": {
-                "friendsofphp/php-cs-fixer": "^3.0",
-                "pestphp/pest": "^3.0|^4.0",
-                "pestphp/pest-plugin-arch": "^3.0|^4.0",
-                "phpstan/extension-installer": "^1.1",
-                "phpstan/phpstan": "^2.0",
-                "phpstan/phpstan-deprecation-rules": "^2.0",
-                "phpstan/phpstan-phpunit": "^2.0",
-                "spatie/ray": "^1.41",
-                "spatie/temporary-directory": "^2.1"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Spatie\\TypeScriptTransformer\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Ruben Van Assche",
-                    "email": "ruben@spatie.be",
-                    "role": "Developer"
-                }
-            ],
-            "description": "This is my package typescript-transformer",
-            "homepage": "https://github.com/spatie/typescript-transformer",
-            "keywords": [
-                "spatie",
-                "typescript-transformer"
-            ],
-            "support": {
-                "issues": "https://github.com/spatie/typescript-transformer/issues",
-                "source": "https://github.com/spatie/typescript-transformer/tree/3.3.0"
-            },
-            "funding": [
-                {
-                    "url": "https://github.com/spatie",
-                    "type": "github"
-                }
-            ],
-            "time": "2026-06-19T14:00:51+00:00"
-        },
-        {
             "name": "splicewire/laravel-beam",
             "version": "dev-main",
             "source": {
@@ -5834,6 +5646,88 @@
             ],
             "description": "The Laravel companion to @splicewire/beam-mdx: the server-side twin of the build-time draft gate. A catch-all content/essay route macro (Route::beamMdxShow) that 404s a draft slug outside the preview allowlist, a preview-only route middleware, the shared Mdx visibility gate, and a `beam-mdx:doctor` command asserting the MDX plane is wired and no draft is reachable in a production build.",
             "time": "2026-07-19T13:47:22+00:00"
+        },
+        {
+            "name": "splicewire/laravel-beam-ux-prototype",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/splicewire/laravel-beam-ux-prototype.git",
+                "reference": "df4f4dd6b4d33375bb7a1315645f77fd1f6eecad"
+            },
+            "require": {
+                "illuminate/console": "^11.0|^12.0|^13.0",
+                "illuminate/contracts": "^11.0|^12.0|^13.0",
+                "illuminate/support": "^11.0|^12.0|^13.0",
+                "php": "^8.2",
+                "rushing/laravel-doctor": "*",
+                "spatie/laravel-package-tools": "^1.16",
+                "splicewire/laravel-beam": "*"
+            },
+            "require-dev": {
+                "inertiajs/inertia-laravel": "^2.0",
+                "laravel/pint": "^1.0",
+                "orchestra/testbench": "^9.0|^10.0|^11.0",
+                "phpunit/phpunit": "^11.0|^12.0",
+                "wikimedia/composer-merge-plugin": "^2.1"
+            },
+            "suggest": {
+                "inertiajs/inertia-laravel": "Auto-registers the dev-only /_prototype route + Inertia host page for the monolith default (register_route config)."
+            },
+            "default-branch": true,
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "1.0.x-dev"
+                },
+                "laravel": {
+                    "providers": [
+                        "Splicewire\\Beam\\UxPrototype\\BeamUxPrototypeServiceProvider"
+                    ]
+                },
+                "merge-plugin": {
+                    "include": [
+                        "composer.local.json"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Splicewire\\Beam\\UxPrototype\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Splicewire\\Beam\\UxPrototype\\Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "pint": [
+                    "@php -d memory_limit=512M vendor/bin/pint"
+                ],
+                "test": [
+                    "@php vendor/bin/phpunit"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Stephen Rushing",
+                    "email": "stephen@rushing.dev"
+                }
+            ],
+            "description": "The Laravel twin of @splicewire/beam-ux-prototype (ADR-0116 Amendment 1): install + doctor for the rushing-prototype UX-prototyping mechanism. Stamps the convention doc + starter stubs into a beam host and audits the host's wiring (dep, router glob under a DEV guard, CSS token contract, prod-boundary script). The runtime stays JS-only; this side owns only the install/doctor return. First consumer citizen of BeamDoctorManifest.",
+            "keywords": [
+                "beam",
+                "doctor",
+                "install",
+                "laravel",
+                "prototype",
+                "splicewire"
+            ],
+            "time": "2026-08-14T10:30:05+00:00"
         },
         {
             "name": "spomky-labs/cbor-php",
@@ -10867,6 +10761,136 @@
             "time": "2026-07-06T14:54:16+00:00"
         },
         {
+            "name": "rushing/php-graphine",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/stephenr85/php-graphine.git",
+                "reference": "634b3b47dc7fd25217fed77e687a9767e2ad98e8"
+            },
+            "require": {
+                "php": "^8.3"
+            },
+            "require-dev": {
+                "laravel/pint": "^1.0",
+                "nikic/php-parser": "^5.0",
+                "pestphp/pest": "^3.0"
+            },
+            "suggest": {
+                "graphp/graph": "MIT — pure-PHP in-memory graph algorithms behind the reference driver (roles 1/2)",
+                "nikic/php-parser": "BSD-3 — AST scanner behind the seam guard a consumer runs over its own App\\Graph\\Drivers"
+            },
+            "default-branch": true,
+            "type": "library",
+            "extra": {
+                "package-topology": {
+                    "mustNotRequire": [
+                        "illuminate/*"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Rushing\\Graphine\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Rushing\\Graphine\\Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "pint": [
+                    "@php -d memory_limit=512M vendor/bin/pint"
+                ],
+                "test": [
+                    "@php vendor/bin/pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Stephen Rushing",
+                    "email": "stephenr85@gmail.com"
+                }
+            ],
+            "description": "The framework-free graph algebra behind graphine: the GraphStore contract + role sub-contracts + value types + in-memory reference driver + conformance test-kit. Zero illuminate; the Eloquent binding lives in rushing/laravel-graphine.",
+            "keywords": [
+                "algebra",
+                "driver",
+                "graph",
+                "knowledge-graph",
+                "seam",
+                "substrate"
+            ],
+            "time": "2026-08-10T02:27:00+00:00"
+        },
+        {
+            "name": "rushing/php-package-topology",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/stephenr85/laravel-package-topology.git",
+                "reference": "3fe12b79498b644ff2a4074cdb2a02083cf2ac52"
+            },
+            "require": {
+                "php": "^8.3",
+                "rushing/php-graphine": "dev-main"
+            },
+            "require-dev": {
+                "laravel/pint": "^1.0",
+                "nikic/php-parser": "^5.0",
+                "pestphp/pest": "^4.0"
+            },
+            "suggest": {
+                "nikic/php-parser": "BSD-3 — the AST scanner behind graphine's SeamGuard, used by the source-import axis (sourceNeverReferences).",
+                "phpunit/phpunit": "The testing kit (AssertsPackageTopology / PackageTopologyConformance) needs a PHPUnit-providing host."
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Rushing\\PackageTopology\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Rushing\\PackageTopology\\Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "pint": [
+                    "@php -d memory_limit=512M vendor/bin/pint"
+                ],
+                "test": [
+                    "@php vendor/bin/pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Stephen Rushing",
+                    "email": "stephenr85@gmail.com"
+                }
+            ],
+            "description": "A declarative package-topology substrate for composer monorepos, riding rushing/php-graphine: one TopologyContract spanning two axes — the composer-require graph (direct edges, reachability, layering, cycles) and the source-import boundary (AST namespace guard) — plus a testing kit so a repo declares its architecture instead of hand-rolling fitness tests.",
+            "keywords": [
+                "architecture",
+                "composer",
+                "fitness-function",
+                "graph",
+                "laravel",
+                "monorepo",
+                "substrate",
+                "topology"
+            ],
+            "time": "2026-08-04T23:30:15+00:00"
+        },
+        {
             "name": "sebastian/cli-parser",
             "version": "4.2.1",
             "source": {
@@ -11776,6 +11800,76 @@
             "time": "2025-02-07T05:00:38+00:00"
         },
         {
+            "name": "splicewire/laravel-beam-provision",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/splicewire/laravel-beam-provision.git",
+                "reference": "92f51dcc4c73e855262150b9a16e4cf66ab618d5"
+            },
+            "require": {
+                "illuminate/console": "^11.0|^12.0|^13.0",
+                "illuminate/contracts": "^11.0|^12.0|^13.0",
+                "illuminate/http": "^11.0|^12.0|^13.0",
+                "illuminate/support": "^11.0|^12.0|^13.0",
+                "php": "^8.2",
+                "rushing/laravel-popcorn": "dev-main",
+                "rushing/php-popcorn": "dev-main"
+            },
+            "require-dev": {
+                "laravel/pint": "^1.0",
+                "orchestra/testbench": "^9.0|^10.0",
+                "pestphp/pest": "^2.0|^3.0",
+                "wikimedia/composer-merge-plugin": "^2.1"
+            },
+            "default-branch": true,
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "1.0.x-dev"
+                },
+                "laravel": {
+                    "providers": [
+                        "Splicewire\\Beam\\Provision\\BeamProvisionServiceProvider"
+                    ]
+                },
+                "merge-plugin": {
+                    "include": [
+                        "composer.local.json"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Splicewire\\Beam\\Provision\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Splicewire\\Beam\\Provision\\Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "vendor/bin/pest"
+                ],
+                "pint": [
+                    "@php -d memory_limit=512M vendor/bin/pint"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Stephen Rushing",
+                    "email": "stephen@rushing.dev"
+                }
+            ],
+            "description": "A Destination contract for standing up a repo on a cloud provider (provision/teardown/healthCheck), with LaravelCloudDestination and CloudRunDestination as its two adapters, proving the seam generalizes across providers.",
+            "time": "2026-08-17T13:38:30+00:00"
+        },
+        {
             "name": "staabm/side-effects-detector",
             "version": "1.0.5",
             "source": {
@@ -11956,11 +12050,13 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {},
+    "stability-flags": {
+        "splicewire/laravel-beam-provision": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^8.3"
+        "php": "^8.4"
     },
     "platform-dev": {},
     "plugin-api-version": "2.9.0"
