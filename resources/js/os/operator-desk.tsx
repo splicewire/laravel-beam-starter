@@ -9,15 +9,15 @@
 // into its in-place editor. Mounted on every authed page by `OsLayout` for an entitled principal.
 //
 // Deliberately narrower than audiostud's version: this host has no Customers/Reports back-office tools
-// (single operator surface — the stats dashboard) and no PageProperties float (no per-page metadata
-// surface exists here yet) — "Edit this page" dispatches `beam-ux:edit`/`beam-ux:exit` DIRECTLY instead
-// of opening an intermediate properties window. Add PageProperties + more tools here if/when this host
-// grows them, matching audiostud's shape then.
+// (single operator surface — the stats dashboard). It DOES carry audiostud's PageProperties float —
+// "Edit this page" opens a per-slug `page:{slug}` window (its own dock item) rather than dispatching
+// `beam-ux:edit` directly; see `./page-properties.tsx` for what it's trimmed down to here.
 import { router, usePage } from '@inertiajs/react';
 import { OperatorOverlay } from '@schemastud/mainframe/os';
 import type { OverlayWindow, WindowManager } from '@schemastud/mainframe/os';
 import { Suspense, lazy, useEffect, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
+import { PageProperties } from '@/os/page-properties';
 
 // Lazy, not static - os/shell-config.tsx's own docblock already flags why: a page component ALSO
 // statically imported elsewhere gets merged into that importer's chunk by Rollup instead of getting its
@@ -50,40 +50,101 @@ const TOOLS: Tool[] = [
     },
 ];
 
-function resolveWindow(key: string): OverlayWindow | null {
+// Resolve a window key → its chrome + content. A fixed TOOL, or a per-page properties window keyed
+// `page:{slug}` (the operator "Edit this page" surface — several can be open at once, ported from
+// audiostud's own desk). `editable`/`editing` close over the CURRENT `beam-ux:mode` broadcast (read
+// from the OperatorDesk component below) since resolveWindow is called fresh on every render.
+function resolveWindow(
+    key: string,
+    wm: WindowManager,
+    editable: boolean,
+    editing: boolean,
+): OverlayWindow | null {
+    if (key.startsWith('page:')) {
+        const slug = key.slice('page:'.length);
+
+        return {
+            title: `Page · ${slug}`,
+            accent: '#00b3c8',
+            render: () => (
+                <PageProperties
+                    slug={slug}
+                    editable={editable}
+                    editing={editing}
+                    onEditContent={() => {
+                        // Minimize the properties window, then enter the in-place content editor —
+                        // same handoff audiostud's desk uses.
+                        wm.minimize(key);
+                        window.dispatchEvent(new CustomEvent('beam-ux:edit'));
+                    }}
+                    onExitContent={() => window.dispatchEvent(new CustomEvent('beam-ux:exit'))}
+                />
+            ),
+        };
+    }
+
     const tool = TOOLS.find((t) => t.key === key);
 
     return tool ? { title: tool.title, accent: tool.accent, render: tool.render } : null;
+}
+
+// The beam mark — same glyph as splicewire's `@/components/app-logo-icon`, inlined so the accent node
+// rides `--beam-accent` rather than that component's own hardcoded fill. This host has no
+// brand-tokens.css of its own (that's splicewire.test's), so every `--beam-*` reference below carries
+// a literal fallback — a project generated from this starter looks right out of the box, and gets
+// live-themed for free the moment it defines its own `--beam-*` tokens.
+function BeamMark({ className }: { className?: string }) {
+    return (
+        <svg className={className} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path
+                d="M3 7 C9 7 10 12 14 12 M3 17 C9 17 10 12 14 12 M14 12 H21"
+                stroke="currentColor"
+                strokeWidth="1.7"
+                strokeLinecap="round"
+            />
+            <circle cx="3" cy="7" r="1.6" fill="currentColor" />
+            <circle cx="3" cy="17" r="1.6" fill="currentColor" />
+            <circle cx="14" cy="12" r="2.7" fill="var(--beam-accent, #00b3c8)" />
+        </svg>
+    );
 }
 
 const OP_DESK_CSS = `
 .op-desk-overlay{position:fixed;inset:0;z-index:2000;pointer-events:none;font-family:system-ui,sans-serif}
 .op-desk-overlay > *{pointer-events:auto}
 .op-win-inner{display:flex;flex-direction:column;height:100%;background:#f8fafc;border:1px solid rgba(15,23,42,.14);border-radius:12px;box-shadow:0 30px 90px -24px rgba(0,0,0,.5);overflow:hidden}
-.op-win-bar{display:flex;align-items:center;gap:9px;height:38px;flex:none;padding:0 12px;background:#0f172a;color:#f8fafc;cursor:move;user-select:none}
+.op-win-bar{display:flex;align-items:center;gap:9px;height:38px;flex:none;padding:0 12px;background:var(--beam-paper-raised, #0e1b18);color:var(--beam-ink, #dcede8);cursor:move;user-select:none}
 .op-win-dot{width:10px;height:10px;border-radius:30%;flex:none}
 .op-win-title{font-family:ui-monospace,monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase}
 .op-win-ctrls{margin-left:auto;display:flex;align-items:center;gap:1px}
-.op-win-x{background:none;border:none;color:#94a3b8;font-size:16px;line-height:1;cursor:pointer;padding:4px 8px;border-radius:6px;display:flex;align-items:center;justify-content:center;min-width:28px}
-.op-win-x:hover{color:#fff;background:rgba(255,255,255,.1)}
-.op-win-x.on{color:#0f172a}
+.op-win-x{background:none;border:none;color:var(--beam-ink-muted, rgba(220, 237, 232, .5));font-size:16px;line-height:1;cursor:pointer;padding:4px 8px;border-radius:6px;display:flex;align-items:center;justify-content:center;min-width:28px}
+.op-win-x:hover{color:var(--beam-ink, #dcede8);background:rgba(255,255,255,.1)}
+.op-win-x.on{color:var(--beam-paper-raised, #0e1b18)}
 .op-win-body{flex:1;min-height:0;overflow:auto;background:#f8fafc;color:#0f172a}
-.op-orb{position:absolute;right:16px;bottom:16px;display:flex;align-items:center;gap:9px;padding:9px 15px;border-radius:13px;border:1px solid rgba(255,255,255,.1);background:rgba(15,23,42,.94);backdrop-filter:blur(14px);color:#fff;cursor:pointer;font-family:ui-monospace,monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;box-shadow:0 18px 55px -14px rgba(0,0,0,.6)}
-.op-orb:hover{border-color:rgba(15,23,42,.5)}
-.op-orb.is-open{border-color:rgba(15,23,42,.6);background:#1e293b}
-.op-orb .mark{width:16px;height:16px;border-radius:23%;background:#0f172a;flex:none}
+.op-taskbar{position:absolute;left:16px;bottom:16px;display:flex;align-items:center;gap:4px;padding:6px;border-radius:13px;border:1px solid rgba(255,255,255,.1);background:color-mix(in srgb, var(--beam-paper-raised, #0e1b18) 94%, transparent);backdrop-filter:blur(14px);box-shadow:0 18px 55px -14px rgba(0,0,0,.6)}
+.op-taskbar button{display:flex;align-items:center;gap:7px;border:none;background:none;color:var(--beam-ink-muted, rgba(220, 237, 232, .5));cursor:pointer;font-family:ui-monospace,monospace;font-size:11px;letter-spacing:.06em;padding:8px 12px;border-radius:9px}
+.op-taskbar button:hover{color:var(--beam-ink, #dcede8);background:rgba(255,255,255,.08)}
+.op-taskbar button.focused{color:var(--beam-ink, #dcede8);background:rgba(255,255,255,.12)}
+.op-taskbar button.minned{opacity:.55}
+.op-taskbar .glyph{width:9px;height:9px;border-radius:30%;flex:none}
+.op-orb{position:absolute;right:16px;bottom:16px;display:flex;align-items:center;gap:9px;padding:9px 15px;border-radius:13px;border:1px solid rgba(255,255,255,.1);background:color-mix(in srgb, var(--beam-paper-raised, #0e1b18) 94%, transparent);backdrop-filter:blur(14px);color:var(--beam-ink, #dcede8);cursor:pointer;font-family:ui-monospace,monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;box-shadow:0 18px 55px -14px rgba(0,0,0,.6)}
+.op-orb:hover{border-color:var(--beam-line, #1b2e2a)}
+.op-orb.is-open{border-color:var(--beam-accent, #00b3c8);background:var(--beam-line, #1b2e2a)}
+.op-orb .mark{width:16px;height:16px;flex:none;color:var(--beam-ink, #dcede8)}
 .op-scrim{position:absolute;inset:0;background:transparent}
-.op-menu{position:absolute;right:16px;bottom:66px;width:240px;padding:7px;border-radius:14px;border:1px solid rgba(255,255,255,.1);background:rgba(15,23,42,.97);backdrop-filter:blur(16px);box-shadow:0 26px 70px -18px rgba(0,0,0,.65);display:flex;flex-direction:column;gap:2px}
-.op-menu .head{padding:8px 10px 6px;color:#94a3b8;font-family:ui-monospace,monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase}
-.op-menu button,.op-menu a{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:9px 11px;border-radius:9px;border:none;background:none;color:#e2e8f0;cursor:pointer;font:inherit;font-size:13px;text-decoration:none}
-.op-menu button:hover,.op-menu a:hover{background:rgba(255,255,255,.07);color:#fff}
+.op-menu{position:absolute;right:16px;bottom:66px;width:240px;padding:7px;border-radius:14px;border:1px solid rgba(255,255,255,.1);background:color-mix(in srgb, var(--beam-paper-raised, #0e1b18) 97%, transparent);backdrop-filter:blur(16px);box-shadow:0 26px 70px -18px rgba(0,0,0,.65);display:flex;flex-direction:column;gap:2px}
+.op-menu-brand{display:flex;align-items:center;gap:8px;padding:9px 10px 11px;margin-bottom:3px;border-bottom:1px solid rgba(255,255,255,.08);color:var(--beam-ink, #dcede8);font-family:ui-monospace,monospace;font-size:13px;font-weight:600;letter-spacing:.02em}
+.op-menu-brand-mark{width:18px;height:18px;flex:none;color:var(--beam-ink-muted, rgba(220, 237, 232, .5))}
+.op-menu .head{padding:8px 10px 6px;color:var(--beam-ink-muted, rgba(220, 237, 232, .5));font-family:ui-monospace,monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase}
+.op-menu button,.op-menu a{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:9px 11px;border-radius:9px;border:none;background:none;color:var(--beam-ink, #dcede8);cursor:pointer;font:inherit;font-size:13px;text-decoration:none}
+.op-menu button:hover,.op-menu a:hover{background:rgba(255,255,255,.07);color:var(--beam-ink, #dcede8)}
 .op-menu button:disabled{opacity:.4;cursor:default}
-.op-menu button:disabled:hover{background:none;color:#e2e8f0}
-.op-menu button.active{color:#fff;background:rgba(15,23,42,.4)}
+.op-menu button:disabled:hover{background:none;color:var(--beam-ink, #dcede8)}
+.op-menu button.active{color:var(--beam-ink, #dcede8);background:var(--beam-line, #1b2e2a)}
 .op-menu .glyph{width:10px;height:10px;border-radius:30%;flex:none}
 .op-menu .ico{width:16px;text-align:center;flex:none;opacity:.85}
 .op-menu .op-div{height:1px;background:rgba(255,255,255,.1);margin:5px 4px}
-.op-menu .muted{color:#94a3b8}
+.op-menu .muted{color:var(--beam-ink-muted, rgba(220, 237, 232, .5))}
 `;
 
 function StartMenu({
@@ -107,6 +168,10 @@ function StartMenu({
         <>
             <div className="op-scrim" onClick={onClose} />
             <div className="op-menu" role="menu">
+                <div className="op-menu-brand">
+                    <BeamMark className="op-menu-brand-mark" />
+                    beam
+                </div>
                 <div className="head">Operator</div>
                 <button
                     type="button"
@@ -169,11 +234,13 @@ export default function OperatorDesk() {
     // track those so the start menu knows whether the page is editable and whether editing is active.
     const [editing, setEditing] = useState(false);
     const [pageEditable, setPageEditable] = useState(false);
+    const [currentSlug, setCurrentSlug] = useState<string | null>(null);
     useEffect(() => {
         const onMode = (e: Event) => {
-            const d = (e as CustomEvent<{ mode?: string; editable?: boolean }>).detail ?? {};
+            const d = (e as CustomEvent<{ mode?: string; editable?: boolean; slug?: string }>).detail ?? {};
             setEditing(d.mode === 'window');
             setPageEditable(!!d.editable);
+            setCurrentSlug(d.slug ?? null);
         };
         window.addEventListener('beam-ux:mode', onMode);
 
@@ -203,10 +270,26 @@ export default function OperatorDesk() {
             }
         });
 
-    const stableKeys = () => TOOLS.map((t) => t.key);
+    // ALL open windows (incl. minimized) in STABLE order (fixed tool order, then page windows sorted by
+    // key) — so focusing a window never reshuffles the taskbar. Ported from audiostud's own desk.
+    const stableKeys = (wm: WindowManager) => [
+        ...TOOLS.map((t) => t.key),
+        ...Object.keys(wm.state.windows)
+            .filter((k) => k.startsWith('page:'))
+            .sort(),
+    ];
 
-    const onEditToggle = () => {
-        window.dispatchEvent(new CustomEvent(editing ? 'beam-ux:exit' : 'beam-ux:edit'));
+    // "Edit this page" opens the PAGE PROPERTIES float for the current slug (keyed `page:{slug}`) — its
+    // own dock item, same as every other tool window (and the same audiostud behavior this replaces the
+    // direct dispatch with). Exiting an already-active edit still dispatches straight through.
+    const openProperties = (wm: WindowManager, slug: string) =>
+        wm.open(`page:${slug}`, { geometry: { width: 380, height: 220 }, presentation: 'float' });
+    const onEditToggle = (wm: WindowManager) => {
+        if (editing) {
+            window.dispatchEvent(new CustomEvent('beam-ux:exit'));
+        } else if (currentSlug) {
+            openProperties(wm, currentSlug);
+        }
     };
 
     return (
@@ -214,8 +297,9 @@ export default function OperatorDesk() {
             <style dangerouslySetInnerHTML={{ __html: OP_DESK_CSS }} />
             <OperatorOverlay
                 stableKeys={stableKeys}
-                resolveWindow={resolveWindow}
+                resolveWindow={(key, wm) => resolveWindow(key, wm, pageEditable, editing)}
                 orbLabel="Operator"
+                orbIcon={<BeamMark className="mark" />}
                 onWindowBodyClickCapture={armSuppress}
                 onWindowManager={() => {
                     const off = subscribeNavSuppression();
@@ -228,7 +312,7 @@ export default function OperatorDesk() {
                         inOperator={inOperator}
                         editing={editing}
                         pageEditable={pageEditable}
-                        onEditToggle={onEditToggle}
+                        onEditToggle={() => onEditToggle(wm)}
                         onOpenTool={(tool) => wm.open(tool.key, { geometry: tool.size, presentation: 'float' })}
                         onClose={onClose}
                     />
