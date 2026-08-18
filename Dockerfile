@@ -1,6 +1,7 @@
-# Builds the container image every beam-tier site deploys to Cloud Run via .github/workflows/
-# deploy.yml + splicewire:beam:provision (splicewire/laravel-beam-provision). Proven live against
-# beam-pilot-gcp-cloud-run (gcp-cloud-run-provisioning map, tickets 10 + the CI follow-on).
+# The standard beam/satellite-tier deploy: builds the container image every site deploys to Cloud
+# Run via .github/workflows/deploy.yml + splicewire:beam:provision (splicewire/laravel-beam-provision).
+# Proven live against beam-pilot-gcp-cloud-run (gcp-cloud-run-provisioning map, tickets 10 + the CI
+# follow-on); baked into laravel-beam-starter and laravel-satellite-starter identically.
 #
 # Single builder stage, not split PHP/Node stages: @laravel/vite-plugin-wayfinder's `vite build`
 # shells out to `php artisan wayfinder:generate` to emit typed route helpers, so the frontend build
@@ -18,7 +19,15 @@ RUN corepack enable
 
 WORKDIR /app
 COPY composer.json composer.lock ./
-RUN composer install --no-dev --no-scripts --no-interaction --optimize-autoloader
+# `gh_app_token` is a build secret (never baked into an image layer), passed only when a host has
+# private packages to resolve — satellite-tier's own family, splicewire-market's App reused for our
+# internal CI (see .github/workflows/deploy.yml). `required=false` + the `-s` check make this a
+# no-op for beam-tier hosts, which never pass it: all-public deps, ordinary `composer install`.
+RUN --mount=type=secret,id=gh_app_token,required=false \
+    if [ -s /run/secrets/gh_app_token ]; then \
+        git config --global url."https://x-access-token:$(cat /run/secrets/gh_app_token)@github.com/".insteadOf "https://github.com/"; \
+    fi \
+    && composer install --no-dev --no-scripts --no-interaction --optimize-autoloader
 COPY . .
 RUN composer dump-autoload --optimize --no-dev --classmap-authoritative
 
