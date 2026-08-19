@@ -18,7 +18,8 @@ use Illuminate\Validation\Rules\Password;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
 use Laravel\Fortify\Fortify;
-use Splicewire\Beam\Accounts\Support\Demo;
+use Splicewire\Beam\Accounts\Facades\BeamAccounts;
+use Splicewire\Beam\Accounts\Facades\BeamDemo;
 
 class FortifyServiceProvider extends ServiceProvider
 {
@@ -70,7 +71,7 @@ class FortifyServiceProvider extends ServiceProvider
             'canResetPassword' => Features::enabled(Features::resetPasswords()),
             'status' => $request->session()->get('status'),
             // Controller-provided quick demo sign-in — the OOTB beam-accounts login-as affordance
-            // (Splicewire\Beam\Accounts\Support\Demo + the signed `account/login-as/{subject}` route).
+            // (Splicewire\Beam\Accounts\Facades\BeamDemo + the signed `users/{id}/op/login-as` route).
             // Empty in production / when demo is off, so the login page's demo block simply doesn't render.
             'demoAccounts' => $this->demoAccounts(),
         ]));
@@ -122,24 +123,43 @@ class FortifyServiceProvider extends ServiceProvider
 
     /**
      * The demo sign-in buttons for the login page — the OOTB beam-accounts login-as affordance. Each is a
-     * SIGNED link to `account/login-as/{subject}` (the signature is ignored in local/testing but keeps the
-     * links valid in a preview deploy, where `LoginAsController` requires one). Empty ⇒ no buttons: the set
-     * is `Demo::keys()` when `Demo::enabled()` (non-production by default), else nothing. The subjects are
-     * provisioned by the package `DemoTeamSeeder` (called from DatabaseSeeder).
+     * SIGNED link to the particle operation `users/{id}/op/login-as` (the signature is ignored in
+     * local/testing but keeps the links valid in a preview deploy, where the op requires one). Empty ⇒
+     * no buttons: the set is whichever `BeamDemo::keys()` have a seeded user when `BeamDemo::enabled()`
+     * (non-production by default), else nothing. The subjects are provisioned by the package
+     * `DemoTeamSeeder` (called from DatabaseSeeder).
      *
      * @return list<array{key: string, label: string, url: string}>
      */
     private function demoAccounts(): array
     {
-        if (! Demo::enabled()) {
+        if (! BeamDemo::enabled()) {
             return [];
+        }
+
+        // The link targets the particle operation `users/{id}/op/login-as`, which resolves {id}
+        // against the user model — so the demo subject KEY has to become a user id here. One query
+        // for the whole roster; a key with no seeded user simply gets no button.
+        $emails = array_combine(BeamDemo::keys(), array_map(BeamDemo::email(...), BeamDemo::keys()));
+
+        $users = BeamAccounts::userModel()::query()
+            ->whereIn('email', array_values($emails))
+            ->get()
+            ->keyBy('email');
+
+        $urls = [];
+
+        foreach ($emails as $key => $email) {
+            if ($user = $users->get($email)) {
+                $urls[$key] = URL::signedRoute('users.op.login-as', ['id' => $user->getKey()]);
+            }
         }
 
         return array_map(fn (string $key): array => [
             'key' => $key,
-            'label' => Demo::name($key),
-            'url' => URL::signedRoute('splicewire.account.login-as', ['subject' => $key]),
-        ], Demo::keys());
+            'label' => BeamDemo::name($key),
+            'url' => $urls[$key],
+        ], array_keys($urls));
     }
 
     /**
