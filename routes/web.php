@@ -32,7 +32,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // The OPERATOR front-end realm (frontend-surfaces.md). A thin stats roll-up landing framed by the
     // promoted @splicewire/beam-mainframe host; resource lists ride Frame's generic particle CRUD socket.
     // Gated on the `os.operate` entitlement: the DefaultEntitlementResolver (laravel-beam-accounts) grants
-    // it to a staff principal (`is_staff`), so the seeded staff user reaches it and a non-staff user is 403'd.
+    // it to a staff principal, so the seeded staff user reaches it and a non-staff user is 403'd.
     Route::get('operator', fn () => Inertia::render('operator/dashboard', [
         'staff' => fn () => ['name' => request()->user()->name, 'email' => request()->user()->email],
         'stats' => fn () => [
@@ -46,7 +46,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // The OS-SHELL desktop (frontend-surfaces.md). The windowed realm composer. Route-gated on the
     // projected `os.enter` entitlement (`can:entitlement:os.enter`); the shell itself does the fusion pivot
-    // off shared `can['os.enter']` (entitled → desktop, else app-first). Staff (`is_staff`) hold it via the
+    // off shared `can['os.enter']` (entitled → desktop, else app-first). Staff hold it via the
     // DefaultEntitlementResolver; a non-staff user is 403'd and the OS realm is omitted from the manifest.
     Route::inertia('os', 'os')->middleware('can:entitlement:os.enter')->name('os.shell');
 });
