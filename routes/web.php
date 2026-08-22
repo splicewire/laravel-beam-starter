@@ -52,3 +52,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 require __DIR__.'/settings.php';
+
+// The PUBLIC ENTRY RENDERER (ADR-0209 §2) — resolves any unclaimed URL against the `site` realm's
+// containment tree and renders the entry through `resources/js/pages/site/entry.tsx`. This is what
+// makes the seeded `/docs`, `/docs/api` and `/docs/mcp` live on a fresh install, and what serves every
+// page authored after it.
+//
+// **LAST, and that is load-bearing.** It registers a `{path}` catch-all, so every named route above
+// must already be declared or it gets swallowed. `claimRoot: false` (the default) leaves `/` to the
+// `site/home` route above; a site served WHOLLY from entries passes `claimRoot: true` instead.
+//
+// It also mounts the compiled-artifact route the page shell imports, above its own catch-all. The
+// renderer 404s uniformly on anything it cannot resolve, gate, and read — so an incumbent catch-all
+// of your own must be registered BELOW this line, or `/{any}` never sees a request again.
+Route::beamUxSite('site/entry');

@@ -15,6 +15,10 @@
         },
         {
             "type": "git",
+            "url": "https://github.com/splicewire/laravel-beam-mcp.git"
+        },
+        {
+            "type": "git",
             "url": "https://github.com/splicewire/laravel-beam-mdx.git"
         },
         {
@@ -115,6 +119,7 @@
         "laravel/tinker": "^3.0",
         "laravel/wayfinder": "^0.1.14",
         "splicewire/laravel-beam": "*",
+        "splicewire/laravel-beam-mcp": "*",
         "splicewire/laravel-beam-mdx": "*",
         "splicewire/laravel-beam-ux": "*",
         "splicewire/laravel-beam-accounts": "*",
@@ -156,8 +161,9 @@
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
             "@php artisan key:generate",
             "@php artisan splicewire:beam:install --no-interaction --force",
-            "npm install",
-            "npm run build"
+            "pnpm install",
+            "@php artisan splicewire:beam:ux:compile",
+            "pnpm run build"
         ],
         "dev": [
             "Composer\\Config::disableProcessTimeout",
