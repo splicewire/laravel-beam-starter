@@ -108,6 +108,10 @@
         {
             "type": "git",
             "url": "https://github.com/stephenr85/php-package-topology.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/splicewire/laravel-beam-dev.git"
         }
     ],
     "require": {
@@ -141,6 +145,7 @@
         "phpunit/phpunit": "^12.5.23",
         "rushing/laravel-surgeon": "dev-main",
         "rushing/php-package-topology": "*",
+        "splicewire/laravel-beam-dev": "dev-main",
         "splicewire/laravel-beam-provision": "dev-main"
     },
     "autoload": {
