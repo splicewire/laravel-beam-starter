@@ -85,13 +85,26 @@ export default createMainframeHost({
     // NOT swap the page for the bare entry body. Author (window) mode still opens the in-place editor.
     readMode: 'page',
     usePageContext: () => {
-        const page = usePage<{ auth: { canAuthorUx?: boolean }; slug?: string }>();
+        const page = usePage<{
+            auth: { canAuthorUx?: boolean };
+            slug?: string;
+            entry?: { slug?: string };
+        }>();
         currentComponent = page.component;
+
+        // A RENDERED ENTRY carries its identity at `props.entry.slug` (ADR-0209 §6), not at
+        // `props.slug`. Without this line the factory falls back to slash-swapping the Inertia
+        // component name — and every rendered entry is the component `site/entry`, so every one of
+        // them probed a nonexistent `site-entry` row: a harmless 401 per anonymous page view, and the
+        // WRONG row for an author. The renderer already had the id in props; the host just never read
+        // it (beam-docs-satellite ticket 26's fog item).
+        const entrySlug = page.props.entry?.slug;
+        const explicit = typeof page.props.slug === 'string' && page.props.slug !== '' ? page.props.slug : null;
 
         return {
             component: page.component,
             canAuthor: page.props.auth?.canAuthorUx === true,
-            slug: typeof page.props.slug === 'string' && page.props.slug !== '' ? page.props.slug : null,
+            slug: explicit ?? (typeof entrySlug === 'string' && entrySlug !== '' ? entrySlug : null),
         };
     },
     loadEntryBody,
