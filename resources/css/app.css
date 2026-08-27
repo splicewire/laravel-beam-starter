@@ -5,6 +5,33 @@
 @source '../views';
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 
+/*
+ * Tailwind v4 ignores symlinked `node_modules` by default, and every family package resolves here
+ * as a symlink onto live workspace source (all 9, measured 2026-08-27). So a utility class used
+ * ONLY inside a package's built `dist` is never generated: the markup is correct, the classes are
+ * absent, and the page still returns 200. This is the first of AGENTS.md's three invisible lift
+ * defects — no PHP suite, JS suite, `tsc`, `beam:ux:compile` or doctor audit can see it.
+ *
+ * Measured before this block existed: diffing `@splicewire/beam-ux`'s dist classNames against the
+ * compiled stylesheet found 29 genuinely-absent utilities (`bg-gradient-to-t`, `lg:sticky`,
+ * `divide-y`, `max-w-3xl`, `cursor-grab`, `w-[380px]`, …). A further 35 were beam-ux's own
+ * `pe-*`/`ve-*` namespace, which it self-injects via `src/canvas/css.ts` — that is the prescribed
+ * repair for its own canvas tokens and is correctly NOT this file's job.
+ *
+ * ⚠️ This is a hand-maintained allowlist, so it RE-ARMS on every new family package added to
+ * `package.json`. Verify by re-diffing dist classNames against the compiled stylesheet — never by
+ * loading a page and eyeballing it, since the failure mode is a 200 that merely looks unstyled.
+ */
+@source '../../node_modules/@schemastud/frame/dist';
+@source '../../node_modules/@schemastud/frame-remote/dist';
+@source '../../node_modules/@schemastud/mainframe/dist';
+@source '../../node_modules/@schemastud/nav/dist';
+@source '../../node_modules/@schemastud/seam/dist';
+@source '../../node_modules/@schemastud/ui/dist';
+@source '../../node_modules/@splicewire/beam-mainframe/dist';
+@source '../../node_modules/@splicewire/beam-ux/dist';
+@source '../../node_modules/@splicewire/beam-ux-prototype/dist';
+
 @custom-variant dark (&:is(.dark *));
 
 @theme {
