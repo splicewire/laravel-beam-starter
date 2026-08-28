@@ -6,31 +6,21 @@
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 
 /*
- * Tailwind v4 ignores symlinked `node_modules` by default, and every family package resolves here
- * as a symlink onto live workspace source (all 9, measured 2026-08-27). So a utility class used
- * ONLY inside a package's built `dist` is never generated: the markup is correct, the classes are
- * absent, and the page still returns 200. This is the first of AGENTS.md's three invisible lift
- * defects — no PHP suite, JS suite, `tsc`, `beam:ux:compile` or doctor audit can see it.
+ * There is deliberately NO `@source` line here for the family packages, and their absence is not the
+ * bug it looks like. Tailwind v4 ignores symlinked `node_modules`, so a class used only inside a
+ * family package's built `dist` is never generated — correct markup, absent classes, HTTP 200.
  *
- * Measured before this block existed: diffing `@splicewire/beam-ux`'s dist classNames against the
- * compiled stylesheet found 29 genuinely-absent utilities (`bg-gradient-to-t`, `lg:sticky`,
- * `divide-y`, `max-w-3xl`, `cursor-grab`, `w-[380px]`, …). A further 35 were beam-ux's own
- * `pe-*`/`ve-*` namespace, which it self-injects via `src/canvas/css.ts` — that is the prescribed
- * repair for its own canvas tokens and is correctly NOT this file's job.
+ * That list used to be maintained by hand (9 literal globs, added in `e587049`). It is now DERIVED at
+ * build time by `vite-plugin-family-sources.ts`, which resolves every family-scoped package carrying a
+ * `dist` and injects one `@source` each. Same output, verified: 1,011 classes / 102,014 bytes either
+ * way, down to the asset hash. The difference is that a derived list cannot go stale, and a
+ * hand-written one silently does — the flagship was repaired once by hand and had drifted back to 8
+ * globs against 28 resolving packages.
  *
- * ⚠️ This is a hand-maintained allowlist, so it RE-ARMS on every new family package added to
- * `package.json`. Verify by re-diffing dist classNames against the compiled stylesheet — never by
- * loading a page and eyeballing it, since the failure mode is a 200 that merely looks unstyled.
+ * If family-package styling ever looks stripped, check the plugin is still in `vite.config.ts` before
+ * suspecting anything here, and verify by diffing emitted class counts — never by loading a page.
  */
-@source '../../node_modules/@schemastud/frame/dist';
-@source '../../node_modules/@schemastud/frame-remote/dist';
-@source '../../node_modules/@schemastud/mainframe/dist';
-@source '../../node_modules/@schemastud/nav/dist';
-@source '../../node_modules/@schemastud/seam/dist';
-@source '../../node_modules/@schemastud/ui/dist';
-@source '../../node_modules/@splicewire/beam-mainframe/dist';
-@source '../../node_modules/@splicewire/beam-ux/dist';
-@source '../../node_modules/@splicewire/beam-ux-prototype/dist';
+
 
 @custom-variant dark (&:is(.dark *));
 
