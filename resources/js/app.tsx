@@ -82,6 +82,26 @@ createInertiaApp({
             case name.startsWith('site/'):
                 return [OsLayout, MainframeHost];
             // The OPERATOR front-end realm — framed by the promoted <MainframeHost> (beam-mainframe).
+            //
+            // ⚠️ INVARIANT: operator chrome belongs in THIS switch and never inside a page component.
+            //
+            // It is what makes "a surface opened from the operator dock as a floating window carries
+            // no page chrome" true, and it is true BY CONSTRUCTION rather than by any check — which is
+            // why it is written down. Chrome is applied here, at the Inertia `layout:` boundary; a
+            // float never crosses that boundary, because `os/operator-desk.tsx` opens its tools via
+            // `lazy(() => import('@/pages/operator/dashboard'))` — importing the page MODULE directly —
+            // and `os/shell-config.tsx`'s SURFACE_MAP does the same. So a layout added here cannot leak
+            // into a float, and a layout moved INTO the page silently would.
+            //
+            // `site/` deliberately breaks the shape (its pages carry <SiteLayout> internally), which is
+            // correct for site and would be a bug copied here: a self-chroming operator page renders its
+            // nav INSIDE the float. `/os` is the third case and is already right — `return null`,
+            // self-chromed, never double-wrapped.
+            //
+            // Not overstating it: the rule is not uniform today. `shell-config.tsx`'s
+            // `SURFACE_MAP.operator.render` mounts <OperatorDashboard/> BARE while `user` wraps in
+            // <BeamAccountLayout> — a per-surface choice already made twice, differently. Decide those
+            // two together if either moves.
             case name.startsWith('operator/'):
                 return [OsLayout, MainframeHost];
             // Account-realm pages mount the OOTB <AccountShell> via BeamAccountLayout, MainframeHost
