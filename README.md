@@ -17,7 +17,9 @@ then migrates once, so the beam stack lands in one command:
 ```bash
 composer setup
 # or, standalone, after key:generate:
-php artisan splicewire:beam:install --no-interaction --force
+php artisan splicewire:beam:install --no-interaction
+#   no --force: it means overwrite-published-files and would republish config/beam/accounts.php over
+#   this starter's committed tier gate. A production migrate/seed is waived only by --allow-production-migrate.
 ```
 
 **The site self-documents on first boot.** `composer setup` leaves `/docs`, `/docs/api` and
@@ -80,7 +82,7 @@ To develop against your local package checkouts in `~/Workspaces/laravel/package
 ```bash
 cp composer.local.json.off composer.local.json   # engage the overlay (gitignored active copy)
 composer update                                   # resolve to local checkouts
-php artisan splicewire:beam:install --no-interaction --force
+php artisan splicewire:beam:install --no-interaction
 
 rm composer.local.json && composer update         # reset to git-resolved
 ```
