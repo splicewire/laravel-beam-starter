@@ -23,6 +23,36 @@ use Tests\TestCase;
  */
 class FrameManifestRouterTest extends TestCase
 {
+    /**
+     * ⚠️ This one goes over HTTP, and the other three do not — deliberately, and the split matters.
+     *
+     * `app->call()` on a controller cannot tell a MOUNTED route from an absent one, and skips
+     * `config('frame.middleware')` entirely; a suite built only that way would stay green if the
+     * route were deleted (AGENTS.md §*The estate's signature defect*, the 404-body row: *"read the
+     * route table"*). So the mount is asserted here, once, against the real request pipeline —
+     * including that the route this host serves is frame's OWN controller and not a host copy.
+     *
+     * The per-realm tests below cannot use HTTP: this host mounts the manifest once, unscoped, so
+     * the `operator` realm is unreachable over the wire and only a direct call can ask for it.
+     */
+    public function test_the_mounted_route_serves_frames_controller_and_emits_the_new_keys(): void
+    {
+        $route = app('router')->getRoutes()->getByName('frame.manifest');
+
+        $this->assertNotNull($route, 'The manifest route must be MOUNTED, not merely callable.');
+        $this->assertSame(FrameManifestController::class, $route->getActionName());
+
+        $response = $this->getJson('/frame/manifest');
+
+        $response->assertOk();
+        $this->assertSame(
+            ['resources', 'contexts', 'nav', 'routeContext'],
+            array_keys($response->json()),
+            'Over the wire, from the package, with no controller in this host.'
+        );
+        $this->assertNotEmpty($response->json('routeContext'));
+    }
+
     public function test_it_emits_nav_and_route_context_from_the_package_with_no_host_controller(): void
     {
         $this->assertSame(
