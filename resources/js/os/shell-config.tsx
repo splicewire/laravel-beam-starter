@@ -211,7 +211,11 @@ export const SURFACE_MAP: Record<string, RealmSurfaceBinding> = {
     },
     user: {
         label: 'Account',
-        route: '/account-home',
+        // `/account-home` until 2026-09-05 — a route that has never existed. `binding.route` is
+        // copied to `DesktopApp.route` (beam-ux shell/realm.ts:109) and dispatched by the launcher's
+        // `router.visit(a.route)` below, so the Account dock tile navigated to a 404. The authed
+        // home is `dashboard` (routes/web.php:53).
+        route: '/dashboard',
         subtitle: 'Authed · account',
         accent: '#10b981',
         geometry: { x: 180, y: 150, width: 760, height: 500 },
