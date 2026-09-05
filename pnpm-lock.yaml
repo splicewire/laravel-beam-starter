@@ -151,6 +151,9 @@ importers:
       react-rnd:
         specifier: ^10.5.2
         version: 10.5.3(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      react-router:
+        specifier: ^7.0.0
+        version: 7.18.2(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       sonner:
         specifier: ^2.0.0
         version: 2.0.8(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -231,9 +234,6 @@ importers:
       prettier-plugin-tailwindcss:
         specifier: ^0.6.11
         version: 0.6.14(prettier@3.9.6)
-      react-router:
-        specifier: ^7.0.0
-        version: 7.18.2(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       typescript-eslint:
         specifier: ^8.23.0
         version: 8.66.0(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3)
@@ -2234,6 +2234,7 @@ packages:
   eslint@9.39.5:
     resolution: {integrity: sha512-DgZS62aPLXKlnxILS/AYCoRvHaZeXceIzlXPkkGGzJWSow1aEk0lbTlxUSlyjC8jcaKxAdOnTDz+o1JFSBsyjw==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+    deprecated: This version is no longer supported. Please see https://eslint.org/version-support for other options.
     hasBin: true
     peerDependencies:
       jiti: '*'

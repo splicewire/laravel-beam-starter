@@ -2,6 +2,7 @@ import { Link } from '@inertiajs/react';
 import { BookOpen, FolderGit2, LayoutGrid } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
+import { NavFrame } from '@/components/nav-frame';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
 import {
@@ -53,6 +54,12 @@ export function AppSidebar() {
 
             <SidebarContent>
                 <NavMain items={mainNavItems} />
+                {/*
+                 * The tenant frame nav — projected server-side and, until now, rendered nowhere. It is
+                 * mounted HERE rather than inside the console page so the seats are reachable from
+                 * ordinary app chrome instead of only from a surface you must already be on.
+                 */}
+                <NavFrame />
             </SidebarContent>
 
             <SidebarFooter>

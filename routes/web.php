@@ -84,6 +84,49 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 require __DIR__.'/settings.php';
 
+// ── The TENANT FRAME CONSOLE mount ──────────────────────────────────────────────────────────────────
+//
+// One page component (`resources/js/pages/frame/console.tsx`) served at every path the tenant realm
+// projects, so the client router in `resources/js/frame/router.tsx` can match the leaf. Which surface
+// renders is the MANIFEST's decision, read from the same `routeContext` the nav's hrefs come from — a
+// second server-side resource→page mapping here would be a copy that can drift from the nav.
+//
+// ⚠️ **The segment list is DERIVED, never written down.** `RouteContextProjector::hrefs('tenant')` is
+// the same call the manifest's own hrefs come from, so a resource this host adds to
+// `config('frame.realms')['tenant']` is mounted by adding it there and nowhere else. Writing the
+// segments out would be the third copy of a list that already exists twice.
+//
+// ⚠️ **Registered BEFORE `Route::beamUxSite()` and constrained to those segments.** The renderer below
+// takes a `{path}` catch-all; an unconstrained catch-all here would swallow every authored page.
+// `rescue(..., [])` means a projector failure mounts NOTHING rather than mounting everything.
+Route::middleware(['auth', 'verified'])->group(function () {
+    $hrefs = rescue(function (): array {
+        $paths = array_values(app(Splicewire\Beam\Ux\Frame\RouteContextProjector::class)->hrefs('tenant'));
+
+        $nav = app(Splicewire\Beam\Ux\Frame\FrameNavContribution::class)->contributeNav('tenant');
+        $sections = array_map(
+            fn (array $item): ?string => $item['href'] ?? null,
+            $nav['nav']['items'] ?? []
+        );
+
+        return array_filter([...$paths, ...$sections]);
+    }, [], false);
+
+    // Only the FIRST segment is enumerated; the optional second matches the `/:id` record twin. Every
+    // tenant leaf is one of those two shapes (the projector emits `path` and `path/:id`, nothing
+    // deeper), so this stays exact rather than greedy.
+    $segments = array_values(array_unique(array_map(
+        fn (string $href): string => explode('/', trim($href, '/'))[0],
+        $hrefs
+    )));
+
+    if ($segments !== []) {
+        Route::get('{frameRoute}', fn () => Inertia::render('frame/console'))
+            ->where('frameRoute', '('.implode('|', array_map(fn (string $s): string => preg_quote($s, '/'), $segments)).')(\/[^\/]+)?')
+            ->name('frame.console');
+    }
+});
+
 // The PUBLIC ENTRY RENDERER (ADR-0209 §2) — resolves any unclaimed URL against the `site` realm's
 // containment tree and renders the entry through `resources/js/pages/site/entry.tsx`. This is what
 // makes the seeded `/docs`, `/docs/api` and `/docs/mcp` live on a fresh install, and what serves every
