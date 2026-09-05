@@ -2,7 +2,12 @@
 
 namespace Tests\Feature;
 
+use App\Models\User;
 use Illuminate\Http\Request;
+use Rushing\DataNav\Contracts\NavExpander;
+use Rushing\DataNav\Contracts\NavMatcher;
+use Rushing\DataNav\NavGate;
+use Rushing\DataNav\NavRegistry;
 use Illuminate\Routing\Route as RoutingRoute;
 use Schemastud\Frame\Http\Controllers\FrameManifestController;
 use Tests\TestCase;
@@ -24,6 +29,14 @@ use Tests\TestCase;
 class FrameManifestRouterTest extends TestCase
 {
     /**
+     * ⚠️ Added 2026-09-05 with the `frame.middleware` gate. Only ONE of these five tests needs a
+     * database, and it needs it for a real reason rather than an incidental one: authenticating a
+     * principal makes the nav collector ask `viewAny`, which routes through permission-cascade and
+     * reads the `permissions` table. An unpersisted actor cannot avoid it — the gate is the point.
+     */
+    use \Illuminate\Foundation\Testing\RefreshDatabase;
+
+    /**
      * ⚠️ This one goes over HTTP, and the other three do not — deliberately, and the split matters.
      *
      * `app->call()` on a controller cannot tell a MOUNTED route from an absent one, and skips
@@ -42,7 +55,17 @@ class FrameManifestRouterTest extends TestCase
         $this->assertNotNull($route, 'The manifest route must be MOUNTED, not merely callable.');
         $this->assertSame(FrameManifestController::class, $route->getActionName());
 
-        $response = $this->getJson('/frame/manifest');
+        // ⚠️ `actingAs` since 2026-09-05. This host now sets `frame.middleware` to
+        // `['web','auth']` (config/frame.php), because the package default `['web']` left the
+        // manifest — and Frame's whole generic CRUD socket — answering anonymous callers: a bare
+        // GET returned 200 with every nav seat and 12 resource definitions. Authenticating here is
+        // not a workaround; it is this test finally traversing the pipeline its own docblock says
+        // it exists to traverse, now that the pipeline has a gate in it.
+        //
+        // An UNPERSISTED `new User` on purpose: `auth` only asks whether a principal is present, and
+        // this test asserts the MOUNT, not what any particular actor may see. A factory would drag a
+        // database in and couple a routing assertion to a schema.
+        $response = $this->actingAs(new User)->getJson('/frame/manifest');
 
         $response->assertOk();
         $this->assertSame(
@@ -99,6 +122,24 @@ class FrameManifestRouterTest extends TestCase
         // answers it with an empty tree beside a real routeContext instead of throwing. The router
         // half needs no navigation to exist, and declining outright would throw away the half that
         // works — which is how a seam ships and delivers nothing.
+        // ⚠️ Rebinds an EMPTY NavRegistry since 2026-09-05, and the reason is the whole point of
+        // the test rather than a detail of it. beam-ux now registers a `DeclaredSectionNavigation`
+        // for every realm this host ships, so "no navigation is registered for tenant" stopped
+        // being reachable here — this test began failing with a populated Ops seat, and was then
+        // reported as a PRE-EXISTING failure by three separate later runs. It was not pre-existing:
+        // it was a real regression, laundered into background noise by being counted rather than read.
+        //
+        // The property it guards is still true and still load-bearing: `NavRegistry::build()` throws
+        // `RegistryMiss` on an unknown key, and "this host registered no navigation" must answer with
+        // an empty tree beside a real routeContext rather than 500 the manifest. Delete the catch in
+        // `FrameNavContribution::navigation()` and every host with no navigation breaks. So the test
+        // now creates the condition explicitly instead of relying on the host to happen to be in it.
+        $this->app->instance(NavRegistry::class, new NavRegistry(
+            $this->app->make(NavGate::class),
+            $this->app->make(NavExpander::class),
+            $this->app->make(NavMatcher::class),
+        ));
+
         $manifest = $this->manifestFor('tenant');
 
         $this->assertSame([], $manifest['nav']['items']);

@@ -56,6 +56,41 @@ return [
     | diagnostics and ride the tenant realm beside the content they report on.
     */
 
+    /*
+    |--------------------------------------------------------------------------
+    | Middleware — the gate on Frame's whole server surface
+    |--------------------------------------------------------------------------
+    |
+    | Frame mounts its manifest AND its generic resource CRUD socket under this
+    | stack (`schemastud/laravel-frame/routes/frame.php:15`), and its own docblock
+    | says a host "gates it by setting `frame.middleware`". This host never set the
+    | key, so it fell back to the package default `['web']` — which is CSRF and a
+    | session, not authorization.
+    |
+    | ⚠️ Measured 2026-09-05, before this line existed:
+    |   GET  /frame/manifest          -> 200 anonymously, disclosing every nav seat,
+    |                                    its children and 12 resource definitions
+    |   GET  /frame/resources/tokens  -> 200 anonymously
+    |   POST /frame/resources/{r}     -> reachable by ANY authenticated session;
+    |                                    a member-tier user got 422 (validation ran),
+    |                                    not 403 — `FrameResourceController` contains
+    |                                    zero `authorize`/`Gate::` calls by design,
+    |                                    because the gate is this line.
+    |
+    | The flagship already spells this out: all 32 of its frame routes carry
+    | `Authenticate:sanctum` and ZERO are ungated. This is the same act, and it is
+    | host-side because ticket 141 ruled that middleware is part of an EXPOSURE and
+    | "the route file owns it" — a package defaulting to auth would be guessing at a
+    | host's public surface.
+    |
+    | Note this gates the MANIFEST too, deliberately: it describes admin surfaces and
+    | has no business answering an anonymous caller. The public site pages ride
+    | `Route::beamUxSite()`, not this stack, and are unaffected.
+    |
+    */
+
+    'middleware' => ['web', 'auth'],
+
     'realms' => [
         'operator' => [
             'users',
