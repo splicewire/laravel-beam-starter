@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
 use Inertia\Testing\AssertableInertia;
+use PHPUnit\Framework\Attributes\WithEnvironmentVariable;
 use Splicewire\Beam\Ux\Frame\FrameNavContribution;
 use Splicewire\Beam\Ux\Frame\RouteContextProjector;
 use Tests\TestCase;
@@ -89,10 +90,13 @@ class FrameConsoleRoutesTest extends TestCase
 
     /**
      * The measured half of {@see SHADOWED_BY_A_PACKAGE_ROUTE}: the console mount must NOT steal
-     * `/schemas/{path}` from `rushing/laravel-data-schemas`. Excluding the path from the suite above
+     * `/schemas/{path}` from `schemastud/laravel-data-schemas`. Excluding the path from the suite above
      * says "we do not serve it"; this says "and we did not break the route that does" — which is the
      * assertion that would actually fail if route ordering moved.
      */
+    // The starter deliberately has no default authority. Declare this test's serving prerequisite
+    // before providers boot; relying on a developer's .env leaves canonical installs with no door.
+    #[WithEnvironmentVariable('SCHEMA_BASE_URI', 'https://starter.test/schemas')]
     public function test_the_console_mount_does_not_shadow_the_data_schemas_document_route(): void
     {
         $this->actingAs(User::factory()->create());
