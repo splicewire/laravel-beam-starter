@@ -53,9 +53,15 @@ createInertiaApp({
      * in `./pages` and a package-contributed page is by definition not there.
      */
     resolve: async (name: string) => {
-        const own = import.meta.glob<{ default: ComponentType }>(
+        // Keep the development page out of the production page map and chunk graph.
+        if (import.meta.env.DEV && name === '_prototype') {
+            return (await import('./pages/_prototype')).default;
+        }
+
+        const own = import.meta.glob<{ default: ComponentType }>([
             './pages/**/*.tsx',
-        );
+            '!./pages/_prototype.tsx',
+        ]);
         const local = own[`./pages/${name}.tsx`];
 
         if (local) {
@@ -71,6 +77,10 @@ createInertiaApp({
         throw new Error(`Page not found: ${name}`);
     },
     layout: (name) => {
+        if (import.meta.env.DEV && name === '_prototype') {
+            return null;
+        }
+
         switch (true) {
             // The OS-shell desktop is fully self-chromed (menu bar + dock + windows) — no wrapping layout,
             // never (re-)wrapped by the persistent OsLayout overlay either (it mounts its OWN operator

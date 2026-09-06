@@ -40,12 +40,26 @@ with **the host's** toolchain (`@mdx-js/mdx`) and there is deliberately no in-br
 Run it again after editing a body outside the app; `splicewire:beam:doctor` reports anything stale.
 
 **Prototyping ships in the bare install.** The starter requires
-`splicewire/laravel-beam-ux-prototype`, so `splicewire:beam:install` also stamps the rushing-prototype
-scaffold (`ui/src/_prototype/**` starter + `_chrome/nav.ts`) and the host-bound
-`docs/agents/rushing-prototype.convention.template.md` — the package self-registers its step into
-`BeamInstallManifest`. Confirm the wiring landed with `splicewire:beam:doctor` (the prototype audit
-reports advisory), or drive the prototype tooling directly via
-`php artisan splicewire:beam:ux:prototype:{install,doctor}`.
+`splicewire/laravel-beam-ux-prototype` and uses its existing Inertia integration. With
+`APP_ENV=local` and `npm run dev` running, open `/_prototype` for the gallery or
+`/_prototype/starter` for the starter example. The package registers the local-only Laravel route;
+`resources/js/pages/_prototype.tsx` hosts its prototype router without the application layouts.
+
+Author throwaway prototypes in `resources/js/_prototype/**`, importing shipped components read-only
+over colocated fixtures. `_chrome/nav.ts` contains host-owned navigation data. The package installer
+publishes the scaffold and binds its convention to the host; `config/beam/ux-prototype.php` points it
+at this starter's source tree, stylesheet, package manifest, and brand component.
+
+The Inertia resolver excludes the prototype host page from its production glob and imports it only
+under `import.meta.env.DEV`. The page also guards the discovery glob. Run the packaged build check:
+
+```bash
+npm run beam:verify-prototype-boundary
+```
+
+This builds the application and scans `public/build` (the `prototype.outDir` in `package.json`) for
+prototype module and route tokens. The package's static wiring audit is available through
+`php artisan splicewire:beam:ux:prototype:doctor`; add `--boundary` to run the build check too.
 
 ## Exposing a model in the admin — drop one annotated Data class
 

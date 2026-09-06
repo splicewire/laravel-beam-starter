@@ -7,6 +7,7 @@ import { defineConfig } from 'vite';
 import { familySources } from '@schemastud/seam/vite';
 
 export default defineConfig({
+    resolve: { dedupe: ['react-router'] },
     plugins: [
         familySources(),
         laravel({

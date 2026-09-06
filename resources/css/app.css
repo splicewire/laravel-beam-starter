@@ -67,6 +67,9 @@
     --color-chart-4: var(--chart-4);
     --color-chart-5: var(--chart-5);
 
+    --color-sidebar-deep: var(--sidebar-deep);
+    --color-sidebar-active-foreground: var(--sidebar-active-foreground);
+    --color-sidebar-avatar: var(--sidebar-avatar);
     --color-sidebar: var(--sidebar);
     --color-sidebar-foreground: var(--sidebar-foreground);
     --color-sidebar-primary: var(--sidebar-primary);
@@ -111,6 +114,10 @@
     --sidebar-accent-foreground: oklch(0.205 0 0);
     --sidebar-border: oklch(0.922 0 0);
     --sidebar-ring: oklch(0.87 0 0);
+    --sidebar-deep: var(--sidebar);
+    --sidebar-active-foreground: var(--sidebar-foreground);
+    --sidebar-avatar: var(--sidebar-accent);
+    --dotted-dot: var(--border);
 }
 
 .dark {
@@ -156,4 +163,9 @@
     body {
         @apply bg-background text-foreground;
     }
+}
+
+@utility dotted-bg {
+    background-image: radial-gradient(var(--dotted-dot) 1px, transparent 1px);
+    background-size: 16px 16px;
 }
