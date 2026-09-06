@@ -119,8 +119,8 @@ function AuthNavLinks() {
             <Link className="navlink" href="/dashboard">
                 Dashboard
             </Link>
-            <Link className="navlink" href="/logout" as="button">
-                method="post" Log out
+            <Link className="navlink" href="/logout" method="post" as="button">
+                Log out
             </Link>
         </>
     );
