@@ -88,6 +88,14 @@ class SitemapData extends Data { /* … Column-annotated fields … */ }
 See `app/Data/SitemapData.php` for the worked example (the editable sitemap resource). Adding your own
 resource is the same one-file move: annotate a Data class, drop it in `app/Data/`, done.
 
+## Checks
+
+`composer test` runs **the PHP suite and nothing else** — it no longer chains pint and phpstan, which
+stay reachable as `composer lint:check` and `composer types:check`. The composite is
+`composer ci:check`, which delegates to `bin/ci-check` and runs **every** gate (suite first, then
+pint, phpstan, eslint, prettier, tsc) so no gate can mask another. It exits `0` all-passed, `1` a
+real failure, and `2` when a gate could not be measured at all — test `!= 0`, never `== 1`.
+
 ## Co-dev overlay (local package dev)
 
 To develop against your local package checkouts in `~/Workspaces/laravel/packages/**` (symlinked into

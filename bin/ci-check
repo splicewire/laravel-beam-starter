@@ -1,0 +1,220 @@
+<?php
+
+/**
+ * The composite gate — every check runs, nothing masks anything else.
+ *
+ * Composer script arrays run through ProcessExecutor and ABORT ON THE FIRST NON-ZERO. There is no
+ * `continue-on-error`, so aggregation is not expressible in composer at all. That is why this file
+ * exists: `composer ci:check` is one step (`@php bin/ci-check`) and the aggregation is an explicit
+ * loop here, over a FLAT gate list with exactly one aggregation point.
+ *
+ * The history this removes: `ci:check` ran eslint first and `composer test` nested pint + phpstan
+ * ahead of `artisan test`, so a style failure at EITHER level reported a red CI having executed
+ * zero tests. `composer test` is now the suite and only the suite; pint and phpstan are reachable
+ * as `composer lint:check` / `composer types:check`, and this runner is the only composite.
+ *
+ * The suite runs FIRST, deliberately. Nothing is skipped, so ordering costs nothing — but an
+ * interrupted run then banks the most informative gate instead of the least, and any future
+ * short-circuit can only ever mask style.
+ *
+ * Usage: `composer ci:check` (or `php bin/ci-check`). Invoke through composer's `@php`, never as a
+ * bare `bin/ci-check` path: a bare path makes the OS follow the shebang to the system interpreter
+ * at 128M, which is where large runs die with no summary. Handed composer's interpreter instead,
+ * this file needs no exec bit — one less mode bit a fresh clone can lose.
+ *
+ * EXIT — three states, not two:
+ *
+ *   0  every gate ran and passed
+ *   1  every gate ran; at least one FAILED                — a verdict
+ *   2  a gate could not be MEASURED                       — NOT a verdict; dominates 1
+ *
+ * `2` covers UNSPAWNED (proc_open returned false), SILENT (a non-zero exit having written ZERO
+ * BYTES, which is what laravel/pao does on a fatal) and TRUNCATED (a run that exited 0 without ever
+ * printing a summary — memory death and SIGPIPE both exit 0). "phpstan is missing from vendor" and
+ * "phpstan found 11 errors" must never be the same byte. Anything testing `!= 0` is correct;
+ * anything testing `== 1` would miss the unmeasured state.
+ *
+ * TRUNCATED is decided by `splicewire:beam:dev:witness-run --assert`, from the `require-dev`
+ * splicewire/laravel-beam-dev. Dev deps do not cascade, so a `--no-dev` install cannot run the
+ * witness and `php:test` reports UNMEASURED rather than a green it has not earned.
+ *
+ * Environment, per gate:
+ *   XDEBUG_MODE=off  everywhere — an ENV VAR, never an ini flag, because a parallel runner respawns
+ *                    each worker from PHP_BINARY and `-d` flags die at the fan-out.
+ *   PAO_DISABLE=1    on `php:test` ONLY (owner ruling 2026-09-06). pao has hidden an error phpunit
+ *                    reported, and on a fatal it prints nothing at all — an empty log with exit 1,
+ *                    which is undiagnosable. The other gates keep their pao output.
+ *                    Consequence for anyone reading the captured log: `php:test`'s summary is a
+ *                    pest/phpunit line while pint and phpstan still emit pao JSON, so READ THE
+ *                    "tool" VALUE rather than counting JSON lines.
+ *
+ * Every command is spawned with an ARGV ARRAY and no shell, so no quoting rule applies to any of it.
+ */
+$root = dirname(__DIR__);
+$php = PHP_BINARY;
+
+/** Prelude — not a gate. A stale config cache invalidates every gate below it rather than failing one. */
+$prelude = [$php, 'artisan', 'config:clear', '--ansi'];
+
+/**
+ * The gate list. The `<stack>:<gate>` prefix exists only here — the underlying `types:check` names
+ * in composer.json and package.json stay as they are, so consumers' muscle memory and the sibling
+ * starters' scripts are untouched. Note that `types:check` names TWO DIFFERENT GATES: the composer
+ * one is phpstan, the npm one is tsc. Both print, so neither can be mistaken for the other.
+ */
+$gates = [
+    'php:test' => [
+        'cmd' => [$php, 'artisan', 'test'],
+        'env' => ['PAO_DISABLE' => '1'],
+        'witness' => true,
+    ],
+    'php:lint' => ['cmd' => [$php, 'vendor/bin/pint', '--parallel', '--test']],
+    'php:types' => ['cmd' => [$php, 'vendor/bin/phpstan', 'analyse']],
+    'js:lint' => ['cmd' => ['npm', 'run', 'lint:check']],
+    'js:format' => ['cmd' => ['npm', 'run', 'format:check']],
+    'js:types' => ['cmd' => ['npm', 'run', 'types:check']],
+];
+
+/**
+ * Run one command, streaming its output while counting the bytes it wrote.
+ *
+ * @param  list<string>  $cmd
+ * @param  array<string, string>  $env
+ * @return array{status: string, code: int|null, bytes: int}
+ */
+function ci_run(array $cmd, string $cwd, array $env, ?string $logPath = null): array
+{
+    $log = $logPath === null ? null : fopen($logPath, 'w');
+    $spec = [0 => ['file', '/dev/null', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']];
+    $pipes = [];
+    $process = @proc_open($cmd, $spec, $pipes, $cwd, array_merge(getenv(), ['XDEBUG_MODE' => 'off'], $env));
+
+    if (! is_resource($process)) {
+        return ['status' => 'UNSPAWNED', 'code' => null, 'bytes' => 0];
+    }
+
+    stream_set_blocking($pipes[1], false);
+    stream_set_blocking($pipes[2], false);
+    $bytes = 0;
+
+    while (true) {
+        $open = array_filter([$pipes[1], $pipes[2]], fn ($p) => ! feof($p));
+        if ($open === []) {
+            break;
+        }
+        $read = array_values($open);
+        $write = $except = [];
+        if (stream_select($read, $write, $except, 1) === false) {
+            break;
+        }
+        foreach ($read as $pipe) {
+            $chunk = fread($pipe, 8192);
+            if ($chunk === false || $chunk === '') {
+                continue;
+            }
+            $bytes += strlen($chunk);
+            fwrite(STDOUT, $chunk);
+            if ($log !== false && $log !== null) {
+                fwrite($log, $chunk);
+            }
+        }
+    }
+
+    fclose($pipes[1]);
+    fclose($pipes[2]);
+    if ($log !== false && $log !== null) {
+        fclose($log);
+    }
+    $code = proc_close($process);
+
+    if ($code === 0) {
+        return ['status' => 'PASS', 'code' => 0, 'bytes' => $bytes];
+    }
+
+    // A non-zero exit having written nothing is not a verdict — it is a gate that could not report.
+    return ['status' => $bytes === 0 ? 'SILENT' : 'FAIL', 'code' => $code, 'bytes' => $bytes];
+}
+
+fwrite(STDOUT, "\n\033[1m▶ prelude  config:clear\033[0m\n");
+$pre = ci_run($prelude, $root, []);
+if ($pre['status'] !== 'PASS') {
+    fwrite(STDERR, "\n\033[31mUNMEASURED\033[0m — the prelude (config:clear) did not succeed ({$pre['status']}).\n");
+    fwrite(STDERR, "A stale config cache invalidates every gate, so no gate was run.\n");
+    exit(2);
+}
+
+$results = [];
+foreach ($gates as $name => $gate) {
+    fwrite(STDOUT, "\n\033[1m▶ {$name}\033[0m  ".implode(' ', $gate['cmd'])."\n");
+
+    $logPath = empty($gate['witness']) ? null : tempnam(sys_get_temp_dir(), 'ci-check-'.getmypid().'-');
+    $results[$name] = ci_run($gate['cmd'], $root, $gate['env'] ?? [], $logPath);
+
+    if ($logPath === null) {
+        continue;
+    }
+
+    /**
+     * A truncated run EXITS 0 — memory death and SIGPIPE both do — so a zero here is not yet a pass.
+     * Ask the witness whether the captured log carries a real summary line. Only a zero exit needs
+     * asking: a non-zero one has already reported, and a zero-byte one is SILENT above.
+     *
+     * The witness is invoked in its `--assert` form, against a log this runner captured, NEVER by
+     * wrapping the suite as `artisan witness-run -- artisan test`. Measured 2026-09-06 at this
+     * starter: the wrapping form is an artisan command, so it boots the framework, `.env` puts
+     * `APP_ENV=local` into the process environment, and phpunit.xml's non-forced `<env>` entries
+     * cannot override an already-set variable — the suite then runs in `local`, CSRF is live, and
+     * 21 tests fail with 419 that pass every other way. The guard corrupted the run it witnessed.
+     */
+    if ($results[$name]['status'] === 'PASS') {
+        $witness = ci_run(
+            [$php, 'artisan', 'splicewire:beam:dev:witness-run', '--assert='.$logPath, '--exit-code=0'],
+            $root,
+            [],
+        );
+
+        if ($witness['status'] !== 'PASS') {
+            $results[$name] = ['status' => 'TRUNCATED', 'code' => 0, 'bytes' => $results[$name]['bytes']];
+        }
+    }
+
+    @unlink($logPath);
+}
+
+fwrite(STDOUT, "\n".str_repeat('─', 72)."\n");
+
+$failed = $unmeasured = [];
+foreach ($results as $name => $r) {
+    $label = match ($r['status']) {
+        'PASS' => "\033[32mPASS\033[0m",
+        'FAIL' => "\033[31mFAIL\033[0m",
+        default => "\033[33m{$r['status']}\033[0m",
+    };
+    $code = $r['code'] === null ? 'no exit' : "exit {$r['code']}";
+    fwrite(STDOUT, sprintf("  %-6s %-10s %s, %d bytes\n", $label, $name, $code, $r['bytes']));
+
+    match ($r['status']) {
+        'PASS' => null,
+        'FAIL' => $failed[] = $name,
+        default => $unmeasured[] = $name,
+    };
+}
+
+fwrite(STDOUT, str_repeat('─', 72)."\n");
+
+if ($unmeasured !== []) {
+    fwrite(STDOUT, "\n\033[33mUNMEASURED\033[0m: ".implode(', ', $unmeasured)."\n");
+    fwrite(STDOUT, "This is not a verdict — those gates did not report. Exit 2.\n");
+    if ($failed !== []) {
+        fwrite(STDOUT, '(Also failing: '.implode(', ', $failed).")\n");
+    }
+    exit(2);
+}
+
+if ($failed !== []) {
+    fwrite(STDOUT, "\n\033[31mFAILED\033[0m: ".implode(', ', $failed)."\n");
+    exit(1);
+}
+
+fwrite(STDOUT, "\n\033[32mAll ".count($gates)." gates passed.\033[0m\n");
+exit(0);
