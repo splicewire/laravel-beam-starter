@@ -109,7 +109,7 @@ return new class extends Migration
                 // omitting it unconditionally reproduces `a5df9e1` — `column "batch_uuid" ... does not
                 // exist`, 4 failing tests — on the FLAGSHIP, which resolves 4.12.3 while beam resolves
                 // 5.0.0. `LogBatch` is the discriminator: present in 4.x, gone in 5.x.
-                if (class_exists(\Spatie\Activitylog\LogBatch::class)) {
+                if (class_exists(Spatie\Activitylog\LogBatch::class)) {
                     $table->uuid('batch_uuid')->nullable();
                 }
 

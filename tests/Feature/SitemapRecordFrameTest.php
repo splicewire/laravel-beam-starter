@@ -13,7 +13,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Cache;
 use Rushing\Doctor\DoctorStatus;
-use Splicewire\Beam\Frame\AdminResourceRegistry;
+use Splicewire\Beam\Particle\Backing\EloquentBacking;
+use Splicewire\Beam\Particle\ParticleResourceRegistry;
 use Tests\TestCase;
 
 /**
@@ -116,14 +117,14 @@ class SitemapRecordFrameTest extends TestCase
 
     public function test_the_sitemap_admin_resource_registers(): void
     {
-        $registry = app(AdminResourceRegistry::class);
+        $registry = app(ParticleResourceRegistry::class);
 
         $this->assertTrue($registry->has('sitemap'));
 
-        $definition = $registry->get('sitemap');
+        $definition = $registry->definition('sitemap');
 
         $this->assertSame('sitemap', $definition->key);
-        $this->assertSame('model', $definition->sourceKind);
+        $this->assertInstanceOf(EloquentBacking::class, $registry->get('sitemap')->backing());
         $this->assertSame(SitemapRecord::class, $definition->model);
         $this->assertSame(SitemapData::class, $definition->data);
         $this->assertSame('Sitemap', $definition->nav->label);
@@ -156,12 +157,14 @@ class SitemapRecordFrameTest extends TestCase
     public function test_doctor_warns_advisory_on_a_broken_record_link(): void
     {
         SitemapRecord::create(['payload' => ['label' => 'Gone', 'href' => '/no-such-route', 'order' => 1]]);
+        SitemapRecord::create(['payload' => ['label' => 'Malformed', 'href' => 'http://:', 'order' => 2]]);
 
         [$finding] = (new OrphanedNavItemAudit(app(Router::class)))->run();
 
         // Advisory: a broken link WARNs (never fails) so the doctor gate stays green.
         $this->assertSame(DoctorStatus::Warn, $finding->status);
         $this->assertStringContainsString('/no-such-route', $finding->detail);
+        $this->assertStringContainsString('http://:', $finding->detail);
     }
 
     public function test_doctor_skips_external_links(): void

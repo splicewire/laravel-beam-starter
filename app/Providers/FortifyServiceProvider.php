@@ -156,7 +156,7 @@ class FortifyServiceProvider extends ServiceProvider
      */
     private function demoAccounts(): array
     {
-        return app(DemoLoginLinks::class)->all();
+        return array_values(app(DemoLoginLinks::class)->all());
     }
 
     /**

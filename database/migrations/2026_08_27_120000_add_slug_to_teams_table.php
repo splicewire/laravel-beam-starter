@@ -87,7 +87,7 @@ return new class extends Migration
         $taken = DB::table($teams)->whereNotNull('slug')->pluck('slug')->all();
         $taken = array_flip(array_map('strval', $taken));
 
-        DB::table($teams)->whereNull('slug')->orderBy('id')->each(function (object $team) use ($teams, &$taken): void {
+        DB::table($teams)->whereNull('slug')->orderBy('id')->each(function (stdClass $team) use ($teams, &$taken): void {
             $base = Str::slug($this->source($team)) ?: 'team';
             $slug = $base;
             $n = 1;
@@ -106,7 +106,7 @@ return new class extends Migration
      * The owner's handle for a personal team, the team's own name otherwise — the model's rule, read
      * straight off the row and its owner rather than through Eloquent.
      */
-    private function source(object $team): string
+    private function source(stdClass $team): string
     {
         if (! ($team->personal_team ?? false)) {
             return (string) ($team->name ?? '');

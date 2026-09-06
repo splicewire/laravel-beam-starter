@@ -91,14 +91,16 @@ class OrphanedNavItemAudit implements DoctorAudit
      */
     private function registeredPaths(): array
     {
-        return array_map(
+        return array_values(array_map(
             fn ($route): string => $this->normalize($route->uri()),
             $this->router->getRoutes()->getRoutes(),
-        );
+        ));
     }
 
     private function normalize(string $path): string
     {
-        return '/'.trim(parse_url($path, PHP_URL_PATH) ?? $path, '/');
+        $parsed = parse_url($path, PHP_URL_PATH);
+
+        return '/'.trim(is_string($parsed) ? $parsed : $path, '/');
     }
 }

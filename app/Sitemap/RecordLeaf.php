@@ -20,12 +20,12 @@ class RecordLeaf implements SitemapLeaf
 
     public function items(): array
     {
-        return Cache::rememberForever(self::CACHE_KEY, function (): array {
+        return array_values(Cache::rememberForever(self::CACHE_KEY, function (): array {
             return SitemapRecord::query()
                 ->orderBy('created_at')
                 ->get()
                 ->map(fn (SitemapRecord $record): NavItem => $record->toNavItem())
                 ->all();
-        });
+        }));
     }
 }

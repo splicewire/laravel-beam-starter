@@ -90,7 +90,7 @@ class RootSitemap
             return [
                 'key' => $section['key'],
                 'label' => $section['label'],
-                'items' => array_values($items),
+                'items' => $items,
             ];
         }, $this->sections);
     }

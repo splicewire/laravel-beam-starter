@@ -4,11 +4,11 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Route as RoutingRoute;
 use Rushing\DataNav\Contracts\NavExpander;
 use Rushing\DataNav\Contracts\NavMatcher;
 use Rushing\DataNav\NavGate;
 use Rushing\DataNav\NavRegistry;
-use Illuminate\Routing\Route as RoutingRoute;
 use Schemastud\Frame\Http\Controllers\FrameManifestController;
 use Tests\TestCase;
 
