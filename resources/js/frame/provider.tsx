@@ -52,7 +52,9 @@ export function TenantFrameProvider({ children }: { children: ReactNode }) {
 
     const can = useCallback<FrameInjection['can']>(
         (action: FrameAction, resource: string) => {
-            if (action === 'viewAny' || action === 'view') return true;
+            if (action === 'viewAny' || action === 'view') {
+                return true;
+            }
 
             // Absent block (manifest still loading, or a server predating the capability map) ⇒
             // no write affordance. Deny-while-unknown, matching the socket's own posture.

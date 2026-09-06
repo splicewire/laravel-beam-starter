@@ -21,7 +21,6 @@
  * suspecting anything here, and verify by diffing emitted class counts — never by loading a page.
  */
 
-
 @custom-variant dark (&:is(.dark *));
 
 @theme {

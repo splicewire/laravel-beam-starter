@@ -20,7 +20,8 @@
 //      behind `renderPageProperties`.
 //   4. THE BRAND. A package ships no wordmark — `BeamMark` and the "beam" label are ours.
 import { router, usePage } from '@inertiajs/react';
-import { OperatorDesk as Desk, type OperatorTool } from '@splicewire/beam-ux/desk';
+import { OperatorDesk as Desk } from '@splicewire/beam-ux/desk';
+import type { OperatorTool } from '@splicewire/beam-ux/desk';
 import { Suspense, lazy } from 'react';
 import { PageProperties } from '@/os/page-properties';
 
@@ -39,7 +40,11 @@ const TOOLS: OperatorTool[] = [
         title: 'Dashboard',
         accent: '#4B5563',
         render: () => (
-            <Suspense fallback={<div className="p-6 text-sm text-slate-500">Loading…</div>}>
+            <Suspense
+                fallback={
+                    <div className="p-6 text-sm text-slate-500">Loading…</div>
+                }
+            >
                 <OperatorDashboard />
             </Suspense>
         ),
@@ -55,7 +60,13 @@ const TOOLS: OperatorTool[] = [
 // defining `--op-*`.
 function BeamMark({ className }: { className?: string }) {
     return (
-        <svg className={className} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <svg
+            className={className}
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+        >
             <path
                 d="M3 7 C9 7 10 12 14 12 M3 17 C9 17 10 12 14 12 M14 12 H21"
                 stroke="currentColor"
@@ -64,7 +75,12 @@ function BeamMark({ className }: { className?: string }) {
             />
             <circle cx="3" cy="7" r="1.6" fill="currentColor" />
             <circle cx="3" cy="17" r="1.6" fill="currentColor" />
-            <circle cx="14" cy="12" r="2.7" fill="var(--beam-accent, #00b3c8)" />
+            <circle
+                cx="14"
+                cy="12"
+                r="2.7"
+                fill="var(--beam-accent, #00b3c8)"
+            />
         </svg>
     );
 }
@@ -78,7 +94,10 @@ export default function OperatorDesk() {
             inControlPanel={!!component?.startsWith('operator/')}
             orbLabel="Operator"
             orbIcon={<BeamMark className="mark" />}
-            brand={{ mark: <BeamMark className="op-menu-brand-mark" />, label: 'beam' }}
+            brand={{
+                mark: <BeamMark className="op-menu-brand-mark" />,
+                label: 'beam',
+            }}
             links={{
                 frontend: { href: '/' },
                 control: { href: '/operator' },
@@ -97,7 +116,9 @@ export default function OperatorDesk() {
                         close();
                         window.dispatchEvent(new CustomEvent('beam-ux:edit'));
                     }}
-                    onExitContent={() => window.dispatchEvent(new CustomEvent('beam-ux:exit'))}
+                    onExitContent={() =>
+                        window.dispatchEvent(new CustomEvent('beam-ux:exit'))
+                    }
                 />
             )}
             // Nav suppression: a click inside a float window that would trigger a full-page GET visit
@@ -107,7 +128,8 @@ export default function OperatorDesk() {
             navGuard={({ shouldSuppress, disarm }) =>
                 router.on('before', (event) => {
                     const method = (
-                        (event as CustomEvent<{ visit?: { method?: string } }>).detail?.visit?.method ?? 'get'
+                        (event as CustomEvent<{ visit?: { method?: string } }>)
+                            .detail?.visit?.method ?? 'get'
                     ).toLowerCase();
 
                     if (shouldSuppress() && method === 'get') {
