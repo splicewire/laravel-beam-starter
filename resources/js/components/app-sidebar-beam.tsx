@@ -22,9 +22,7 @@ import { UserMenuContent } from '@/components/user-menu-content';
  * either shell.
  */
 function BeamNavUser() {
-    const { auth } = usePage<{
-        auth: { user: { name: string; email: string; avatar?: string } | null };
-    }>().props;
+    const { auth } = usePage().props;
 
     if (!auth.user) {
         return null;

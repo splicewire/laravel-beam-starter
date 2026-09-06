@@ -13,12 +13,15 @@ overrides:
   '@schemastud/mainframe': file:../../../js/packages/schemastud/mainframe
   '@schemastud/nav': file:../../../js/packages/schemastud/nav
   '@schemastud/seam': file:../../../js/packages/schemastud/seam
-  '@splicewire/_resources': file:../../../js/packages/splicewire/_resources
+  '@splicewire/beam-resources': file:../../../js/packages/beam/beam-resources
 
 importers:
 
   .:
     dependencies:
+      '@inertiajs/core':
+        specifier: ^3.0.0
+        version: 3.6.1
       '@inertiajs/react':
         specifier: ^3.0.0
         version: 3.6.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -1399,13 +1402,13 @@ packages:
   '@simplewebauthn/browser@13.3.0':
     resolution: {integrity: sha512-BE/UWv6FOToAdVk0EokzkqQQDOWtNydYlY6+OrmiZ5SCNmb41VehttboTetUM3T/fr6EAFYVXjz4My2wg230rQ==}
 
-  '@splicewire/_resources@file:../../../js/packages/splicewire/_resources':
-    resolution: {directory: ../../../js/packages/splicewire/_resources, type: directory}
-
   '@splicewire/beam-mainframe@file:../../../js/packages/beam/beam-mainframe':
     resolution: {directory: ../../../js/packages/beam/beam-mainframe, type: directory}
     peerDependencies:
       react: '>=18'
+
+  '@splicewire/beam-resources@file:../../../js/packages/beam/beam-resources':
+    resolution: {directory: ../../../js/packages/beam/beam-resources, type: directory}
 
   '@splicewire/beam-ux-prototype@file:../../../js/packages/beam/beam-ux-prototype':
     resolution: {directory: ../../../js/packages/beam/beam-ux-prototype, type: directory}
@@ -5026,8 +5029,6 @@ snapshots:
 
   '@simplewebauthn/browser@13.3.0': {}
 
-  '@splicewire/_resources@file:../../../js/packages/splicewire/_resources': {}
-
   '@splicewire/beam-mainframe@file:../../../js/packages/beam/beam-mainframe(@preact/signals-core@1.14.4)(@rjsf/core@6.7.1(@rjsf/utils@6.7.1(react@19.2.8))(react@19.2.8))(@rjsf/shadcn@6.7.1(@rjsf/core@6.7.1(@rjsf/utils@6.7.1(react@19.2.8))(react@19.2.8))(@rjsf/utils@6.7.1(react@19.2.8))(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tailwindcss@4.3.3))(@rjsf/utils@6.7.1(react@19.2.8))(@rjsf/validator-ajv8@6.7.1(@rjsf/utils@6.7.1(react@19.2.8)))(ajv@8.20.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(vite@8.2.1(@types/node@22.20.1)(esbuild@0.28.2)(jiti@2.7.0))':
     dependencies:
       '@schemastud/mainframe': file:../../../js/packages/schemastud/mainframe(@preact/signals-core@1.14.4)(@rjsf/core@6.7.1(@rjsf/utils@6.7.1(react@19.2.8))(react@19.2.8))(@rjsf/shadcn@6.7.1(@rjsf/core@6.7.1(@rjsf/utils@6.7.1(react@19.2.8))(react@19.2.8))(@rjsf/utils@6.7.1(react@19.2.8))(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tailwindcss@4.3.3))(@rjsf/utils@6.7.1(react@19.2.8))(@rjsf/validator-ajv8@6.7.1(@rjsf/utils@6.7.1(react@19.2.8)))(ajv@8.20.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(vite@8.2.1(@types/node@22.20.1)(esbuild@0.28.2)(jiti@2.7.0))
@@ -5042,6 +5043,8 @@ snapshots:
       - preact
       - react-dom
       - vite
+
+  '@splicewire/beam-resources@file:../../../js/packages/beam/beam-resources': {}
 
   '@splicewire/beam-ux-prototype@file:../../../js/packages/beam/beam-ux-prototype(lucide-react@0.475.0(react@19.2.8))(react-router@7.18.2(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react@19.2.8)':
     dependencies:
@@ -5061,7 +5064,7 @@ snapshots:
       '@schemastud/frame': file:../../../js/packages/schemastud/frame(r2fjndmfj2wrmhllhu5nesl7bi)
       '@schemastud/seam': file:../../../js/packages/schemastud/seam(@rjsf/core@6.7.1(@rjsf/utils@6.7.1(react@19.2.8))(react@19.2.8))(@rjsf/shadcn@6.7.1(@rjsf/core@6.7.1(@rjsf/utils@6.7.1(react@19.2.8))(react@19.2.8))(@rjsf/utils@6.7.1(react@19.2.8))(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tailwindcss@4.3.3))(@rjsf/utils@6.7.1(react@19.2.8))(@rjsf/validator-ajv8@6.7.1(@rjsf/utils@6.7.1(react@19.2.8)))(ajv@8.20.0)(react@19.2.8)(vite@8.2.1(@types/node@22.20.1)(esbuild@0.28.2)(jiti@2.7.0))
       '@schemastud/ui': file:../../../js/packages/schemastud/ui(@radix-ui/react-dialog@1.1.23(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@radix-ui/react-select@2.3.7(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@radix-ui/react-separator@1.1.15(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@radix-ui/react-slot@1.3.3(@types/react@19.2.18)(react@19.2.8))(@radix-ui/react-switch@1.3.7(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@radix-ui/react-tooltip@1.2.16(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@tanstack/react-table@8.21.3(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(lucide-react@0.475.0(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
-      '@splicewire/_resources': file:../../../js/packages/splicewire/_resources
+      '@splicewire/beam-resources': file:../../../js/packages/beam/beam-resources
       '@tanstack/react-query': 5.101.4(react@19.2.8)
       lucide-react: 0.475.0(react@19.2.8)
       react: 19.2.8
