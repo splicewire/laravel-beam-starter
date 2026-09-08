@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b7db45b1d7084d94bcc4a0f46fba45b3",
+    "content-hash": "970e5d500aa792978d9a85f75fffc934",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -7965,11 +7965,11 @@
         },
         {
             "name": "splicewire/laravel-beam-mcp",
-            "version": "dev-main",
+            "version": "dev-fix/mcp-onboarding",
             "source": {
                 "type": "git",
                 "url": "https://github.com/splicewire/laravel-beam-mcp.git",
-                "reference": "5d4669885c2b0ca10e44c5adffa6c519a7ead5f5"
+                "reference": "027afbdd3613366974e3ca4de57a54889dfcaf13"
             },
             "require": {
                 "illuminate/contracts": "^11.0|^12.0|^13.0",
@@ -7988,7 +7988,6 @@
                 "pestphp/pest": "^2.0|^3.0",
                 "wikimedia/composer-merge-plugin": "^2.1"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -8061,7 +8060,7 @@
                 "model-context-protocol",
                 "schemastud"
             ],
-            "time": "2026-08-28T18:40:42+00:00"
+            "time": "2026-09-08T14:45:50+00:00"
         },
         {
             "name": "splicewire/laravel-beam-mdx",
@@ -15641,6 +15640,7 @@
         "rushing/laravel-surgeon": 20,
         "splicewire/laravel-beam": 20,
         "splicewire/laravel-beam-dev": 20,
+        "splicewire/laravel-beam-mcp": 20,
         "splicewire/laravel-beam-provision": 20
     },
     "prefer-stable": true,

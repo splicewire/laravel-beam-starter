@@ -29,11 +29,12 @@ and it re-generates at install and deploy (never on request). The pages are `Bea
 site owns: edit them, move them, or re-root the whole subtree by changing the `/docs` row's `segment`.
 Nothing re-asserts them, and deleting them is a supported way to opt out.
 
-Two files own the host half, and both are yours to theme: `routes/web.php`'s `Route::beamUxSite()`
-mount (registered **last**, because it is a catch-all) and `resources/js/pages/site/entry.tsx`, which
-supplies the chrome and the component map a page body may reach for. An installed beam package
-contributes a docs page by seeding a row and mounting a JSON endpoint — it ships no frontend, so that
-component map is what makes its page resolve.
+The host mounts `Route::beamUxSite()` last in `routes/web.php`, because it is a catch-all.
+`resources/js/app.tsx` configures the packaged entry page from `@splicewire/beam-ux/pages` with
+the site's link component and `SiteLayout` wrapper. Its resolver checks host pages first, then the
+package's page map; add `resources/js/pages/site/entry.tsx` only when you want to replace that page.
+An installed Beam package contributes a docs page by seeding a row and, where needed, mounting the
+JSON endpoint its body renders.
 
 `composer setup` runs `splicewire:beam:ux:compile` after `pnpm install`, because entry bodies compile
 with **the host's** toolchain (`@mdx-js/mdx`) and there is deliberately no in-browser compile fallback.
