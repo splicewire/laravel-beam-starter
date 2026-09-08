@@ -210,17 +210,17 @@
             "@php artisan dev"
         ],
         "lint": [
-            "pint --parallel"
+            "@php -d memory_limit=1G vendor/bin/pint --parallel"
         ],
         "lint:check": [
-            "pint --parallel --test"
+            "@php -d memory_limit=1G vendor/bin/pint --parallel --test"
         ],
         "ci:check": [
             "Composer\\Config::disableProcessTimeout",
             "@php bin/ci-check"
         ],
         "types:check": [
-            "@php vendor/bin/phpstan analyse"
+            "@php -d memory_limit=1G vendor/bin/phpstan analyse"
         ],
         "test": [
             "@php artisan config:clear --ansi",
