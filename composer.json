@@ -157,7 +157,7 @@
         "laravel/fortify": "^1.37.2",
         "laravel/framework": "^13.17",
         "laravel/tinker": "^3.0",
-        "splicewire/laravel-beam": "*",
+        "splicewire/laravel-beam": "dev-fix/frame-openapi-parameters",
         "splicewire/laravel-beam-mcp": "*",
         "splicewire/laravel-beam-mdx": "*",
         "splicewire/laravel-beam-ux": "*",
