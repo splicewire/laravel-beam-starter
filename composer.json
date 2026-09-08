@@ -165,7 +165,7 @@
         "splicewire/laravel-beam-sitemap": "*",
         "splicewire/laravel-beam-ux-prototype": "*",
         "schemastud/laravel-frame": "*",
-        "schemastud/laravel-data-schemas": "*",
+        "schemastud/laravel-data-schemas": "dev-main#dd1aacc284ead4f604e7771cb8b25d62a2100754",
         "wikimedia/composer-merge-plugin": "^2.1"
     },
     "require-dev": {
