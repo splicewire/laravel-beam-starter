@@ -158,15 +158,15 @@
         "laravel/framework": "^13.17",
         "laravel/tinker": "^3.0",
         "spatie/laravel-typescript-transformer": "^3.3",
-        "splicewire/laravel-beam": "dev-fix/frame-openapi-parameters",
-        "splicewire/laravel-beam-mcp": "dev-fix/mcp-onboarding",
+        "splicewire/laravel-beam": "dev-main",
+        "splicewire/laravel-beam-mcp": "dev-main",
         "splicewire/laravel-beam-mdx": "*",
         "splicewire/laravel-beam-ux": "*",
         "splicewire/laravel-beam-accounts": "*",
         "splicewire/laravel-beam-sitemap": "*",
         "splicewire/laravel-beam-ux-prototype": "*",
         "schemastud/laravel-frame": "*",
-        "schemastud/laravel-data-schemas": "dev-main#dd1aacc284ead4f604e7771cb8b25d62a2100754",
+        "schemastud/laravel-data-schemas": "dev-main",
         "wikimedia/composer-merge-plugin": "^2.1"
     },
     "require-dev": {
