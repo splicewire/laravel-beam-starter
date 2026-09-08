@@ -157,6 +157,7 @@
         "laravel/fortify": "^1.37.2",
         "laravel/framework": "^13.17",
         "laravel/tinker": "^3.0",
+        "spatie/laravel-typescript-transformer": "^3.3",
         "splicewire/laravel-beam": "dev-fix/frame-openapi-parameters",
         "splicewire/laravel-beam-mcp": "dev-fix/mcp-onboarding",
         "splicewire/laravel-beam-mdx": "*",
@@ -221,6 +222,7 @@
             "Composer\\Config::disableProcessTimeout",
             "@php bin/ci-check"
         ],
+        "types:generate": "@php artisan typescript:transform",
         "types:check": [
             "@php -d memory_limit=1G vendor/bin/phpstan analyse"
         ],

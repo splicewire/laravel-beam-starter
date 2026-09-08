@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import type { Auth } from '@/types';
 /* @chisel-email-verification */
+import type { ProfilePageData } from '@/generated/App/Data/Pages';
 /* @end-chisel-email-verification */
 
 type PageProps = {
@@ -18,13 +19,7 @@ type PageProps = {
 
 export default function Profile(
     /* @chisel-email-verification */
-    {
-        mustVerifyEmail,
-        status,
-    }: {
-        mustVerifyEmail: boolean;
-        status?: string;
-    },
+    { mustVerifyEmail, status }: ProfilePageData,
     /* @end-chisel-email-verification */
 ) {
     const { auth } = usePage<PageProps>().props;

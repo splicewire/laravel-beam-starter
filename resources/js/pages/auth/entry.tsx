@@ -1,6 +1,7 @@
 import { Head, usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import PageEditor from '@/editor/page-editor';
+import type { AuthEntryPageData } from '@/generated/App/Data/Pages';
 
 /**
  * theme-entries-and-authoring STR-03: the ONE Inertia page every promoted auth route renders through —
@@ -92,16 +93,7 @@ export default function AuthEntry({
     slug,
     body,
     entry = null,
-}: {
-    slug: string;
-    body?: unknown;
-    /**
-     * The entry's `{id, slug}`, shared by `FortifyServiceProvider`'s view closures
-     * (`App\Support\PageEntryRef`). The body transport is id-addressed (ADR-0214 §2), so this is what
-     * makes an auth page's chrome SAVEABLE; the `body` prop above only makes it renderable for a guest.
-     */
-    entry?: { id: string; slug: string } | null;
-}) {
+}: Pick<AuthEntryPageData, 'slug' | 'body' | 'entry'>) {
     // key={slug}: every route renders this SAME Inertia page name, so a client-side (SPA) navigation
     // between two auth pages does NOT remount AuthEntry — Inertia just re-renders it with new props. A
     // `key` assigned to something a component RETURNS does not reset THAT component's own hooks (only

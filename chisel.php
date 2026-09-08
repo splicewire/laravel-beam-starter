@@ -107,6 +107,8 @@ return Chisel::script(__DIR__)
             $c->files(
                 'config/fortify.php',
                 'app/Providers/FortifyServiceProvider.php',
+                'resources/js/editor/registry.tsx',
+                'tests/Feature/Auth/AuthEntryPagePropsTest.php',
                 $paths['login'],
                 $paths['welcome'],
             )->removeSectionMarkers('registration');
@@ -116,6 +118,8 @@ return Chisel::script(__DIR__)
 
             $c->files(
                 'app/Providers/FortifyServiceProvider.php',
+                'resources/js/editor/registry.tsx',
+                'tests/Feature/Auth/AuthEntryPagePropsTest.php',
                 $paths['login'],
                 $paths['welcome'],
             )->removeSection('registration');
@@ -136,6 +140,8 @@ return Chisel::script(__DIR__)
                 'config/fortify.php',
                 $paths['profile'],
                 'app/Providers/FortifyServiceProvider.php',
+                'resources/js/editor/registry.tsx',
+                'tests/Feature/Auth/AuthEntryPagePropsTest.php',
             )->removeSectionMarkers('email-verification');
         },
         else: function (Chisel $c) use ($paths) {
@@ -146,6 +152,8 @@ return Chisel::script(__DIR__)
             $c->files(
                 'config/fortify.php',
                 'app/Providers/FortifyServiceProvider.php',
+                'resources/js/editor/registry.tsx',
+                'tests/Feature/Auth/AuthEntryPagePropsTest.php',
                 $paths['profile'],
             )->removeSection('email-verification');
 
@@ -168,6 +176,8 @@ return Chisel::script(__DIR__)
                 $paths['auth_types'],
                 'config/fortify.php',
                 'app/Providers/FortifyServiceProvider.php',
+                'resources/js/editor/registry.tsx',
+                'tests/Feature/Auth/AuthEntryPagePropsTest.php',
                 'app/Http/Controllers/Settings/SecurityController.php',
                 'app/Data/Pages/SecurityPageData.php',
             )->removeSectionMarkers('2fa');
@@ -182,6 +192,8 @@ return Chisel::script(__DIR__)
                 'database/factories/UserFactory.php',
                 'config/fortify.php',
                 'app/Providers/FortifyServiceProvider.php',
+                'resources/js/editor/registry.tsx',
+                'tests/Feature/Auth/AuthEntryPagePropsTest.php',
                 'app/Http/Controllers/Settings/SecurityController.php',
                 'app/Data/Pages/SecurityPageData.php',
                 $paths['security'],
@@ -213,6 +225,7 @@ return Chisel::script(__DIR__)
                 'routes/settings.php',
                 'tests/Feature/Auth/AuthenticationTest.php',
                 'tests/Feature/Settings/SecurityTest.php',
+                $paths['auth_types'],
                 $paths['security'],
                 $paths['login'],
                 $paths['confirm_password'],
@@ -233,6 +246,7 @@ return Chisel::script(__DIR__)
                 'routes/settings.php',
                 'tests/Feature/Auth/AuthenticationTest.php',
                 'tests/Feature/Settings/SecurityTest.php',
+                $paths['auth_types'],
                 $paths['security'],
                 $paths['login'],
                 $paths['confirm_password'],
@@ -267,6 +281,8 @@ return Chisel::script(__DIR__)
         then: function (Chisel $c) {
             $c->files(
                 'app/Providers/FortifyServiceProvider.php',
+                'resources/js/editor/registry.tsx',
+                'tests/Feature/Auth/AuthEntryPagePropsTest.php',
                 'routes/settings.php',
                 'tests/Feature/Settings/SecurityTest.php',
             )->removeSectionMarkers('password-confirmation');
@@ -277,6 +293,8 @@ return Chisel::script(__DIR__)
 
             $c->files(
                 'app/Providers/FortifyServiceProvider.php',
+                'resources/js/editor/registry.tsx',
+                'tests/Feature/Auth/AuthEntryPagePropsTest.php',
                 'routes/settings.php',
                 'tests/Feature/Settings/SecurityTest.php',
             )->removeSection('password-confirmation');

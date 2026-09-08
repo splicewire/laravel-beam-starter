@@ -6,10 +6,11 @@ import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import type { AuthEntryPageData } from '@/generated/App/Data/Pages';
 // theme-entries-and-authoring STR-03: a sealed island (editor/registry.tsx), no longer the top-level
 // Inertia page — read via usePage() instead of received as a direct component prop.
 export default function ForgotPassword() {
-    const { status } = usePage<{ status?: string }>().props;
+    const { status } = usePage<AuthEntryPageData>().props;
 
     return (
         <>

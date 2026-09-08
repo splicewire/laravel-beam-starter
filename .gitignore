@@ -10,6 +10,8 @@
 /resources/js/actions
 /resources/js/routes
 /resources/js/wayfinder
+/resources/js/generated/App/
+/resources/js/generated/Schemastud/
 /vendor
 .DS_Store
 .env

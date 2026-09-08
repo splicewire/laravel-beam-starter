@@ -6,20 +6,14 @@ import PasswordInput from '@/components/password-input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 /* @chisel-passkeys */
-import type { Props as ManagePasskeysProps } from '@/components/manage-passkeys';
 import ManagePasskeys from '@/components/manage-passkeys';
 /* @end-chisel-passkeys */
 /* @chisel-2fa */
-import type { Props as ManageTwoFactorProps } from '@/components/manage-two-factor';
 import ManageTwoFactor from '@/components/manage-two-factor';
 /* @end-chisel-2fa */
+import type { SecurityPageData } from '@/generated/App/Data/Pages';
 
-type Props = {
-    passwordRules: string;
-} /* @chisel-passkeys */ & ManagePasskeysProps /* @end-chisel-passkeys */ /* @chisel-2fa */ &
-    ManageTwoFactorProps /* @end-chisel-2fa */;
-
-export default function Security(props: Props) {
+export default function Security(props: SecurityPageData) {
     const passwordInput = useRef<HTMLInputElement>(null);
     const currentPasswordInput = useRef<HTMLInputElement>(null);
 

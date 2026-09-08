@@ -12,16 +12,7 @@ import { Spinner } from '@/components/ui/spinner';
 /* @chisel-passkeys */
 import PasskeyVerify from '@/components/passkey-verify';
 /* @end-chisel-passkeys */
-
-type DemoAccount = { key: string; label: string; url: string };
-
-type Props = {
-    status?: string;
-    canResetPassword: boolean;
-    // Controller-provided (FortifyServiceProvider → the OOTB beam-accounts login-as affordance). Empty in
-    // production / when demo is off, so the block below doesn't render. Each `url` is a signed login-as link.
-    demoAccounts?: DemoAccount[];
-};
+import type { AuthEntryPageData } from '@/generated/App/Data/Pages';
 
 // theme-entries-and-authoring STR-03: a sealed island (editor/registry.tsx), no longer the top-level
 // Inertia page — these are FortifyServiceProvider's per-request props, still flowing exactly as
@@ -31,7 +22,7 @@ export default function Login() {
         status,
         canResetPassword,
         demoAccounts = [],
-    } = usePage<Props>().props;
+    } = usePage<AuthEntryPageData>().props;
 
     return (
         <>

@@ -6,14 +6,12 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
-type Props = {
-    passwordRules: string;
-};
+import type { AuthEntryPageData } from '@/generated/App/Data/Pages';
 
 // theme-entries-and-authoring STR-03: a sealed island (editor/registry.tsx), no longer the top-level
 // Inertia page — read via usePage() instead of received as a direct component prop.
 export default function Register() {
-    const { passwordRules } = usePage<Props>().props;
+    const { passwordRules } = usePage<AuthEntryPageData>().props;
 
     return (
         <>

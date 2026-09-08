@@ -91,6 +91,20 @@ resource is the same one-file move: annotate a Data class, drop it in `app/Data/
 
 ## Checks
 
+`composer types:generate` derives TypeScript modules from the app's Data classes/enums and
+referenced Frame registry types. Edit the PHP declarations, then regenerate. The DTO modules
+are gitignored under `resources/js/generated/App/` and `resources/js/generated/Schemastud/`.
+The committed `routes.ts` and `aliases.ts` in the same parent directory belong to the Beam
+client generator and are not replaced by this command.
+
+The `dev`, `build`, `build:ssr`, and `types:check` scripts regenerate before consuming these
+modules, so `composer setup` covers generation too. After changing Data during a running dev
+session, rerun `composer types:generate`.
+
+`pnpm types:check` checks the application and generated contracts, including negative type
+cases with library checking enabled. Production builds run this check before Vite. Profile,
+security, and auth consumers import their page types from the generated modules.
+
 `composer test` runs **the PHP suite and nothing else** — it no longer chains pint and phpstan, which
 stay reachable as `composer lint:check` and `composer types:check`. The composite is
 `composer ci:check`, which delegates to `bin/ci-check` and runs **every** gate (suite first, then

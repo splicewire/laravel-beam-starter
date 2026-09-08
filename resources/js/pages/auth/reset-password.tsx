@@ -5,23 +5,22 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
-type Props = {
-    token: string;
-    email: string;
-    passwordRules: string;
-};
+import type { ResetPasswordPageData } from '@/generated/App/Data/Pages';
 
 // theme-entries-and-authoring STR-03: a sealed island (editor/registry.tsx), no longer the top-level
 // Inertia page — read via usePage() instead of received as direct component props.
 export default function ResetPassword() {
-    const { token, email, passwordRules } = usePage<Props>().props;
+    const { token, email, passwordRules } =
+        usePage<ResetPasswordPageData>().props;
+    // Query input is unvalidated on GET; only text belongs in the email form control.
+    const emailValue = typeof email === 'string' ? email : '';
 
     return (
         <>
             <Form
                 action="/reset-password"
                 method="post"
-                transform={(data) => ({ ...data, token, email })}
+                transform={(data) => ({ ...data, token, email: emailValue })}
                 resetOnSuccess={['password', 'password_confirmation']}
             >
                 {({ processing, errors }) => (
@@ -33,7 +32,7 @@ export default function ResetPassword() {
                                 type="email"
                                 name="email"
                                 autoComplete="email"
-                                value={email}
+                                value={emailValue}
                                 className="mt-1 block w-full"
                                 readOnly
                             />

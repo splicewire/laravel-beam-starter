@@ -3,10 +3,11 @@ import { Form, usePage } from '@inertiajs/react';
 import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
+import type { AuthEntryPageData } from '@/generated/App/Data/Pages';
 // theme-entries-and-authoring STR-03: a sealed island (editor/registry.tsx), no longer the top-level
 // Inertia page — read via usePage() instead of received as a direct component prop.
 export default function VerifyEmail() {
-    const { status } = usePage<{ status?: string }>().props;
+    const { status } = usePage<AuthEntryPageData>().props;
 
     return (
         <>
