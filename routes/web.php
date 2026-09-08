@@ -1,10 +1,15 @@
 <?php
 
+use App\Data\Pages\EntryPageData;
+use App\Data\Pages\OperatorDashboardPageData;
+use App\Data\Pages\OperatorStaffData;
+use App\Data\Pages\OperatorStatsData;
 use App\Http\Controllers\SitemapResourceController;
 use App\Models\User;
 use App\Support\PageEntryRef;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Spatie\LaravelData\Lazy;
 use Splicewire\Beam\Facades\Particle;
 use Splicewire\Beam\Ux\Models\BeamUxEntry;
 
@@ -13,9 +18,9 @@ use Splicewire\Beam\Ux\Models\BeamUxEntry;
 //
 // It shares `entry` ({id, slug}) so the page addresses its beam-ux row by ID (ADR-0214 §2). The server
 // is the only party that can: no compile-time frontend map can carry a per-database uuid.
-Route::get('/', fn () => Inertia::render('site/home', [
+Route::get('/', fn () => Inertia::render('site/home', EntryPageData::from([
     'entry' => PageEntryRef::for('home'),
-]))->name('home');
+])))->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     // The beam-ux entry-body transport (ADR-0214 §1) — load/save a page entry's particle body, the
@@ -50,9 +55,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // The authed home IS the OOTB account realm: <AccountShell> (@splicewire/beam-ux/account). Fortify
     // redirects login here (`config/fortify.php` home => /dashboard). Shares `entry` for the same
     // reason `/` does — the seeded row is `dashboard`, not the slash-swapped component name.
-    Route::get('dashboard', fn () => Inertia::render('account/home', [
+    Route::get('dashboard', fn () => Inertia::render('account/home', EntryPageData::from([
         'entry' => PageEntryRef::for('dashboard'),
-    ]))->name('dashboard');
+    ])))->name('dashboard');
 
     // The host-owned Frame resource edit page for the editable sitemap (kind A).
     // Frame ships only frame/manifest; the host binds each resource's edit route.
@@ -63,17 +68,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // promoted @splicewire/beam-mainframe host; resource lists ride Frame's generic particle CRUD socket.
     // Gated on the `os.operate` entitlement: the DefaultEntitlementResolver (laravel-beam-accounts) grants
     // it to a staff principal, so the seeded staff user reaches it and a non-staff user is 403'd.
-    Route::get('operator', fn () => Inertia::render('operator/dashboard', [
+    Route::get('operator', fn () => Inertia::render('operator/dashboard', OperatorDashboardPageData::from([
         'entry' => PageEntryRef::for('operator-dashboard'),
-        'staff' => fn () => ['name' => request()->user()->name, 'email' => request()->user()->email],
-        'stats' => fn () => [
-            'users' => User::count(),
+        'staff' => Lazy::closure(fn () => new OperatorStaffData(
+            name: request()->user()->name,
+            email: request()->user()->email,
+        )),
+        'stats' => Lazy::closure(fn () => new OperatorStatsData(
+            users: User::count(),
             // Sitemap was retired (theme-entries-and-authoring BUX-03) - BeamUxEntry's own namespace='realms'
             // rows are the realm-root replacement; "entries" is every entry (root or not) in that stack.
-            'sitemaps' => BeamUxEntry::where('namespace', 'realms')->count(),
-            'entries' => rescue(fn () => BeamUxEntry::count(), 0, false),
-        ],
-    ]))->middleware('can:entitlement:os.operate')->name('operator.home');
+            sitemaps: BeamUxEntry::where('namespace', 'realms')->count(),
+            entries: rescue(fn () => BeamUxEntry::count(), 0, false),
+        )),
+    ])))->middleware('can:entitlement:os.operate')->name('operator.home');
 
     // The OS-SHELL desktop (frontend-surfaces.md). The windowed realm composer. Route-gated on the
     // projected `os.enter` entitlement (`can:entitlement:os.enter`); the shell itself does the fusion pivot

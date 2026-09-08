@@ -169,6 +169,7 @@ return Chisel::script(__DIR__)
                 'config/fortify.php',
                 'app/Providers/FortifyServiceProvider.php',
                 'app/Http/Controllers/Settings/SecurityController.php',
+                'app/Data/Pages/SecurityPageData.php',
             )->removeSectionMarkers('2fa');
         },
         else: function (Chisel $c) use ($paths) {
@@ -182,6 +183,7 @@ return Chisel::script(__DIR__)
                 'config/fortify.php',
                 'app/Providers/FortifyServiceProvider.php',
                 'app/Http/Controllers/Settings/SecurityController.php',
+                'app/Data/Pages/SecurityPageData.php',
                 $paths['security'],
                 $paths['auth_types'],
             )->removeSection('2fa');
@@ -195,6 +197,7 @@ return Chisel::script(__DIR__)
                 ...$paths['two_factor_files'],
                 'database/migrations/2025_08_14_170933_add_two_factor_columns_to_users_table.php',
                 'tests/Feature/Auth/TwoFactorChallengeTest.php',
+                'tests/Feature/Settings/SecurityPagePropsTest.php',
             ])->delete();
         },
     )
@@ -206,6 +209,7 @@ return Chisel::script(__DIR__)
                 'config/fortify.php',
                 'app/Providers/FortifyServiceProvider.php',
                 'app/Http/Controllers/Settings/SecurityController.php',
+                'app/Data/Pages/SecurityPageData.php',
                 'routes/settings.php',
                 'tests/Feature/Auth/AuthenticationTest.php',
                 'tests/Feature/Settings/SecurityTest.php',
@@ -225,6 +229,7 @@ return Chisel::script(__DIR__)
                 'config/fortify.php',
                 'app/Providers/FortifyServiceProvider.php',
                 'app/Http/Controllers/Settings/SecurityController.php',
+                'app/Data/Pages/SecurityPageData.php',
                 'routes/settings.php',
                 'tests/Feature/Auth/AuthenticationTest.php',
                 'tests/Feature/Settings/SecurityTest.php',
@@ -238,6 +243,8 @@ return Chisel::script(__DIR__)
             $c->files(...[
                 ...$paths['passkey_files'],
                 'app/Http/Responses/PasskeyLoginResponse.php',
+                'app/Data/Pages/SecurityPasskeyData.php',
+                'tests/Feature/Settings/SecurityPagePropsTest.php',
                 'database/migrations/2024_01_01_000000_create_passkeys_table.php',
             ])->delete();
         },

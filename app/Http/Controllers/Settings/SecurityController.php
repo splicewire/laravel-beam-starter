@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Settings;
 
+use App\Data\Pages\SecurityPageData;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Settings\PasswordUpdateRequest;
 use App\Http\Requests\Settings\TwoFactorAuthenticationRequest;
@@ -53,7 +54,7 @@ class SecurityController extends Controller
         }
         /* @end-chisel-2fa */
 
-        return Inertia::render('settings/security', $props);
+        return Inertia::render('settings/security', SecurityPageData::from($props));
     }
 
     /**
