@@ -7858,7 +7858,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/splicewire/laravel-beam-accounts.git",
-                "reference": "9b29fcd191bd3fffcd53061759ec456a8c001bd3"
+                "reference": "6bea31bcd966729cfdc98d31acb21e369a3eed5f"
             },
             "require": {
                 "firebase/php-jwt": "^6.0|^7.0",
@@ -7962,7 +7962,7 @@
                 "schemastud",
                 "teams"
             ],
-            "time": "2026-09-08T14:13:38+00:00"
+            "time": "2026-09-09T12:05:43+00:00"
         },
         {
             "name": "splicewire/laravel-beam-mcp",
