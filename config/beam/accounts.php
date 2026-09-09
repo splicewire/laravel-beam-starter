@@ -22,6 +22,8 @@ return [
     'publish_auth_migrations' => 'absent',
     // Teams publishing stays enabled for the package's teams/memberships/invitations estate,
     // which the demo subjects and their team roles use.
+    // Committed members live in migrations/shared/, matching the publisher destination;
+    // a copy at the migration root would be missed and published a second time.
     'register_migrations' => true,
 
     // Entitlement bundles (Frame OS ADR-0013 §3). The DefaultEntitlementResolver grants a STAFF principal
