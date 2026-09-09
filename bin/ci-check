@@ -36,6 +36,16 @@
  * "phpstan found 11 errors" must never be the same byte. Anything testing `!= 0` is correct;
  * anything testing `== 1` would miss the unmeasured state.
  *
+ * RECORD — every run, whatever it concluded, writes `storage/app/beam/ci-check.json`:
+ *
+ *   {"exit": <0|1|2>, "at": "<iso8601>", "commit": "<HEAD sha, or null>"}
+ *
+ * That file is the ONLY thing `beam.install.desired-state` R3 can read. The audit deliberately never
+ * shells out to this runner (a multi-minute doctor is a doctor nobody runs), so with nothing writing
+ * the record R3 reported "unmeasured" on every host forever — the honest spelling of a requirement
+ * with no instrument, and useless. See {@see ci_finish}: all three exit states are recorded as
+ * themselves, and the write can never change the exit code it is reporting.
+ *
  * TRUNCATED is decided by `splicewire:beam:dev:witness-run --assert`, from the `require-dev`
  * splicewire/laravel-beam-dev. Dev deps do not cascade, so a `--no-dev` install cannot run the
  * witness and `php:test` reports UNMEASURED rather than a green it has not earned.
@@ -256,6 +266,88 @@ function ci_test_count(?string $logPath): ?int
 }
 
 /**
+ * This tree's HEAD, as a sha, read straight out of `.git` rather than by shelling out to git.
+ *
+ * The algorithm is a DELIBERATE MIRROR of `InstallDesiredStateAudit::headCommit()`, because the two
+ * are the only readers of this value and R3 spells a disagreement between them "STALE". A second,
+ * cleverer implementation here (git-the-binary, or a packed-refs fallback) would resolve a sha in
+ * cases the audit resolves null, and the record would then read as a pass from another commit — the
+ * audit reporting drift that is really an instrument mismatch. Null when the sha cannot be read; the
+ * record carries `null`, never a guess, and R3 warns rather than passing on it.
+ */
+function ci_head_commit(string $root): ?string
+{
+    $head = $root.'/.git/HEAD';
+
+    if (! is_readable($head)) {
+        return null;
+    }
+
+    $contents = trim((string) file_get_contents($head));
+
+    if (! str_starts_with($contents, 'ref: ')) {
+        return preg_match('/^[0-9a-f]{40}$/', $contents) === 1 ? $contents : null;
+    }
+
+    $ref = $root.'/.git/'.trim(substr($contents, 5));
+
+    return is_readable($ref) ? trim((string) file_get_contents($ref)) : null;
+}
+
+/**
+ * Write the record `beam.install.desired-state` R3 reads, then exit with the aggregate code.
+ *
+ * R3 never runs this gate — a multi-minute doctor is a doctor nobody runs — so it reads a RECORD
+ * instead, and until this function existed nothing in the estate wrote one: the requirement reported
+ * `inconclusive` on every host, forever, which is the "measured nothing" spelling working correctly
+ * and saying nothing.
+ *
+ * THREE STATES, not two. The recorded `exit` is the real aggregate, 2 included: R3 already words 2 as
+ * *"a gate could not be measured, which is not a verdict"*, and collapsing it to 1 here would take
+ * that reading away from the only consumer that has it. `$code` is whatever this run concluded and is
+ * never adjusted.
+ *
+ * THE WRITE MAY NOT FAIL THE RUN. A gate result is a fact about the repo; the ability to create a
+ * directory under `storage/` is a fact about the filesystem, and letting the second overwrite the
+ * first would be this file's own UNSPAWNED/FAIL confusion one layer out. Every failure path prints a
+ * NOTE and returns the aggregate exit unchanged.
+ *
+ * The path mirrors the audit's default (`storage/app/beam/ci-check.json`). A host that repoints
+ * `beam.core.install.desired_state.ci_check_record` must point `CI_CHECK_RECORD_PATH` at the same
+ * file: this runner does not boot the framework, so it cannot read that config key, and a record
+ * written where nothing looks is indistinguishable from no record at all.
+ */
+function ci_finish(int $code, string $root): never
+{
+    $path = getenv('CI_CHECK_RECORD_PATH') ?: $root.'/storage/app/beam/ci-check.json';
+    $dir = dirname($path);
+
+    $record = json_encode([
+        'exit' => $code,
+        'at' => date(DATE_ATOM),
+        'commit' => ci_head_commit($root),
+    ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+
+    if (! is_dir($dir) && ! @mkdir($dir, 0o775, true) && ! is_dir($dir)) {
+        fwrite(STDOUT, "\n\033[33mNOTE\033[0m — could not create {$dir}; the ci:check record was NOT written, so "
+            ."`beam.install.desired-state` R3 will keep reading \"no record\". Exit {$code} is unchanged.\n");
+
+        exit($code);
+    }
+
+    if ($record === false || @file_put_contents($path, $record."\n") === false) {
+        fwrite(STDOUT, "\n\033[33mNOTE\033[0m — could not write {$path}; the ci:check record was NOT written, so "
+            ."`beam.install.desired-state` R3 will keep reading \"no record\". Exit {$code} is unchanged.\n");
+
+        exit($code);
+    }
+
+    fwrite(STDOUT, "\nRecorded exit {$code} at {$path} — read by `beam.install.desired-state` R3.\n");
+
+    exit($code);
+}
+
+/**
  * Is the witness reachable at all? Probed ONCE, with `--help`, before any gate runs.
  *
  * `splicewire/laravel-beam-dev` is a `require-dev` and dev deps do not cascade, so a `--no-dev`
@@ -271,7 +363,7 @@ $pre = ci_run($prelude, $root, []);
 if ($pre['status'] !== 'PASS') {
     fwrite(STDERR, "\n\033[31mUNMEASURED\033[0m — the prelude (config:clear) did not succeed ({$pre['status']}).\n");
     fwrite(STDERR, "A stale config cache invalidates every gate, so no gate was run.\n");
-    exit(2);
+    ci_finish(2, $root);
 }
 
 $results = [];
@@ -360,13 +452,13 @@ if ($unmeasured !== []) {
     if ($failed !== []) {
         fwrite(STDOUT, '(Also failing: '.implode(', ', $failed).")\n");
     }
-    exit(2);
+    ci_finish(2, $root);
 }
 
 if ($failed !== []) {
     fwrite(STDOUT, "\n\033[31mFAILED\033[0m: ".implode(', ', $failed)."\n");
-    exit(1);
+    ci_finish(1, $root);
 }
 
 fwrite(STDOUT, "\n\033[32mAll ".count($gates)." gates passed.\033[0m\n");
-exit(0);
+ci_finish(0, $root);
