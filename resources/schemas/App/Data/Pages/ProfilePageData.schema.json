@@ -1,0 +1,50 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "title": "ProfilePageData",
+    "properties": {
+        "entry": {
+            "anyOf": [
+                {
+                    "$ref": "#/$defs/PageEntryData"
+                },
+                {
+                    "type": "null"
+                }
+            ]
+        },
+        "mustVerifyEmail": {
+            "type": "boolean"
+        },
+        "status": {
+            "type": [
+                "string",
+                "null"
+            ]
+        }
+    },
+    "required": [
+        "entry",
+        "mustVerifyEmail",
+        "status"
+    ],
+    "$id": "ProfilePageData",
+    "$defs": {
+        "PageEntryData": {
+            "type": "object",
+            "title": "PageEntryData",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "slug": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "id",
+                "slug"
+            ]
+        }
+    }
+}
