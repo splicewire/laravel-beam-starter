@@ -23,7 +23,10 @@ it('generates host page modules and resolves their package-owned references', fu
         expect(Artisan::output())->not->toContain('not found in the transformed types');
         $pages = File::get($directory.'/App/Data/Pages/index.ts');
         $frame = File::get($directory.'/Schemastud/Frame/Registry/index.ts');
-        expect($pages)->toContain('export type ProfilePageData', 'export type SecurityPageData', 'resource: ResourceDefinition');
+        expect($pages)->toContain('resource: ResourceDefinition');
+        expect($pages)->not->toContain('export type ProfilePageData', 'export type SecurityPageData');
+        expect(File::get($directory.'/Splicewire/Beam/Accounts/Data/Pages/index.ts'))
+            ->toContain('export type ProfilePageData', 'export type SecurityPageData');
         expect($frame)->toContain('export type ResourceDefinition', 'export type NavMetadata');
 
         $first = hash('sha256', $pages.$frame);

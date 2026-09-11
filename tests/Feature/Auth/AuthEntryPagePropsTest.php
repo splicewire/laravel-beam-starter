@@ -3,9 +3,6 @@
 declare(strict_types=1);
 
 use App\Beam\EntryBody;
-use App\Data\Pages\AuthEntryPageData;
-use App\Data\Pages\DemoAccountLinkData;
-use App\Data\Pages\ResetPasswordPageData;
 use App\Providers\FortifyServiceProvider;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Http\Request;
@@ -28,6 +25,9 @@ use Laravel\Fortify\Features;
 use Opis\JsonSchema\Validator;
 use Schemastud\DataSchemas\Generators\JsonSchemaGenerator;
 use Splicewire\Beam\Accounts\Actions\DemoLoginLinks;
+use Splicewire\Beam\Accounts\Data\Pages\AuthEntryPageData;
+use Splicewire\Beam\Accounts\Data\Pages\DemoAccountLinkData;
+use Splicewire\Beam\Accounts\Data\Pages\ResetPasswordPageData;
 use Splicewire\Beam\Storage\StorageDriver;
 use Splicewire\Beam\Storage\StorageItem;
 use Splicewire\Beam\Ux\Storage\StorageDriverResolver;

@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Data\Pages\SecurityPageData;
-use App\Data\Pages\SecurityPasskeyData;
 use App\Http\Controllers\Settings\SecurityController;
 use App\Http\Requests\Settings\TwoFactorAuthenticationRequest;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -19,6 +17,8 @@ use Laravel\Fortify\Features;
 use Laravel\Passkeys\Passkey;
 use Opis\JsonSchema\Validator;
 use Schemastud\DataSchemas\Generators\JsonSchemaGenerator;
+use Splicewire\Beam\Accounts\Data\Pages\SecurityPageData;
+use Splicewire\Beam\Accounts\Data\Pages\SecurityPasskeyData;
 
 uses(Tests\TestCase::class);
 
@@ -117,7 +117,7 @@ it('keeps security partial reloads selective', function () {
     expect($evaluations)->toBe(0);
 });
 
-it('preserves omitted props after actual Chisel feature removal', function (array $removed) {
+it('preserves package defaults after actual Chisel feature removal', function (array $removed) {
     config(['fortify.features' => [Features::twoFactorAuthentication(['confirm' => true]), Features::passkeys()]]);
     if (! str_contains(file_get_contents(app_path('Http/Controllers/Settings/SecurityController.php')), '/* @chisel-')) {
         $this->markTestSkipped('Scaffold markers were already consumed by Chisel.');
@@ -125,14 +125,12 @@ it('preserves omitted props after actual Chisel feature removal', function (arra
     $directory = sys_get_temp_dir().'/security-chisel-'.bin2hex(random_bytes(6));
     mkdir($directory);
     $name = 'ChiselledSecurity'.bin2hex(random_bytes(6));
-    $source = str_replace(['class SecurityController ', 'SecurityPageData'], ['class '.$name.' ', $name.'Data'], file_get_contents(app_path('Http/Controllers/Settings/SecurityController.php')));
-    $dataSource = str_replace('SecurityPageData', $name.'Data', file_get_contents(app_path('Data/Pages/SecurityPageData.php')));
-    file_put_contents($directory.'/Data.php', $dataSource);
+    $source = str_replace('class SecurityController ', 'class '.$name.' ', file_get_contents(app_path('Http/Controllers/Settings/SecurityController.php')));
     file_put_contents($directory.'/Controller.php', $source);
     try {
         $files = new File($directory);
         foreach (['2fa', 'passkeys'] as $feature) {
-            foreach (['Controller.php', 'Data.php'] as $file) {
+            foreach (['Controller.php'] as $file) {
                 if (in_array($feature, $removed, true)) {
                     $files->removeSection($file, $feature);
                 } else {
@@ -140,7 +138,6 @@ it('preserves omitted props after actual Chisel feature removal', function (arra
                 }
             }
         }
-        require $directory.'/Data.php';
         require $directory.'/Controller.php';
         $class = 'App\\Http\\Controllers\\Settings\\'.$name;
         Inertia::swap(new ResponseFactory);
@@ -148,21 +145,22 @@ it('preserves omitted props after actual Chisel feature removal', function (arra
         $props = (new $class)->edit($request)->toResponse($request)->getData(true)['props'];
         expect($props)->toHaveKey('passwordRules');
         if (in_array('2fa', $removed, true)) {
-            expect($props)->not->toHaveKeys(['canManageTwoFactor', 'twoFactorEnabled', 'requiresConfirmation']);
+            expect($props['canManageTwoFactor'])->toBeFalse();
+            expect($props)->not->toHaveKeys(['twoFactorEnabled', 'requiresConfirmation']);
             expect($request->stateChecks)->toBe(0);
         } else {
             expect($props['canManageTwoFactor'])->toBeTrue();
             expect($props['twoFactorEnabled'])->toBeFalse();
         }
         if (in_array('passkeys', $removed, true)) {
-            expect($props)->not->toHaveKeys(['canManagePasskeys', 'passkeys']);
+            expect($props['canManagePasskeys'])->toBeFalse();
+            expect($props['passkeys'])->toBe([]);
         } else {
             expect($props['canManagePasskeys'])->toBeTrue();
             expect($props['passkeys'])->toBe([]);
         }
     } finally {
         unlink($directory.'/Controller.php');
-        unlink($directory.'/Data.php');
         rmdir($directory);
     }
 })->with([

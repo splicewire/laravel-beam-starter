@@ -8,8 +8,6 @@ use App\Actions\Fortify\CreateNewUser;
 /* @end-chisel-registration */
 use App\Actions\Fortify\ResetUserPassword;
 use App\Beam\EntryBody;
-use App\Data\Pages\AuthEntryPageData;
-use App\Data\Pages\ResetPasswordPageData;
 use App\Support\PageEntryRef;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
@@ -21,6 +19,8 @@ use Inertia\Inertia;
 use Laravel\Fortify\Features;
 use Laravel\Fortify\Fortify;
 use Splicewire\Beam\Accounts\Actions\DemoLoginLinks;
+use Splicewire\Beam\Accounts\Data\Pages\AuthEntryPageData;
+use Splicewire\Beam\Accounts\Data\Pages\ResetPasswordPageData;
 
 class FortifyServiceProvider extends ServiceProvider
 {

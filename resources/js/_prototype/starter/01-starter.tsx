@@ -10,7 +10,7 @@
  * on-brand by construction. Delete this starter once you have your own.
  */
 import { Link } from 'react-router';
-import { Button } from '@/components/ui/button';
+import { Button } from '@splicewire/beam-inertia';
 import { starter } from './_fixtures/starter';
 
 export function StarterPrototype() {

@@ -19,6 +19,7 @@ final class TypeScriptTransformerServiceProvider extends TypeScriptTransformerAp
             ->transformer(EnumTransformer::class)
             ->transformDirectories(
                 app_path(),
+                base_path('vendor/splicewire/laravel-beam-accounts/src/Data/Pages'),
                 // SitemapResourcePageData carries Frame's declared resource and navigation types.
                 base_path('vendor/schemastud/laravel-frame/src/Registry'),
             )

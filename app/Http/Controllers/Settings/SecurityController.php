@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Settings;
 
-use App\Data\Pages\SecurityPageData;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Settings\PasswordUpdateRequest;
 use App\Http\Requests\Settings\TwoFactorAuthenticationRequest;
@@ -11,6 +10,7 @@ use Illuminate\Validation\Rules\Password;
 use Inertia\Inertia;
 use Inertia\Response;
 use Laravel\Fortify\Features;
+use Splicewire\Beam\Accounts\Data\Pages\SecurityPageData;
 
 class SecurityController extends Controller
 {
@@ -20,12 +20,18 @@ class SecurityController extends Controller
     public function edit(TwoFactorAuthenticationRequest $request): Response
     {
         $props = [
-            /* @chisel-2fa */
-            'canManageTwoFactor' => Features::canManageTwoFactorAuthentication(),
-            /* @end-chisel-2fa */
-            /* @chisel-passkeys */
-            'canManagePasskeys' => Features::canManagePasskeys(),
-            'passkeys' => Features::canManagePasskeys()
+            'canManageTwoFactor' => false,
+            'canManagePasskeys' => false,
+            'passkeys' => [],
+            'passwordRules' => Password::defaults()->toPasswordRulesString(),
+        ];
+
+        /* @chisel-2fa */
+        $props['canManageTwoFactor'] = Features::canManageTwoFactorAuthentication();
+        /* @end-chisel-2fa */
+        /* @chisel-passkeys */
+        $props['canManagePasskeys'] = Features::canManagePasskeys();
+        $props['passkeys'] = Features::canManagePasskeys()
                 ? $request->user()
                     ->passkeys()
                     ->select(['id', 'name', 'credential', 'created_at', 'last_used_at'])
@@ -40,10 +46,8 @@ class SecurityController extends Controller
                     ])
                     ->values()
                     ->all()
-                : [],
-            /* @end-chisel-passkeys */
-            'passwordRules' => Password::defaults()->toPasswordRulesString(),
-        ];
+                : [];
+        /* @end-chisel-passkeys */
 
         /* @chisel-2fa */
         if (Features::canManageTwoFactorAuthentication()) {

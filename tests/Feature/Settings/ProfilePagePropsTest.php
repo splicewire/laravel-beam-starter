@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Data\Pages\ProfilePageData;
 use App\Http\Controllers\Settings\ProfileController;
 use Illuminate\Auth\MustVerifyEmail as VerifiesEmail;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -15,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Inertia\Inertia;
 use Inertia\ResponseFactory;
+use Splicewire\Beam\Accounts\Data\Pages\ProfilePageData;
 
 uses(Tests\TestCase::class);
 

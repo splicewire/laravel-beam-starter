@@ -1,9 +1,11 @@
 import type {
     AuthEntryPageData,
-    OperatorDashboardPageData,
     ProfilePageData,
-    SitemapResourcePageData,
     ResetPasswordPageData,
+} from '../../resources/js/generated/Splicewire/Beam/Accounts/Data/Pages';
+import type {
+    OperatorDashboardPageData,
+    SitemapResourcePageData,
 } from '../../resources/js/generated/App/Data/Pages';
 
 const profile: ProfilePageData = {
