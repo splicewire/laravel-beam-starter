@@ -53,3 +53,14 @@ operator-dashboard:
   title: Operator
   type: page
   realm: operator
+
+# The tenant frame console (the `{frameRoute}` catch-all in routes/web.php) projects every tenant
+# resource the packages register, but no realm row ever pointed at it, so it was reachable only by
+# URL (ux-demo-convergence inventory anomaly 6, G3-BEAM-FRAME-CONSOLE). Its entries list is the
+# console's front door; the console's own rail takes over from there.
+tenant-console:
+  segment: /beam-ux-entry
+  title: Console
+  type: page
+  realm: account
+
