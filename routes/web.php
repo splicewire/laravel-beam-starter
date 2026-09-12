@@ -53,6 +53,37 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Particle::ops('beam-ux-entries', 'beam-ux-entry', 'body');
     Particle::ops('beam-ux-entries', 'beam-ux-entry', 'save-body');
 
+    // The DRAFT/PUBLISH half of the same transport (G2-BEAM-DRAFT-PUBLISH). `save-body` above is the
+    // immediate-publish write and keeps that contract; these four let an author work before anyone
+    // reads it, and let them put a page back:
+    //
+    //   save-draft  record an edited body as a version WITHOUT publishing it — a guest keeps reading
+    //               the published body, because the artifact they are served is addressed by the
+    //               entry's publication pin and a draft does not move it;
+    //   publish     move that pin to the working copy, mirror it to disk and compile the artifact
+    //               through the real request path — the same CompileEntryBody a save runs;
+    //   versions    the recorded history plus both pins, which is everything the dock's panel renders;
+    //   restore     roll forward to a recorded version and publish the result.
+    //
+    // Mounted with EXACTLY the same gates as `save-body`: this group's `auth` + `verified`, plus each
+    // op's own declared `ability: 'ux.author'` with `abilityModel: false` (§3), which is the real gate
+    // and the one that travels. A guest reaches none of them.
+    //
+    // ⚠️ **Not `Route::recordVersions()`**, which `splicewire/laravel-beam-versioning` ships and
+    // `BeamUxEntry::versionable()` was annotated for. Its list is right; its `store` and `restore` are
+    // record-agnostic and therefore blind to the publication pin, the placed disk mirror and the
+    // compiled artifact — mounted here, a restore would move the particle and leave the page serving a
+    // module compiled from a body no longer in the record. beam-ux composes the same underlying
+    // `rushing/laravel-versioning` store and declares these next to the compile pipeline that has to
+    // run with them; see `EntryVersionsShowOp`'s docblock for the full reasoning.
+    //
+    // `versions` mounts GET for the same reason `body` does (§4): the panel refetches it on every open,
+    // it takes no input, and it is idempotent.
+    Particle::ops('beam-ux-entries', 'beam-ux-entry', 'save-draft');
+    Particle::ops('beam-ux-entries', 'beam-ux-entry', 'publish');
+    Particle::ops('beam-ux-entries', 'beam-ux-entry', 'versions');
+    Particle::ops('beam-ux-entries', 'beam-ux-entry', 'restore');
+
     // The authed home IS the OOTB account realm: <AccountShell> (@splicewire/beam-ux/account). Fortify
     // redirects login here (`config/fortify.php` home => /dashboard). Shares `entry` for the same
     // reason `/` does — the seeded row is `dashboard`, not the slash-swapped component name.
