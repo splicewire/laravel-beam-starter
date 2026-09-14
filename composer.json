@@ -11,6 +11,10 @@
     "repositories": [
         {
             "type": "git",
+            "url": "https://github.com/splicewire/laravel-beam-docs.git"
+        },
+        {
+            "type": "git",
             "url": "https://github.com/splicewire/laravel-beam.git"
         },
         {
@@ -167,7 +171,8 @@
         "splicewire/laravel-beam-ux-prototype": "*",
         "schemastud/laravel-frame": "*",
         "schemastud/laravel-data-schemas": "dev-main",
-        "wikimedia/composer-merge-plugin": "^2.1"
+        "wikimedia/composer-merge-plugin": "^2.1",
+        "splicewire/laravel-beam-docs": "dev-main"
     },
     "require-dev": {
         "fakerphp/faker": "^1.24",
@@ -251,7 +256,8 @@
         ],
         "pre-package-uninstall": [
             "Illuminate\\Foundation\\ComposerScripts::prePackageUninstall"
-        ]
+        ],
+        "docs": "@php artisan splicewire:beam:docs:generate"
     },
     "extra": {
         "merge-plugin": {

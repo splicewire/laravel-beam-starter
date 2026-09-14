@@ -99,7 +99,9 @@
         "typescript": "^5.7.2",
         "vite": "^8.0.0",
         "@splicewire/beam-accounts": "link:../../../js/packages/beam/beam-accounts",
-        "@splicewire/beam-inertia": "link:../../../js/packages/beam/beam-inertia"
+        "@splicewire/beam-inertia": "link:../../../js/packages/beam/beam-inertia",
+        "@splicewire/beam-docs": "link:../../../js/packages/beam/beam-docs",
+        "@scalar/cli": "2.1.0"
     },
     "optionalDependencies": {
         "@rollup/rollup-linux-x64-gnu": "4.9.5",
