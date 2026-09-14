@@ -5359,7 +5359,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/stephenr85/laravel-data-nav.git",
-                "reference": "2f857ff58ecf30dcdd51c63b41ef9475927ef08c"
+                "reference": "db029ad2e17bf980d2209c36142d7ec882a11237"
             },
             "require": {
                 "illuminate/contracts": "^12.0|^13.0",
@@ -5415,7 +5415,7 @@
                 "MIT"
             ],
             "description": "Domain-agnostic navigation spine for Laravel. A polymorphic NavItem interface with SchemaIdentity DTO implementations (static NavLink + invocable-backed InvocableNavItem) and a NavTree, resolved server-side through a laravel-popcorn invocable. Consumable by both Inertia/React (JSON) and Blade (array) hosts. Emits no HTML. Part of the laravel-data-* family.",
-            "time": "2026-09-08T14:13:34+00:00"
+            "time": "2026-09-09T21:44:34+00:00"
         },
         {
             "name": "rushing/laravel-data-schemas-scribe",
@@ -5423,7 +5423,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/stephenr85/laravel-data-schemas-scribe.git",
-                "reference": "9b918a202c687275d1a26412c923a91a22341844"
+                "reference": "8890cfc340ed6e1eb30327683a86994604e9c1f5"
             },
             "require": {
                 "illuminate/support": "^11.0|^12.0|^13.0",
@@ -5479,7 +5479,7 @@
                 "scribe",
                 "spatie"
             ],
-            "time": "2026-09-08T12:37:53+00:00"
+            "time": "2026-09-13T02:21:29+00:00"
         },
         {
             "name": "rushing/laravel-doctor",
@@ -5862,7 +5862,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/stephenr85/laravel-popcorn.git",
-                "reference": "8608d59d3448dfba3f3702af84bce0be3f7f50e9"
+                "reference": "5c7b6df96f14c0d8ff86144f29bf0b2db5dff5be"
             },
             "require": {
                 "illuminate/contracts": "^11.0|^12.0|^13.0",
@@ -5925,7 +5925,7 @@
                 "registry",
                 "strategy"
             ],
-            "time": "2026-09-08T14:13:31+00:00"
+            "time": "2026-09-13T02:21:13+00:00"
         },
         {
             "name": "rushing/laravel-schema-convergence",
@@ -6191,7 +6191,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/schemastud/laravel-data-schemas.git",
-                "reference": "994365fe8576af6333ec4a072b381c37ca2767d5"
+                "reference": "ee10f57b3f5d6ce7787af3e8aa8da7cd402f0f0a"
             },
             "require": {
                 "galbar/jsonpath": "^3.0",
@@ -6264,7 +6264,7 @@
                 "spatie",
                 "validation"
             ],
-            "time": "2026-09-08T22:28:11+00:00"
+            "time": "2026-09-13T02:21:20+00:00"
         },
         {
             "name": "schemastud/laravel-frame",
@@ -6272,7 +6272,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/schemastud/laravel-frame.git",
-                "reference": "8153679e9c8f6f336fe775a72c1b9a090cdfcc04"
+                "reference": "328cde24c4f0be091ec51ddc9fe1055b79bb64f7"
             },
             "require": {
                 "illuminate/contracts": "^11.0|^12.0|^13.0",
@@ -6332,7 +6332,7 @@
                 "MIT"
             ],
             "description": "The batteries-UX backend rung for schema-driven admin editors: the resource-definition registry (ResourceDefinition), the #[Widget] -> x-stud-widget projector, #[ReadOnlyField], and a served GET /frame/manifest. Sits one level above a filter-schema controller; resolves a resource key to its whole editor wiring. Pairs with @schemastud/frame on the JS side.",
-            "time": "2026-09-08T14:13:37+00:00"
+            "time": "2026-09-13T02:21:03+00:00"
         },
         {
             "name": "schemastud/laravel-json-ns",
@@ -7740,7 +7740,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/splicewire/laravel-beam.git",
-                "reference": "7a62efdb6cea0e4eaa81f9879d21bde11a6fda99"
+                "reference": "b4232c43fae92909d0db4e55f8aee8e2d7d1d556"
             },
             "require": {
                 "illuminate/contracts": "^11.0|^12.0|^13.0",
@@ -7850,7 +7850,7 @@
                 "MIT"
             ],
             "description": "The schema-driven-CMS core: composes the open schema foundation (schemastud/laravel-data-schemas + schemastud/laravel-frame) and the open versioning foundation (rushing/laravel-versioning) into a schema-typed, snapshot-versioned, migrate-on-read BeamParticle. Depends DOWN on the open foundations (the ADR-0092 direction, paid→open); per ADR-0156 that now includes schemastud/laravel-frame — the agnostic resource-scaffolding rung — so beam natively implements Frame's FrameResourceHandler port (chain: splicewire/beam → schemastud/frame → schemastud/data-schemas, monotonic, no cycle). Also the runtime home of the host-hook registries (webhook / sitemap / doctor), the realm registry, and the particle resource declarations. The media arm (medialibrary + the media model traits + media table) was extracted DOWN into splicewire/laravel-beam-media (HTTP-03 / ADR-0178); base beam no longer requires medialibrary and does NOT require beam-media (no cycle). Headless = no editor SURFACE running; Frame's scaffolding may be present-but-inert. No Beam model is minted; beam is a substrate, not an instance.",
-            "time": "2026-09-08T18:17:11+00:00"
+            "time": "2026-09-13T02:54:27+00:00"
         },
         {
             "name": "splicewire/laravel-beam-accounts",
@@ -7858,7 +7858,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/splicewire/laravel-beam-accounts.git",
-                "reference": "6bea31bcd966729cfdc98d31acb21e369a3eed5f"
+                "reference": "1b7c942654e59cd19e30df9c05711d50614df06d"
             },
             "require": {
                 "firebase/php-jwt": "^6.0|^7.0",
@@ -7962,7 +7962,7 @@
                 "schemastud",
                 "teams"
             ],
-            "time": "2026-09-09T12:05:43+00:00"
+            "time": "2026-09-12T05:47:11+00:00"
         },
         {
             "name": "splicewire/laravel-beam-mcp",
@@ -7970,7 +7970,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/splicewire/laravel-beam-mcp.git",
-                "reference": "a5dd5c7b570cb9d9cf749e3d0dc0b7f82561034f"
+                "reference": "9af43232fbd02db4790ae80d036d07e5c9db54a5"
             },
             "require": {
                 "illuminate/contracts": "^11.0|^12.0|^13.0",
@@ -8063,7 +8063,7 @@
                 "model-context-protocol",
                 "schemastud"
             ],
-            "time": "2026-09-08T14:45:50+00:00"
+            "time": "2026-09-09T11:38:09+00:00"
         },
         {
             "name": "splicewire/laravel-beam-mdx",
@@ -8409,7 +8409,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/splicewire/laravel-beam-ux.git",
-                "reference": "4ba0df918355056e079da868699e3d9cdfa993e7"
+                "reference": "ab3eb97cfcb22a1720067bd9a598ddb9394f883f"
             },
             "require": {
                 "illuminate/contracts": "^11.0|^12.0|^13.0",
@@ -8420,6 +8420,7 @@
                 "rushing/laravel-data-nav": "*",
                 "rushing/laravel-permission-cascade": "*",
                 "rushing/laravel-schema-convergence": "*",
+                "rushing/laravel-versioning": "*",
                 "rushing/php-popcorn": "dev-main",
                 "schemastud/laravel-data-schemas": "*",
                 "schemastud/laravel-frame": "*",
@@ -8500,7 +8501,7 @@
                 "splicewire",
                 "ux"
             ],
-            "time": "2026-09-08T14:19:00+00:00"
+            "time": "2026-09-14T16:05:49+00:00"
         },
         {
             "name": "splicewire/laravel-beam-ux-prototype",
@@ -8508,7 +8509,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/splicewire/laravel-beam-ux-prototype.git",
-                "reference": "5031695f063daac681d56c0973a83656cc9e4569"
+                "reference": "fc8cb349eeb044b33966a6df4c884ac6c8cd994d"
             },
             "require": {
                 "illuminate/console": "^11.0|^12.0|^13.0",
@@ -8582,7 +8583,7 @@
                 "prototype",
                 "splicewire"
             ],
-            "time": "2026-09-08T12:44:29+00:00"
+            "time": "2026-09-09T12:40:42+00:00"
         },
         {
             "name": "splicewire/laravel-beam-workflows",
@@ -8590,7 +8591,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/splicewire/laravel-beam-workflows.git",
-                "reference": "65f302ceba29912d836441b8601fcb209dd4439a"
+                "reference": "f12f82d23cb22b7b9ef44d2332bba8c7b7e3fa9b"
             },
             "require": {
                 "illuminate/contracts": "^11.0|^12.0|^13.0",
@@ -8607,11 +8608,13 @@
                 "laravel/pint": "^1.0",
                 "orchestra/testbench": "^9.0|^10.0",
                 "pestphp/pest": "^4.0",
+                "splicewire/laravel-beam-calendars": "@dev",
                 "splicewire/laravel-circuit-engine": "@dev",
                 "splicewire/laravel-circuit-spine": "@dev",
                 "wikimedia/composer-merge-plugin": "^2.1"
             },
             "suggest": {
+                "splicewire/laravel-beam-calendars": "Adds optional scheduled managed-subject workflow actions without Tower or a composition engine.",
                 "splicewire/laravel-circuit-engine": "Enables the state-machine Circuit node type (Seam B): the local `workflow.apply` capability registers into the kernel's CapabilityManifest so a state machine slots into a Circuit graph. Without it, the Display substrate (Seam A) and the DefinitionBuilder still work standalone."
             },
             "default-branch": true,
@@ -8668,7 +8671,7 @@
                 "symfony-workflow",
                 "workflows"
             ],
-            "time": "2026-09-08T14:13:41+00:00"
+            "time": "2026-09-13T02:51:35+00:00"
         },
         {
             "name": "spomky-labs/cbor-php",
@@ -16142,7 +16145,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/splicewire/laravel-beam-dev.git",
-                "reference": "bfa0e113aa8fc341190c0700a6030d635de174b0"
+                "reference": "dfde84893571adcdc2feea74973ebe48bd3d7efe"
             },
             "require": {
                 "illuminate/console": "^11.0|^12.0|^13.0",
@@ -16169,7 +16172,7 @@
                     ]
                 },
                 "package-topology": {
-                    "because": "beam-dev is family-BLIND by charter: it is developer tooling for the Beam family that must never learn a family type, because every consumer installs it as require-dev and a dependency upward would invert the direction the whole ladder is built on. That blindness is why the load engine takes its work through the LoadTargetSource PORT and ships no implementation of it — the adapter that reads a host's particle registries lives at beam tier, not here. Declared 2026-09-04: this package previously carried NO topology block at all, so a wrong dependency added here would have passed every lint in the estate. NOTE this declaration is currently ADVISORY — it is read by a consumer that merges the installed tree, but this package ships neither rushing/php-package-topology as a dev dependency nor an AssertsDeclaredTopology test of its own, so nothing fails here if it is violated. laravel-beam-market has both and is the pattern to copy; tracked as octane-runtime-substrate ticket 12.",
+                    "because": "beam-dev is family-BLIND by charter: it is developer tooling for the Beam family that must never learn a family type, because every consumer installs it as require-dev and a dependency upward would invert the direction the whole ladder is built on. That blindness is why the load engine takes its work through the LoadTargetSource PORT and ships no implementation of it — the adapter that reads a host's particle registries lives at beam tier, not here. Declared 2026-09-04: this package previously carried NO topology block at all, so a wrong dependency added here would have passed every lint in the estate. ENFORCED as of 2026-09-09 by tests/Topology/OwnTopologyDeclarationTest.php, which reads these globs off this file and fails if any runtime require matches one — plus a planted-violation case, so it cannot pass by matching nothing. Deliberately WITHOUT rushing/php-package-topology: that tool reads only vendored manifests, so a package's own declaration is invisible to it (measured at laravel-beam-market, whose DeclaredTopologyTest evaluates 0 rules), and it would drag a private multi-package dev chain into a package whose minimalism is the property this declaration protects.",
                     "mustNotRequire": [
                         "splicewire/*",
                         "schemastud/*",
@@ -16216,7 +16219,7 @@
                 "sqlite",
                 "testing"
             ],
-            "time": "2026-09-04T16:13:39+00:00"
+            "time": "2026-09-09T12:09:05+00:00"
         },
         {
             "name": "splicewire/laravel-beam-provision",
