@@ -64,6 +64,10 @@ it('has a committed schema projection for every declared Data class', function (
  *   - a projection that is stale            → same path, different bytes
  *   - a projection that is empty or corrupt → same path, different bytes
  *
+ * Gate ownership: in CI, `composer setup` regenerates resources/schemas before this test runs, so the
+ * `stale` and `missing` buckets cannot fail there; the tests.yml clean-tree step owns staleness in CI.
+ * This test owns `orphaned` everywhere, and `stale`/`missing` in a local `composer ci:check` run without setup.
+ *
  * It drives the REAL command through its first-class `--output` override rather than re-deriving a
  * schema, for the reason the audit's own docblock records: a second hand-rolled copy of the generation
  * logic disagreed with the real one and cost a host a permanent phantom finding. This is the estate's

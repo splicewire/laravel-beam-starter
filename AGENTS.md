@@ -34,4 +34,4 @@ git fetch upstream && git merge upstream/main
 A catch-up merge **takes everything**, including files for packages that tier doesn't require —
 packages gate behaviour, so an inert file is not a wrong file. Rejecting content to keep a tier
 "clean" is what makes every later merge re-propose the same files. The genuine tier deltas are each
-repo's `composer.json`, `composer.local.json.off`, `AGENTS.md`, `README.md`, and its own tier code.
+repo's `composer.json`, `composer.local.json.dist`, `AGENTS.md`, `README.md`, and its own tier code.
