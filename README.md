@@ -111,18 +111,30 @@ stay reachable as `composer lint:check` and `composer types:check`. The composit
 pint, phpstan, eslint, prettier, tsc) so no gate can mask another. It exits `0` all-passed, `1` a
 real failure, and `2` when a gate could not be measured at all — test `!= 0`, never `== 1`.
 
+PHPStan runs as two processes. `phpstan.neon` (`composer types:check`, the `php:types` gate) analyses
+the application only. `phpstan.migration-stubs.neon` analyses the beam-accounts migration stubs before
+they are published; `tests/Feature/MigrationStubAnalysisTest.php` runs it with a private cache, so a
+defect in a stub fails `php:test`, not `php:types`. Do not put the stubs back in `phpstan.neon`: a stub
+and its byte-identical published copy analysed in one process share one AST, and PHPStan then reports
+correct PHPDocs as missing. To run the stub analysis by hand, give it a fresh cache:
+`TMPDIR="$(mktemp -d)" vendor/bin/phpstan analyse -c phpstan.migration-stubs.neon`.
+
 ## Co-dev overlay (local package dev)
 
-To develop against your local package checkouts in `~/Workspaces/laravel/packages/**` (symlinked into
+To develop against your local package checkouts in `~/Workspaces/php/packages/**` (symlinked into
 `vendor/` — path repos win over the git `repositories` via `wikimedia/composer-merge-plugin`):
 
 ```bash
-cp composer.local.json.off composer.local.json   # engage the overlay (gitignored active copy)
+cp composer.local.json.dist composer.local.json  # engage the overlay (gitignored active copy)
 composer update                                   # resolve to local checkouts
 php artisan splicewire:beam:install --no-interaction
 
 rm composer.local.json && composer update         # reset to git-resolved
 ```
+
+Never commit a `composer.lock` resolved through the overlay. Family packages are required at
+`dev-main`, so the committed lock must be regenerated with no `composer.local.json` present, after the
+package commits it depends on are pushed: `grep -c '"type": "path"' composer.lock` must print `0`.
 
 ## Official Documentation
 
