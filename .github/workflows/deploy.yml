@@ -40,6 +40,30 @@ jobs:
         with:
           persist-credentials: false
 
+      # The beam tier's first-party packages are mostly public, but splicewire/laravel-beam-docs is
+      # PRIVATE, so both composer installs below need a token. This mints a short-lived one from the
+      # "Splicewire Market" GitHub App (github.com/apps/splicewire-market), the same App the
+      # satellite and tower starters' deploys use for their private packages.
+      - name: Mint a GitHub App installation token (private family repos)
+        id: gh-app
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          app-id: ${{ vars.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+          # `owner` is load-bearing and easy to leave off. Without it the action logs "Inputs 'owner'
+          # and 'repositories' are not set. Creating token for this repository" and mints a token
+          # scoped to the STARTER ALONE. That token authenticates, so the sibling clones fail with
+          # "Invalid username or token" — a message naming nothing about scope. tests.yml in this repo
+          # carries the same line for the same reason.
+          owner: ${{ github.repository_owner }}
+
+      # Rewrites plain `https://github.com/...` git URLs to use the token — covers composer's own
+      # git clones when `composer install` runs directly on the runner (the containerized install
+      # below needs its own copy, passed as a Docker build secret, since an isolated build has no
+      # access to this runner's global git config).
+      - name: Configure git to use the installation token
+        run: git config --global url."https://x-access-token:${{ steps.gh-app.outputs.token }}@github.com/".insteadOf "https://github.com/"
+
       - name: Authenticate to GCP (Workload Identity Federation)
         id: auth
         uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
@@ -67,6 +91,8 @@ jobs:
           tags: ${{ env.GCP_REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT }}/${{ env.AR_REPO }}/${{ github.event.repository.name }}:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          secrets: |
+            gh_app_token=${{ steps.gh-app.outputs.token }}
 
       - name: Set up OpenTofu
         uses: opentofu/setup-opentofu@a1320f892987e89d278cc92dc5adc984fb93aca4 # v2.0.2
