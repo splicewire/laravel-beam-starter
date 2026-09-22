@@ -2,7 +2,6 @@
 
 use App\Data\Pages\EntryPageData;
 use App\Data\Pages\FrameConsolePageData;
-use App\Http\Controllers\SitemapResourceController;
 use App\Support\PageEntryRef;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -160,11 +159,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // middleware default is dropped by passing an explicit empty list rather than being applied
     // twice.
     Route::splicewireAccountApiRoutes(middleware: []);
-
-    // The host-owned Frame resource edit page for the editable sitemap (kind A).
-    // Frame ships only frame/manifest; the host binds each resource's edit route.
-    Route::get('frame/resources/sitemap', SitemapResourceController::class)
-        ->name('frame.resources.sitemap');
 
     // The OPERATOR realm's front door (frontend-surfaces.md). It lands on the realm's DASHBOARD LEAF —
     // `/operator/dashboard`, the `operator-dashboard` read-only resource `splicewire/laravel-beam-ux`
