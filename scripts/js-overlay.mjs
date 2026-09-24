@@ -1,6 +1,7 @@
 // js-overlay — a local, uncommitted JS co-dev overlay for this starter (the JS twin of composer.local.json).
 //
-//   scripts/js-overlay on       rewrite package.json to link local family packages, install, hide both files from git
+//   scripts/js-overlay on       rewrite package.json to link local family packages, install, hide both files from git.
+//                               A repeat on runs the same guard; --accept-lock keeps a changed lock as the new baseline
 //   scripts/js-overlay off      refuse if package.json holds anything but the overlay's links, or the lock changed; else
 //                               restore both and reinstall. --discard-lock accepts lock-only drift explicitly
 //   scripts/js-overlay status   say whether the overlay is on, and what it links
@@ -137,8 +138,9 @@ function guard({ checkLock = true } = {}) {
                 `\nNote them, run the change again after the overlay is off (for example pnpm add/remove, then commit), ` +
                 `or revert them by hand. Nothing was changed.` +
                 (lockDrift && drift.length === 1
-                    ? `\nIf only the lock differs because a linked package's own dependencies changed, that is safe to drop: ` +
-                      `off restores the committed lock anyway. Run: scripts/js-overlay off --discard-lock`
+                    ? `\nIf only the lock differs because a linked package's own dependencies changed, choose explicitly:\n` +
+                      `  scripts/js-overlay on --accept-lock    keep this lock as the overlay's baseline and re-apply\n` +
+                      `  scripts/js-overlay off --discard-lock  drop it (off restores the committed lock anyway)`
                     : ''),
         );
     }
@@ -155,9 +157,9 @@ const setHidden = (on) => git('update-index', on ? '--skip-worktree' : '--no-ski
 function on() {
     const links = readLinks();
     if (isOn()) {
-        // A second `on` re-applies cleanly, but never over a package.json change. Lock-only drift is not lost here: the install
-        // below runs on the current lock, and the result is recorded again (review-r1: otherwise nothing could proceed).
-        guard({ checkLock: false });
+        // A second `on` re-applies cleanly, but never over a change. It checks the lock too: re-recording drift silently would
+        // make it the baseline the next `off` discards (build.qa, against 5499f3b). --accept-lock is the operator saying so.
+        guard({ checkLock: !process.argv.slice(3).includes('--accept-lock') });
     } else {
         const changed = git('status', '--porcelain', '--', ...HIDDEN).trim();
         if (changed) fail(`uncommitted changes in ${HIDDEN.join(' / ')}; commit or revert them first, or the overlay would hide them:\n${changed}`);

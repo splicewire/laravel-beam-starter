@@ -156,15 +156,43 @@ describe('scripts/js-overlay', () => {
         assert.equal(s.g('status', '--porcelain').trim(), '');
     });
 
-    it('a repeat on re-records lock-only drift instead of refusing, so a plain off then passes', () => {
+    it('no path launders lock drift: a repeat on refuses it too, and on --accept-lock is the named way through', () => {
+        // build.qa's reproduction against 5499f3b: on, a lock-only change, off refuses, on again, off, and the change was gone.
+        const s = scratch();
+        const run = (...args) =>
+            spawnSync('bash', [join(s.repo, 'scripts', 'js-overlay'), ...args], {
+                cwd: s.repo,
+                encoding: 'utf8',
+                env: { ...process.env, JS_OVERLAY_PNPM: join(s.root, 'pnpm-stub'), STUB_LOG: join(s.root, 'pnpm.log') },
+            });
+        assert.equal(run('on').status, 0);
+        const lock = join(s.repo, 'pnpm-lock.yaml');
+        writeFileSync(lock, `${readFileSync(lock, 'utf8')}# pnpm update left-pad\n`);
+
+        assert.notEqual(run('off').status, 0, 'off refuses the drift');
+        const again = run('on');
+        assert.notEqual(again.status, 0, 'a repeat on refuses it too, instead of re-recording it silently');
+        assert.match(again.stderr, /on --accept-lock/);
+        assert.match(readFileSync(lock, 'utf8'), /# pnpm update left-pad/, 'still there');
+
+        const accepted = run('on', '--accept-lock');
+        assert.equal(accepted.status, 0, accepted.stderr);
+        assert.equal(run('off').status, 0, 'the operator accepted the lock as the baseline, so off proceeds');
+    });
+
+    it('on --accept-lock never excuses a package.json change', () => {
         const s = scratch();
         assert.equal(s.run('on').status, 0);
-        const lock = join(s.repo, 'pnpm-lock.yaml');
-        writeFileSync(lock, `${readFileSync(lock, 'utf8')}# a linked package's deps changed, then pnpm install\n`);
-
-        const again = s.run('on');
-        assert.equal(again.status, 0, again.stderr);
-        assert.equal(s.run('off').status, 0);
+        const m = s.manifest();
+        m.dependencies['left-pad'] = '^1.3.0';
+        writeFileSync(join(s.repo, 'package.json'), `${JSON.stringify(m, null, 4)}\n`);
+        const on = spawnSync('bash', [join(s.repo, 'scripts', 'js-overlay'), 'on', '--accept-lock'], {
+            cwd: s.repo,
+            encoding: 'utf8',
+            env: { ...process.env, JS_OVERLAY_PNPM: join(s.root, 'pnpm-stub'), STUB_LOG: join(s.root, 'pnpm.log') },
+        });
+        assert.notEqual(on.status, 0);
+        assert.match(on.stderr, /dependencies\.left-pad/);
     });
 
     it('--discard-lock never excuses a package.json change', () => {
