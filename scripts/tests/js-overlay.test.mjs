@@ -123,6 +123,19 @@ describe('scripts/js-overlay', () => {
         assert.deepEqual(s.pnpmCalls(), ['install'], 'no frozen install ran');
     });
 
+    it('off refuses a lock-only change made while the overlay was on (pnpm update within range)', () => {
+        const s = scratch();
+        assert.equal(s.run('on').status, 0);
+        const lock = join(s.repo, 'pnpm-lock.yaml');
+        writeFileSync(lock, `${readFileSync(lock, 'utf8')}# pnpm update left-pad\n`);
+
+        const off = s.run('off');
+        assert.notEqual(off.status, 0);
+        assert.match(off.stderr, /pnpm-lock\.yaml/);
+        assert.match(readFileSync(lock, 'utf8'), /# pnpm update left-pad/, 'the lock change is still there');
+        assert.deepEqual(s.hidden(), ['S', 'S']);
+    });
+
     it('off refuses nothing on a clean overlay, even after pnpm rewrote the lock', () => {
         const s = scratch();
         assert.equal(s.run('on').status, 0);
@@ -139,6 +152,16 @@ describe('scripts/js-overlay', () => {
         assert.notEqual(on.status, 0);
         assert.match(on.stderr, /uncommitted changes/);
         assert.deepEqual(s.pnpmCalls(), []);
+    });
+
+    it('off works from what on recorded, even after js.local.json is gone', () => {
+        const s = scratch();
+        assert.equal(s.run('on').status, 0);
+        rmSync(join(s.repo, 'js.local.json'));
+        const off = s.run('off');
+        assert.equal(off.status, 0, off.stderr);
+        assert.equal(readFileSync(join(s.repo, 'package.json'), 'utf8'), committed('package.json'));
+        assert.equal(s.g('status', '--porcelain').trim(), '');
     });
 
     it('off is a no-op when the overlay is not on', () => {

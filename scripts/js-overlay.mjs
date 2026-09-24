@@ -17,7 +17,8 @@
 //
 // The guard (build.qa): while the overlay is on, a real dependency change lands in the hidden files and never shows in git
 // status. `off` would discard it silently, so `off` refuses when package.json differs from what `on` wrote anywhere except the
-// overlay's own link: entries, and names the paths to re-apply after `off`.
+// overlay's own link: entries, or when pnpm-lock.yaml differs from the lock `on` left (a lock-only `pnpm update`), and names
+// what to re-apply after `off`. It reads the links `on` recorded, so `off` works even if js.local.json has gone.
 //
 // Dependency-free on purpose: .npmrc sets ignore-scripts=true, and this runs before any install.
 // JS_OVERLAY_PNPM overrides the pnpm executable (the tests use a stub).
@@ -43,6 +44,8 @@ const say = (message) => process.stdout.write(`js-overlay: ${message}\n`);
 // The overlay's record lives inside the git directory, so it can never show up as an untracked file.
 const stateDir = () => resolve(ROOT, git('rev-parse', '--git-path', 'js-overlay').trim());
 const recordedPath = () => join(stateDir(), 'package.json');
+const recordedLockPath = () => join(stateDir(), LOCK);
+const recordedLinksPath = () => join(stateDir(), 'links.json');
 const isOn = () => existsSync(recordedPath());
 
 function readLinks() {
@@ -114,13 +117,21 @@ function driftPaths(recorded, current, links) {
     return paths;
 }
 
-function guard(links) {
+// The links `on` applied, as it recorded them: `off` must not depend on js.local.json still being there or unchanged.
+const recordedLinks = () => (existsSync(recordedLinksPath()) ? JSON.parse(readFileSync(recordedLinksPath(), 'utf8')) : readLinks());
+
+function guard() {
     const recorded = JSON.parse(readFileSync(recordedPath(), 'utf8'));
     const current = JSON.parse(readFileSync(join(ROOT, MANIFEST), 'utf8'));
-    const drift = driftPaths(recorded, current, links);
+    const drift = driftPaths(recorded, current, recordedLinks());
+    // A lock-only change (pnpm update within range) leaves package.json alone but is just as hidden (build.qa). Compared only
+    // when `on` got as far as recording the lock; an `on` whose install failed has nothing to compare against.
+    if (existsSync(recordedLockPath()) && readFileSync(join(ROOT, LOCK), 'utf8') !== readFileSync(recordedLockPath(), 'utf8')) {
+        drift.push(LOCK);
+    }
     if (drift.length > 0) {
         fail(
-            `package.json has changes beyond the overlay's link: entries, and off would discard them:\n` +
+            `package.json or ${LOCK} has changes beyond the overlay's link: entries, and off would discard them:\n` +
                 drift.map((p) => `  - ${p}`).join('\n') +
                 `\nNote them, run the change again after the overlay is off (for example pnpm add/remove, then commit), ` +
                 `or revert them by hand. Nothing was changed.`,
@@ -128,10 +139,10 @@ function guard(links) {
     }
 }
 
-function pnpm(args) {
+function pnpm(args, hint = '') {
     const bin = process.env.JS_OVERLAY_PNPM || 'pnpm';
     const run = spawnSync(bin, args, { cwd: ROOT, stdio: 'inherit' });
-    if (run.status !== 0) fail(`${bin} ${args.join(' ')} failed (exit ${run.status}).`);
+    if (run.status !== 0) fail(`${bin} ${args.join(' ')} failed (exit ${run.status}).${hint ? ` ${hint}` : ''}`);
 }
 
 const setHidden = (on) => git('update-index', on ? '--skip-worktree' : '--no-skip-worktree', ...HIDDEN);
@@ -139,7 +150,7 @@ const setHidden = (on) => git('update-index', on ? '--skip-worktree' : '--no-ski
 function on() {
     const links = readLinks();
     if (isOn()) {
-        guard(links); // a second `on` re-applies cleanly, but never over a real change
+        guard(); // a second `on` re-applies cleanly, but never over a real change
     } else {
         const changed = git('status', '--porcelain', '--', ...HIDDEN).trim();
         if (changed) fail(`uncommitted changes in ${HIDDEN.join(' / ')}; commit or revert them first, or the overlay would hide them:\n${changed}`);
@@ -150,8 +161,12 @@ function on() {
     writeFileSync(join(ROOT, MANIFEST), text);
     mkdirSync(stateDir(), { recursive: true });
     writeFileSync(recordedPath(), text);
+    writeFileSync(recordedLinksPath(), JSON.stringify(links));
+    rmSync(recordedLockPath(), { force: true });
 
-    pnpm(['install']);
+    // If this fails, package.json stays visibly modified in git status (not yet hidden): `off` restores it.
+    pnpm(['install'], 'package.json is left modified and visible; run scripts/js-overlay off to restore it.');
+    writeFileSync(recordedLockPath(), readFileSync(join(ROOT, LOCK), 'utf8'));
     setHidden(true);
     say(`on: ${links.map((l) => `${l.kind}:${l.name}`).join(', ')} linked; package.json and ${LOCK} hidden from git.`);
 }
@@ -161,7 +176,7 @@ function off() {
         say('off already.');
         return;
     }
-    guard(readLinks());
+    guard();
 
     setHidden(false);
     git('checkout', '--', ...HIDDEN);
@@ -178,7 +193,7 @@ function status() {
         say('off.');
         return;
     }
-    const links = readLinks();
+    const links = recordedLinks();
     say(`on: ${links.map((l) => `${l.kind}:${l.name} -> ${l.path}`).join(', ')}`);
 }
 
