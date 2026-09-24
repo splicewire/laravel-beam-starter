@@ -1,7 +1,8 @@
 // js-overlay — a local, uncommitted JS co-dev overlay for this starter (the JS twin of composer.local.json).
 //
 //   scripts/js-overlay on       rewrite package.json to link local family packages, install, hide both files from git
-//   scripts/js-overlay off      refuse if package.json holds anything but the overlay's links; else restore and reinstall
+//   scripts/js-overlay off      refuse if package.json holds anything but the overlay's links, or the lock changed; else
+//                               restore both and reinstall. --discard-lock accepts lock-only drift explicitly
 //   scripts/js-overlay status   say whether the overlay is on, and what it links
 //
 // Links come from the gitignored js.local.json (copy js.local.json.dist), in fresh-install.sh's JS_LINKS grammar:
@@ -120,21 +121,25 @@ function driftPaths(recorded, current, links) {
 // The links `on` applied, as it recorded them: `off` must not depend on js.local.json still being there or unchanged.
 const recordedLinks = () => (existsSync(recordedLinksPath()) ? JSON.parse(readFileSync(recordedLinksPath(), 'utf8')) : readLinks());
 
-function guard() {
+function guard({ checkLock = true } = {}) {
     const recorded = JSON.parse(readFileSync(recordedPath(), 'utf8'));
     const current = JSON.parse(readFileSync(join(ROOT, MANIFEST), 'utf8'));
     const drift = driftPaths(recorded, current, recordedLinks());
     // A lock-only change (pnpm update within range) leaves package.json alone but is just as hidden (build.qa). Compared only
     // when `on` got as far as recording the lock; an `on` whose install failed has nothing to compare against.
-    if (existsSync(recordedLockPath()) && readFileSync(join(ROOT, LOCK), 'utf8') !== readFileSync(recordedLockPath(), 'utf8')) {
-        drift.push(LOCK);
-    }
+    const lockDrift =
+        checkLock && existsSync(recordedLockPath()) && readFileSync(join(ROOT, LOCK), 'utf8') !== readFileSync(recordedLockPath(), 'utf8');
+    if (lockDrift) drift.push(LOCK);
     if (drift.length > 0) {
         fail(
             `package.json or ${LOCK} has changes beyond the overlay's link: entries, and off would discard them:\n` +
                 drift.map((p) => `  - ${p}`).join('\n') +
                 `\nNote them, run the change again after the overlay is off (for example pnpm add/remove, then commit), ` +
-                `or revert them by hand. Nothing was changed.`,
+                `or revert them by hand. Nothing was changed.` +
+                (lockDrift && drift.length === 1
+                    ? `\nIf only the lock differs because a linked package's own dependencies changed, that is safe to drop: ` +
+                      `off restores the committed lock anyway. Run: scripts/js-overlay off --discard-lock`
+                    : ''),
         );
     }
 }
@@ -150,7 +155,9 @@ const setHidden = (on) => git('update-index', on ? '--skip-worktree' : '--no-ski
 function on() {
     const links = readLinks();
     if (isOn()) {
-        guard(); // a second `on` re-applies cleanly, but never over a real change
+        // A second `on` re-applies cleanly, but never over a package.json change. Lock-only drift is not lost here: the install
+        // below runs on the current lock, and the result is recorded again (review-r1: otherwise nothing could proceed).
+        guard({ checkLock: false });
     } else {
         const changed = git('status', '--porcelain', '--', ...HIDDEN).trim();
         if (changed) fail(`uncommitted changes in ${HIDDEN.join(' / ')}; commit or revert them first, or the overlay would hide them:\n${changed}`);
@@ -176,7 +183,8 @@ function off() {
         say('off already.');
         return;
     }
-    guard();
+    // --discard-lock: an explicit choice to drop lock-only drift (never a package.json change), which off would restore anyway.
+    guard({ checkLock: !process.argv.slice(3).includes('--discard-lock') });
 
     setHidden(false);
     git('checkout', '--', ...HIDDEN);

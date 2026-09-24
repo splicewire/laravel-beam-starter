@@ -136,6 +136,52 @@ describe('scripts/js-overlay', () => {
         assert.deepEqual(s.hidden(), ['S', 'S']);
     });
 
+    it('off --discard-lock accepts lock-only drift explicitly, and the refusal names it', () => {
+        const s = scratch();
+        assert.equal(s.run('on').status, 0);
+        const lock = join(s.repo, 'pnpm-lock.yaml');
+        writeFileSync(lock, `${readFileSync(lock, 'utf8')}# a linked package's deps changed, then pnpm install\n`);
+
+        const refused = s.run('off');
+        assert.notEqual(refused.status, 0);
+        assert.match(refused.stderr, /off --discard-lock/);
+
+        const off = spawnSync('bash', [join(s.repo, 'scripts', 'js-overlay'), 'off', '--discard-lock'], {
+            cwd: s.repo,
+            encoding: 'utf8',
+            env: { ...process.env, JS_OVERLAY_PNPM: join(s.root, 'pnpm-stub'), STUB_LOG: join(s.root, 'pnpm.log') },
+        });
+        assert.equal(off.status, 0, off.stderr);
+        assert.equal(readFileSync(lock, 'utf8'), committed('pnpm-lock.yaml'));
+        assert.equal(s.g('status', '--porcelain').trim(), '');
+    });
+
+    it('a repeat on re-records lock-only drift instead of refusing, so a plain off then passes', () => {
+        const s = scratch();
+        assert.equal(s.run('on').status, 0);
+        const lock = join(s.repo, 'pnpm-lock.yaml');
+        writeFileSync(lock, `${readFileSync(lock, 'utf8')}# a linked package's deps changed, then pnpm install\n`);
+
+        const again = s.run('on');
+        assert.equal(again.status, 0, again.stderr);
+        assert.equal(s.run('off').status, 0);
+    });
+
+    it('--discard-lock never excuses a package.json change', () => {
+        const s = scratch();
+        assert.equal(s.run('on').status, 0);
+        const m = s.manifest();
+        m.dependencies['left-pad'] = '^1.3.0';
+        writeFileSync(join(s.repo, 'package.json'), `${JSON.stringify(m, null, 4)}\n`);
+        const off = spawnSync('bash', [join(s.repo, 'scripts', 'js-overlay'), 'off', '--discard-lock'], {
+            cwd: s.repo,
+            encoding: 'utf8',
+            env: { ...process.env, JS_OVERLAY_PNPM: join(s.root, 'pnpm-stub'), STUB_LOG: join(s.root, 'pnpm.log') },
+        });
+        assert.notEqual(off.status, 0);
+        assert.match(off.stderr, /dependencies\.left-pad/);
+    });
+
     it('off refuses nothing on a clean overlay, even after pnpm rewrote the lock', () => {
         const s = scratch();
         assert.equal(s.run('on').status, 0);
