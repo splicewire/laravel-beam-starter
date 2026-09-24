@@ -49,11 +49,22 @@ class FrameConsoleRoutesTest extends TestCase
         }
     }
 
+    /**
+     * The nav is read from `/frame/manifest` as a team member — the request the console itself makes.
+     *
+     * ⚠️ It used to call `FrameNavContribution::contributeNav()` straight from the test, after
+     * `actingAs()` on a teamless user. Outside an HTTP request the injected `Request` has no user, so
+     * that built the nav for a GUEST, and it passed only while one resource (`git-repo`) was listed to
+     * everyone for lack of any read boundary. Once `ResourceVisibility::listable()` asked the read guard
+     * (laravel-beam 88f872fd3) the guest's nav was empty, correctly. The rail offers only what its
+     * viewer can read, so the viewer must be one who can: a member, whose team role `splicewire.team`
+     * binds on the request.
+     */
     public function test_every_nav_seat_href_serves_the_frame_console(): void
     {
-        $this->actingAs(User::factory()->create());
+        $this->actingAs(User::factory()->teamMember()->create());
 
-        $tree = app(FrameNavContribution::class)->contributeNav('tenant')['nav'];
+        $tree = $this->getJson('/frame/manifest')->assertOk()->json('nav');
         $hrefs = [];
 
         foreach ($tree['items'] ?? [] as $section) {
