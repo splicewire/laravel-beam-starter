@@ -21,10 +21,7 @@ class CommercialSeamTest extends TestCase
 
     protected function commercialSeamRatchet(): array
     {
-        return [
-            'R4 account-doors-missing' => 'BUY-05: AccountDoors declares the doors (structural until then)',
-            'R4 register-mounted-undeclared' => 'BUY-05: the starter takes the package default (registration closed), so POST register 404s',
-            'S3 user-create app/Actions/Fortify/CreateNewUser.php User::create(' => 'BUY-05: the starter copy is deleted; CreatesNewUsers binds the door-checked action',
-        ];
+        // Empty: BUY-05 phase C declared the registration door and deleted the starter's CreateNewUser.
+        return [];
     }
 }
