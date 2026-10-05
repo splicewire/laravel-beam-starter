@@ -175,4 +175,10 @@ return [
     // 'media'         => [ ... ]   // (ticket 08)
     // 'hooks'         => [ ... ]   // (webhook / sitemap / doctor registries)
 
+    // Host IA (ux-walkthrough IA-6, UX-07): the cross-instance sides this host plays. The beam starter is neither a hub nor a client.
+    // A surface for another side throws when its macro is called (Sides::serve).
+    'ia' => [
+        'plays' => [],
+    ],
+
 ];
