@@ -163,8 +163,9 @@ class HandleInertiaRequests extends Middleware
         // UX-06 (M5): the account rail runs the IA invariants, read as the tenant-side rail it renders. Its edges into the
         // operator and user realms are UX-12b's listed exception (ratchet `T2 I1 nav.yml:operator-seat`): until the realm
         // switcher (UX-12a) lands, the operator-seat row is the operator realm's only door. Remove the crossings when
-        // UX-12a/12b land. Every other breach throws, I4 included.
-        app(IaInvariants::class)->assert('tenant', $tree->toArray(), crossings: ['operator', 'user']);
+        // UX-12a/12b land. Every other breach throws, I4 included, outside production; in production it is reported at
+        // error level and the rail renders as it is, because route mounting there can differ from where it was built.
+        app(IaInvariants::class)->enforce('tenant', $tree->toArray(), crossings: ['operator', 'user']);
 
         return $tree;
     }

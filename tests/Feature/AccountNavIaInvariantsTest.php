@@ -5,7 +5,9 @@ namespace Tests\Feature;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Log;
 use Inertia\Testing\AssertableInertia as Assert;
+use Mockery;
 use Rushing\PermissionCascade\Contracts\AccessGrant;
 use Splicewire\Beam\Accounts\Enums\Role;
 use Splicewire\Beam\Accounts\Models\Membership;
@@ -84,5 +86,18 @@ class AccountNavIaInvariantsTest extends TestCase
         $this->expectExceptionMessageMatches('#I4 tenant /account/no-such-page#');
 
         $this->actingAs(User::factory()->create())->get(route('dashboard'));
+    }
+
+    public function test_in_production_a_breaking_row_is_reported_at_error_level_and_the_page_still_renders(): void
+    {
+        config(['beam.ux.ia.throw' => false]);
+        Log::spy();
+        BeamUxEntry::query()->where('slug', 'account-team')->update(['segment' => '/account/no-such-page']);
+
+        $this->actingAs(User::factory()->create())->get(route('dashboard'))->assertOk();
+
+        Log::shouldHaveReceived('error')->with(Mockery::on(
+            fn (string $message): bool => str_contains($message, 'tenant rail at') && str_contains($message, 'I4 tenant /account/no-such-page'),
+        ), Mockery::any())->once();
     }
 }
