@@ -164,7 +164,9 @@ class HandleInertiaRequests extends Middleware
         // operator and user realms are UX-12b's listed exception (ratchet `T2 I1 nav.yml:operator-seat`): until the realm
         // switcher (UX-12a) lands, the operator-seat row is the operator realm's only door. Remove the crossings when
         // UX-12a/12b land. Every other breach throws, I4 included, outside production; in production it is reported at
-        // error level and the rail renders as it is, because route mounting there can differ from where it was built.
+        // error level, because route mounting there can differ from where it was built. The pruned array enforce() returns
+        // is deliberately NOT used here: this rail is a NavTree, and in production it renders as it always has, breaking
+        // row included (lead 19:49Z), while the frame rails, which are arrays, are pruned by the decorator.
         app(IaInvariants::class)->enforce('tenant', $tree->toArray(), crossings: ['operator', 'user']);
 
         return $tree;
