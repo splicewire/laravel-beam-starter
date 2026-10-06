@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use App\Account\StarterAccountShell;
-use App\Beam\OperatorRailSeat;
 use App\Beam\RealmRegistry;
 use App\Data\SitemapData;
 use App\Doctor\OrphanedNavItemAudit;
@@ -57,9 +56,6 @@ class AppServiceProvider extends ServiceProvider
         $this->registerAuthoringGates();
         $this->registerResourcePolicies();
         $this->registerDoctorAudits();
-
-        // The operator realm's rail seat — see the class for why only the host can declare it.
-        $this->app->booted(fn () => OperatorRailSeat::register($this->app));
     }
 
     /**
