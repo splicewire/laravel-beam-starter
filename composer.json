@@ -1,8 +1,8 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/react-starter-kit",
+    "name": "splicewire/laravel-beam-starter",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
+    "description": "The Beam starter: a Laravel, Inertia and React app with the Beam spine wired in.",
     "keywords": [
         "laravel",
         "framework"
@@ -260,6 +260,12 @@
         "docs": "@php artisan splicewire:beam:docs:generate"
     },
     "extra": {
+        "splicewire": {
+            "starter": {
+                "repository": "https://github.com/splicewire/laravel-beam-starter",
+                "published": false
+            }
+        },
         "merge-plugin": {
             "include": [
                 "composer.local.json"
