@@ -149,23 +149,21 @@ class RealmDashboardTest extends TestCase
 
         // ADR-0224: Users and Teams are default-provider resources with no declared dashboard context, so
         // they are rail TILES, never cards. Any declared card keeps its own live provider figures.
-        $byResource = array_column($cards, null, 'resource');
-        $this->assertArrayNotHasKey('users', $byResource);
-        $this->assertArrayNotHasKey('teams', $byResource);
-        foreach ($byResource as $resource => $card) {
-            $this->assertSame('summary', $card['context']);
-            $this->assertNotEmpty($card['summary']['figures'], "the {$resource} card must carry live figures");
-        }
+        // This host seats no card-declaring operator resource, so the card set is EMPTY. Assert the FULL
+        // set (not merely that Users/Teams are absent) so an invented third card cannot slip through.
+        $this->assertSame([], $cards, 'the operator dashboard declares no cards on this host');
 
-        // Jump-to equals the rail: the tiles ARE the realm's nav leaves for this actor (minus the
-        // dashboard's own leaf), in the same order the rail draws them.
+        // Jump-to equals the remaining PRODUCT rail: exclude the Developer zone (zone=meta, ADR-0224),
+        // the dashboard's own leaf, and any card destination, in the order the rail draws them.
         $manifest = $this->actingAs($operator)->getJson('/operator/frame/manifest')->assertOk()->json();
+        $cardHrefs = array_column($cards, 'href');
+        $productNav = array_filter($manifest['nav']['items'], fn (array $node): bool => ($node['zone'] ?? null) !== 'meta');
         $rail = array_values(array_filter(
-            self::leaves($manifest['nav']['items']),
-            fn (array $leaf): bool => ($leaf['routeName'] ?? null) !== 'operator-dashboard.index',
+            self::leaves($productNav),
+            fn (array $leaf): bool => ($leaf['routeName'] ?? null) !== 'operator-dashboard.index'
+                && ! in_array($leaf['href'], $cardHrefs, true),
         ));
 
-        $cardHrefs = array_column($cards, 'href');
         $tileHrefs = array_column($tiles, 'href');
 
         $this->assertNotEmpty($tiles);
