@@ -122,25 +122,15 @@ class RealmDashboardTest extends TestCase
     // ---------------------------------------------------------------- the operator rows
 
     /**
-     * A card per resource the rail seats (`users` and `teams`, in beam-accounts'
-     * People task section), each carrying the LIVE count the summary provider reads through
-     * the resource's own scoped query — asserted against that resource's index for the same actor, after
-     * a fixture that moves it, so a stale, global or invented figure fails — then the rail's leaves as
-     * tiles, after every card.
+     * Declared cards keep their live provider figures; rail-only Users and Teams are TILES, not cards
+     * (ADR-0224: a default-provider resource with no declared context is a nav tile, not a derived card).
+     * Every destination appears once - card XOR tile - and the tiles are the realm's remaining nav leaves,
+     * after every card. This host seats no card-declaring resource in the operator realm, so its dashboard
+     * is all tiles (Users, Teams); a host that adds a card resource asserts it the same way.
      */
-    public function test_the_operator_dashboard_streams_a_card_per_seated_resource_with_live_counts_then_the_rail_as_tiles(): void
+    public function test_the_operator_dashboard_streams_declared_cards_with_live_counts_then_remaining_product_tiles(): void
     {
         $operator = $this->operator();
-
-        // Rows the operator's OWN reach admits: `users` is scoped to shared teams and `teams` to
-        // membership, so the extra rows join the operator's team — a fixture outside that reach would
-        // move the model count and not the figure, and prove nothing about either.
-        $team = Team::query()->where('user_id', $operator->id)->firstOrFail();
-        foreach (User::factory()->count(2)->create() as $peer) {
-            Membership::create(['team_id' => $team->id, 'user_id' => $peer->id, 'role' => Role::Member->value]);
-        }
-        $second = Team::create(['user_id' => $operator->id, 'name' => 'Second', 'personal_team' => false]);
-        Membership::create(['team_id' => $second->id, 'user_id' => $operator->id, 'role' => Role::Owner->value]);
 
         $rows = $this->rows($operator, 'operator-dashboard');
         $cards = array_values(array_filter($rows, fn (array $row): bool => $row['context'] !== 'nav'));
@@ -157,22 +147,14 @@ class RealmDashboardTest extends TestCase
             'every card lands in one page regardless of per_page',
         );
 
+        // ADR-0224: Users and Teams are default-provider resources with no declared dashboard context, so
+        // they are rail TILES, never cards. Any declared card keeps its own live provider figures.
         $byResource = array_column($cards, null, 'resource');
-        $this->assertArrayHasKey('users', $byResource);
-        $this->assertArrayHasKey('teams', $byResource);
-
-        // The live count is what the resource's OWN index answers this actor (PRD story 8: figures are
-        // scoped to what the operator may see, never a global total) — the same scoped query the
-        // default provider counts through, read over the wire rather than re-derived here.
-        foreach (['users', 'teams'] as $resource) {
-            $card = $byResource[$resource];
-            $total = $this->actingAs($operator)->getJson("/frame/resources/{$resource}?per_page=100")->assertOk()->json('total');
-
+        $this->assertArrayNotHasKey('users', $byResource);
+        $this->assertArrayNotHasKey('teams', $byResource);
+        foreach ($byResource as $resource => $card) {
             $this->assertSame('summary', $card['context']);
-            $this->assertSame("/operator/{$resource}", $card['href']);
-            $this->assertNotEmpty($card['summary']['figures']);
-            $this->assertSame($total, $card['summary']['figures'][0]['value'], "the {$resource} card must carry the live, actor-scoped count");
-            $this->assertGreaterThan(1, $total, 'the fixture must add rows in reach, or a hardcoded 1 would pass');
+            $this->assertNotEmpty($card['summary']['figures'], "the {$resource} card must carry live figures");
         }
 
         // Jump-to equals the rail: the tiles ARE the realm's nav leaves for this actor (minus the
@@ -183,10 +165,19 @@ class RealmDashboardTest extends TestCase
             fn (array $leaf): bool => ($leaf['routeName'] ?? null) !== 'operator-dashboard.index',
         ));
 
+        $cardHrefs = array_column($cards, 'href');
+        $tileHrefs = array_column($tiles, 'href');
+
         $this->assertNotEmpty($tiles);
-        $this->assertSame(array_column($rail, 'href'), array_column($tiles, 'href'));
+        $this->assertSame(array_column($rail, 'href'), $tileHrefs);
         $this->assertSame(array_column($rail, 'title'), array_column($tiles, 'label'));
-        $this->assertNotContains('/operator/dashboard', array_column($tiles, 'href'));
+        $this->assertNotContains('/operator/dashboard', $tileHrefs);
+
+        // ADR-0224: Users and Teams are tiles, not cards; every destination appears once (card XOR tile).
+        $this->assertContains('/operator/users', $tileHrefs);
+        $this->assertContains('/operator/teams', $tileHrefs);
+        $this->assertSame([], array_values(array_intersect($cardHrefs, $tileHrefs)));
+        $this->assertCount(count(array_unique([...$cardHrefs, ...$tileHrefs])), $rows);
 
         foreach ($tiles as $tile) {
             $this->assertNull($tile['summary']);
