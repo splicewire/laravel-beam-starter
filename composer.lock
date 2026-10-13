@@ -5217,9 +5217,9 @@
         {
             "name": "rushing/codegen",
             "version": "dev-main",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/stephenr85/codegen.git",
+            "dist": {
+                "type": "path",
+                "url": "../../../php/packages/rushing/codegen",
                 "reference": "6554e23cc938de166b4e78f1f6be722780e6a0d1"
             },
             "require": {
@@ -5231,7 +5231,6 @@
                 "pestphp/pest": "^3.0",
                 "wikimedia/composer-merge-plugin": "^2.1"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "package-topology": {
@@ -5285,14 +5284,17 @@
                 "schema",
                 "sdk"
             ],
-            "time": "2026-09-08T14:13:33+00:00"
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
         },
         {
             "name": "rushing/laravel-data-filters",
             "version": "dev-main",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/stephenr85/laravel-data-filters.git",
+            "dist": {
+                "type": "path",
+                "url": "../../../php/packages/rushing/laravel-data-filters",
                 "reference": "9f85c0e03987f759b84a8556caa57d0ec2dbf7d1"
             },
             "require": {
@@ -5314,7 +5316,6 @@
                 "pestphp/pest-plugin-laravel": "^3.0",
                 "wikimedia/composer-merge-plugin": "^2.1"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -5351,14 +5352,17 @@
                 "MIT"
             ],
             "description": "Host-agnostic filtering spine for Laravel. Declare a resource's filterable surface once on a Spatie Data class; derive a spatie/laravel-query-builder query, an x-filter JSON-Schema keyword for UI parity (via laravel-data-schemas), and persisted saved filters from that single declaration.",
-            "time": "2026-09-08T14:13:34+00:00"
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
         },
         {
             "name": "rushing/laravel-data-nav",
             "version": "dev-main",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/stephenr85/laravel-data-nav.git",
+            "dist": {
+                "type": "path",
+                "url": "../../../php/packages/rushing/laravel-data-nav",
                 "reference": "db029ad2e17bf980d2209c36142d7ec882a11237"
             },
             "require": {
@@ -5379,7 +5383,6 @@
                 "pestphp/pest-plugin-laravel": "^3.0",
                 "wikimedia/composer-merge-plugin": "^2.1"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -5415,14 +5418,17 @@
                 "MIT"
             ],
             "description": "Domain-agnostic navigation spine for Laravel. A polymorphic NavItem interface with SchemaIdentity DTO implementations (static NavLink + invocable-backed InvocableNavItem) and a NavTree, resolved server-side through a laravel-popcorn invocable. Consumable by both Inertia/React (JSON) and Blade (array) hosts. Emits no HTML. Part of the laravel-data-* family.",
-            "time": "2026-09-09T21:44:34+00:00"
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
         },
         {
             "name": "rushing/laravel-data-schemas-scribe",
             "version": "dev-main",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/stephenr85/laravel-data-schemas-scribe.git",
+            "dist": {
+                "type": "path",
+                "url": "../../../php/packages/rushing/laravel-data-schemas-scribe",
                 "reference": "80e0bd3863af4924ecac7cc56f6f6040709b4adb"
             },
             "require": {
@@ -5437,7 +5443,6 @@
                 "phpunit/phpunit": "^11.0",
                 "wikimedia/composer-merge-plugin": "^2.1"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "laravel": {
@@ -5479,14 +5484,17 @@
                 "scribe",
                 "spatie"
             ],
-            "time": "2026-09-14T21:14:41+00:00"
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
         },
         {
             "name": "rushing/laravel-doctor",
             "version": "dev-main",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/stephenr85/laravel-doctor.git",
+            "dist": {
+                "type": "path",
+                "url": "../../../php/packages/rushing/laravel-doctor",
                 "reference": "a9b6c41883408f0f84144e3eb9dd16198414d29e"
             },
             "require": {
@@ -5500,7 +5508,6 @@
                 "rushing/php-package-topology": "dev-main",
                 "wikimedia/composer-merge-plugin": "^2.1"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -5552,14 +5559,17 @@
                 "readiness",
                 "schemastud"
             ],
-            "time": "2026-09-01T19:46:48+00:00"
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
         },
         {
             "name": "rushing/laravel-graphine",
             "version": "dev-main",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/stephenr85/laravel-graphine.git",
+            "dist": {
+                "type": "path",
+                "url": "../../../php/packages/rushing/laravel-graphine",
                 "reference": "1e0fb45b28a30dc778dc4e91e788cac2b0257a4d"
             },
             "require": {
@@ -5584,7 +5594,6 @@
                 "staudenmeir/laravel-adjacency-list": "MIT — recursive-CTE trees AND graphs; for a CONSUMER's relational driver (roles 1-3), not shipped here",
                 "sweetrdf/easyrdf": "BSD-3 — SPARQL 1.1 client; for a consumer's RDF-query driver (role 3)"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "laravel": {
@@ -5636,14 +5645,17 @@
                 "seam",
                 "substrate"
             ],
-            "time": "2026-09-08T14:13:35+00:00"
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
         },
         {
             "name": "rushing/laravel-mcp-registry",
             "version": "dev-main",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/stephenr85/laravel-mcp-registry.git",
+            "dist": {
+                "type": "path",
+                "url": "../../../php/packages/rushing/laravel-mcp-registry",
                 "reference": "3e7fe028c0a83df320d94fdc543fe917e240be39"
             },
             "require": {
@@ -5663,7 +5675,6 @@
             "suggest": {
                 "prism-php/prism": "Required only to use the ProvidesPrismTools trait, which bridges the server's tools to Prism tool objects for completions."
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -5709,14 +5720,17 @@
                 "registry",
                 "tools"
             ],
-            "time": "2026-09-01T19:46:48+00:00"
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
         },
         {
             "name": "rushing/laravel-permission-cascade",
             "version": "dev-main",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/stephenr85/laravel-permission-cascade.git",
+            "dist": {
+                "type": "path",
+                "url": "../../../php/packages/rushing/laravel-permission-cascade",
                 "reference": "61abf29b331989e15ba7f4c35fd4a8ffe071c49e"
             },
             "require": {
@@ -5731,7 +5745,6 @@
                 "orchestra/testbench": "^9.0|^10.0|^11.0",
                 "pestphp/pest": "^2.0|^3.0"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -5778,14 +5791,17 @@
                 "policy",
                 "spatie"
             ],
-            "time": "2026-09-03T17:02:38+00:00"
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
         },
         {
             "name": "rushing/laravel-pipeline-registry",
             "version": "dev-main",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/stephenr85/laravel-pipeline-registry.git",
+            "dist": {
+                "type": "path",
+                "url": "../../../php/packages/rushing/laravel-pipeline-registry",
                 "reference": "2c89876af4a1e418ac314bba2d1a9ee38fffd5ef"
             },
             "require": {
@@ -5803,7 +5819,6 @@
                 "pestphp/pest": "^2.0|^3.0",
                 "wikimedia/composer-merge-plugin": "^2.1"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -5854,14 +5869,17 @@
                 "registry",
                 "stages"
             ],
-            "time": "2026-09-08T14:13:35+00:00"
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
         },
         {
             "name": "rushing/laravel-popcorn",
             "version": "dev-main",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/stephenr85/laravel-popcorn.git",
+            "dist": {
+                "type": "path",
+                "url": "../../../php/packages/rushing/laravel-popcorn",
                 "reference": "5c7b6df96f14c0d8ff86144f29bf0b2db5dff5be"
             },
             "require": {
@@ -5877,7 +5895,6 @@
                 "pestphp/pest": "^3.0",
                 "phpstan/phpstan": "^2.2"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "laravel": {
@@ -5925,14 +5942,17 @@
                 "registry",
                 "strategy"
             ],
-            "time": "2026-09-13T02:21:13+00:00"
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
         },
         {
             "name": "rushing/laravel-schema-convergence",
             "version": "dev-main",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/stephenr85/laravel-schema-convergence.git",
+            "dist": {
+                "type": "path",
+                "url": "../../../php/packages/rushing/laravel-schema-convergence",
                 "reference": "a2e0911dee186336187e2346f9de9e6784d735b5"
             },
             "require": {
@@ -5945,7 +5965,6 @@
                 "orchestra/testbench": "^9.0|^10.0|^11.0",
                 "phpunit/phpunit": "^11.0|^12.0"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -5983,14 +6002,17 @@
                 "publishing",
                 "schema"
             ],
-            "time": "2026-09-02T23:48:31+00:00"
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
         },
         {
             "name": "rushing/laravel-versioning",
             "version": "dev-main",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/stephenr85/laravel-versioning.git",
+            "dist": {
+                "type": "path",
+                "url": "../../../php/packages/rushing/laravel-versioning",
                 "reference": "d62f9c5a65f697bd7f4d0215991523f775c93485"
             },
             "require": {
@@ -6004,7 +6026,6 @@
                 "orchestra/testbench": "^9.0 || ^10.0",
                 "pestphp/pest": "^3.0"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "laravel": {
@@ -6050,14 +6071,17 @@
                 "snapshot",
                 "versioning"
             ],
-            "time": "2026-08-28T18:40:40+00:00"
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
         },
         {
             "name": "rushing/php-graphine",
             "version": "dev-main",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/stephenr85/php-graphine.git",
+            "dist": {
+                "type": "path",
+                "url": "../../../php/packages/rushing/php-graphine",
                 "reference": "59f2d8bbd06551f24ea1b0b2ed6deca3955f8679"
             },
             "require": {
@@ -6072,7 +6096,6 @@
                 "graphp/graph": "MIT — pure-PHP in-memory graph algorithms behind the reference driver (roles 1/2)",
                 "nikic/php-parser": "BSD-3 — AST scanner behind the seam guard a consumer runs over its own App\\Graph\\Drivers"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "package-topology": {
@@ -6117,14 +6140,17 @@
                 "seam",
                 "substrate"
             ],
-            "time": "2026-09-03T04:53:09+00:00"
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
         },
         {
             "name": "rushing/php-popcorn",
             "version": "dev-main",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/stephenr85/php-popcorn.git",
+            "dist": {
+                "type": "path",
+                "url": "../../../php/packages/rushing/php-popcorn",
                 "reference": "559138c168357de010e66dcd73faf0218cc3573e"
             },
             "require": {
@@ -6136,7 +6162,6 @@
                 "pestphp/pest": "^3.0",
                 "phpstan/phpstan": "^2.2"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "package-topology": {
@@ -6183,14 +6208,17 @@
                 "registry",
                 "strategy"
             ],
-            "time": "2026-09-08T14:13:31+00:00"
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
         },
         {
             "name": "schemastud/laravel-data-schemas",
             "version": "dev-main",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/schemastud/laravel-data-schemas.git",
+            "dist": {
+                "type": "path",
+                "url": "../../../php/packages/schemastud/laravel-data-schemas",
                 "reference": "ba23ca5ed55c9f3824f94d4b8f77fc22b18fcdaf"
             },
             "require": {
@@ -6214,7 +6242,6 @@
                 "phpunit/phpunit": "^11.0|^12.0",
                 "wikimedia/composer-merge-plugin": "^2.1"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "laravel": {
@@ -6265,15 +6292,18 @@
                 "spatie",
                 "validation"
             ],
-            "time": "2026-09-14T21:14:41+00:00"
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
         },
         {
             "name": "schemastud/laravel-frame",
             "version": "dev-main",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/schemastud/laravel-frame.git",
-                "reference": "875904544bff8526ffef1bca549273a617a7b532"
+            "dist": {
+                "type": "path",
+                "url": "../../../php/packages/schemastud/laravel-frame",
+                "reference": "2198894d1e223698294cd1e5a6aca680ab6a53da"
             },
             "require": {
                 "illuminate/contracts": "^11.0|^12.0|^13.0",
@@ -6290,7 +6320,6 @@
                 "laravel/pint": "^1.0",
                 "orchestra/testbench": "^9.0|^10.0|^11.0",
                 "phpunit/phpunit": "^11.0|^12.0",
-                "rushing/laravel-data-schemas-scribe": "dev-main",
                 "spatie/laravel-typescript-transformer": "^3.3",
                 "wikimedia/composer-merge-plugin": "^2.1"
             },
@@ -6298,7 +6327,6 @@
                 "rushing/laravel-data-filters": "Reuse a resource's data-filters query/filter schema for the ListShell facets bar.",
                 "spatie/laravel-typescript-transformer": "Emit the ResourceDefinition TS type so the frontend manifest entry IS the backend projection."
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "laravel": {
@@ -6334,14 +6362,17 @@
                 "MIT"
             ],
             "description": "The batteries-UX backend rung for schema-driven admin editors: the resource-definition registry (ResourceDefinition), the #[Widget] -> x-stud-widget projector, #[ReadOnlyField], and a served GET /frame/manifest. Sits one level above a filter-schema controller; resolves a resource key to its whole editor wiring. Pairs with @schemastud/frame on the JS side.",
-            "time": "2026-09-14T22:56:03+00:00"
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
         },
         {
             "name": "schemastud/laravel-json-ns",
             "version": "dev-main",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/schemastud/laravel-json-ns.git",
+            "dist": {
+                "type": "path",
+                "url": "../../../php/packages/schemastud/laravel-json-ns",
                 "reference": "e02614bd0ecc5d56a7e0a9c98488fbea1e135201"
             },
             "require": {
@@ -6360,7 +6391,6 @@
                 "schemastud/laravel-data-schemas": "*",
                 "wikimedia/composer-merge-plugin": "^2.1"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "laravel": {
@@ -6418,14 +6448,17 @@
                 "namespace",
                 "popcorn"
             ],
-            "time": "2026-09-08T14:13:37+00:00"
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
         },
         {
             "name": "schemastud/php-json-ns",
             "version": "dev-main",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/schemastud/php-json-ns.git",
+            "dist": {
+                "type": "path",
+                "url": "../../../php/packages/schemastud/php-json-ns",
                 "reference": "d398faedc814446f9b6a13775b77a7522b46e202"
             },
             "require": {
@@ -6438,7 +6471,6 @@
                 "pestphp/pest": "^4.0",
                 "wikimedia/composer-merge-plugin": "^2.1"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "package-topology": {
@@ -6488,7 +6520,10 @@
                 "schema",
                 "vocabulary"
             ],
-            "time": "2026-09-08T12:39:48+00:00"
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
         },
         {
             "name": "shalvah/upgrader",
@@ -7739,10 +7774,10 @@
         {
             "name": "splicewire/laravel-beam",
             "version": "dev-main",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/splicewire/laravel-beam.git",
-                "reference": "d1982f2a306600288c269fb74d6dfc137becb5d4"
+            "dist": {
+                "type": "path",
+                "url": "../../../php/packages/splicewire/laravel-beam",
+                "reference": "bf19a927150d244f2152fd408ccbce1f66d60441"
             },
             "require": {
                 "illuminate/contracts": "^11.0|^12.0|^13.0",
@@ -7779,7 +7814,6 @@
                 "rushing/php-package-topology": "dev-main",
                 "wikimedia/composer-merge-plugin": "^2.1"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "package-topology": {
@@ -7850,14 +7884,17 @@
                 "MIT"
             ],
             "description": "The schema-driven-CMS core: composes the open schema foundation (schemastud/laravel-data-schemas + schemastud/laravel-frame) and the open versioning foundation (rushing/laravel-versioning) into a schema-typed, snapshot-versioned, migrate-on-read BeamParticle. Depends DOWN on the open foundations (the ADR-0092 direction, paid→open); per ADR-0156 that now includes schemastud/laravel-frame — the agnostic resource-scaffolding rung — so beam natively implements Frame's FrameResourceHandler port (chain: splicewire/beam → schemastud/frame → schemastud/data-schemas, monotonic, no cycle). Also the runtime home of the host-hook registries (webhook / sitemap / doctor), the realm registry, and the particle resource declarations. The media arm (medialibrary + the media model traits + media table) was extracted DOWN into splicewire/laravel-beam-media (HTTP-03 / ADR-0178); base beam no longer requires medialibrary and does NOT require beam-media (no cycle). Headless = no editor SURFACE running; Frame's scaffolding may be present-but-inert. No Beam model is minted; beam is a substrate, not an instance.",
-            "time": "2026-09-14T22:56:14+00:00"
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
         },
         {
             "name": "splicewire/laravel-beam-accounts",
             "version": "dev-main",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/splicewire/laravel-beam-accounts.git",
+            "dist": {
+                "type": "path",
+                "url": "../../../php/packages/splicewire/laravel-beam-accounts",
                 "reference": "d2b8b6b4fc0fc1449d9c02d5185bc1012a8bbc15"
             },
             "require": {
@@ -7891,7 +7928,6 @@
                 "laravel/sanctum": "Install in a satellite to activate its own opt-in token 'api' guard seam alongside the engine's session/Fortify web guard.",
                 "splicewire/laravel-beam-notifications": "Activates this package's `to_roles:` / `to_teams:` recipient kinds, which it registers into `beam.notifications.recipient_kinds` unconditionally — the entries are inert strings without the notify package and live with it, so nothing here probes whether it is installed."
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "package-topology": {
@@ -7961,24 +7997,25 @@
                 "schemastud",
                 "teams"
             ],
-            "time": "2026-09-14T21:14:42+00:00"
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
         },
         {
             "name": "splicewire/laravel-beam-docs",
             "version": "dev-main",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/splicewire/laravel-beam-docs.git",
-                "reference": "3975c2a06e1ea0a1aa2b6f2f5c11c09b34f132ef"
+            "dist": {
+                "type": "path",
+                "url": "../../../php/packages/splicewire/laravel-beam-docs",
+                "reference": "5dc4d36f4c212e3d35bdc2c9c5e731973f0dc21b"
             },
             "require": {
                 "illuminate/queue": "^11.0|^12.0|^13.0",
                 "illuminate/support": "^11.0|^12.0|^13.0",
                 "php": "^8.3",
                 "rushing/laravel-data-schemas-scribe": "dev-main",
-                "schemastud/laravel-data-schemas": "dev-main",
                 "spatie/laravel-package-tools": "^1.16",
-                "spatie/typescript-transformer": "^3.0",
                 "splicewire/laravel-beam": "dev-main",
                 "splicewire/laravel-beam-ux": "dev-main",
                 "symfony/process": "^6.0|^7.0|^8.0",
@@ -7993,7 +8030,6 @@
                 "rushing/php-package-topology": "dev-main",
                 "wikimedia/composer-merge-plugin": "^2.1"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "laravel": {
@@ -8037,14 +8073,17 @@
                 "MIT"
             ],
             "description": "Optional Beam OpenAPI documentation and Scalar publication.",
-            "time": "2026-09-14T22:03:36+00:00"
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
         },
         {
             "name": "splicewire/laravel-beam-mcp",
             "version": "dev-main",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/splicewire/laravel-beam-mcp.git",
+            "dist": {
+                "type": "path",
+                "url": "../../../php/packages/splicewire/laravel-beam-mcp",
                 "reference": "9af43232fbd02db4790ae80d036d07e5c9db54a5"
             },
             "require": {
@@ -8065,7 +8104,6 @@
                 "pestphp/pest": "^4.0",
                 "wikimedia/composer-merge-plugin": "^2.1"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -8138,14 +8176,17 @@
                 "model-context-protocol",
                 "schemastud"
             ],
-            "time": "2026-09-09T11:38:09+00:00"
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
         },
         {
             "name": "splicewire/laravel-beam-mdx",
             "version": "dev-main",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/splicewire/laravel-beam-mdx.git",
+            "dist": {
+                "type": "path",
+                "url": "../../../php/packages/splicewire/laravel-beam-mdx",
                 "reference": "c168813b8bae73d98e7b2b6a5053fd6871f565c2"
             },
             "require": {
@@ -8167,7 +8208,6 @@
             "suggest": {
                 "inertiajs/inertia-laravel": "Required only to MOUNT Route::beamMdxShow()/beamMdxPage(), which render Inertia pages. A host that never mounts a content route does not need it."
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "laravel": {
@@ -8203,15 +8243,18 @@
                 "MIT"
             ],
             "description": "The Laravel companion to @splicewire/beam-mdx: the server-side twin of the build-time draft gate. A catch-all content/essay route macro (Route::beamMdxShow) that 404s a draft slug outside the preview allowlist, a preview-only route middleware, the shared Mdx visibility gate, and a `splicewire:beam:mdx:doctor` command asserting the MDX plane is wired and no draft is reachable in a production build.",
-            "time": "2026-09-08T12:42:35+00:00"
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
         },
         {
             "name": "splicewire/laravel-beam-sitemap",
             "version": "dev-main",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/splicewire/laravel-beam-sitemap.git",
-                "reference": "a5b04c7085d01e4e71597ffbb65d1f05cfcc0164"
+            "dist": {
+                "type": "path",
+                "url": "../../../php/packages/splicewire/laravel-beam-sitemap",
+                "reference": "e8027fabbb6ecf9897da040483c57e55aa260dcf"
             },
             "require": {
                 "illuminate/contracts": "^11.0|^12.0|^13.0",
@@ -8226,7 +8269,6 @@
                 "phpunit/phpunit": "^11.0|^12.0",
                 "wikimedia/composer-merge-plugin": "^2.1"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -8286,14 +8328,17 @@
                 "seo",
                 "sitemap"
             ],
-            "time": "2026-09-14T21:33:47+00:00"
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
         },
         {
             "name": "splicewire/laravel-beam-sync",
             "version": "dev-main",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/splicewire/laravel-beam-sync.git",
+            "dist": {
+                "type": "path",
+                "url": "../../../php/packages/splicewire/laravel-beam-sync",
                 "reference": "2f064bea9552f67bf7fdab7b1b3252a469bd831e"
             },
             "require": {
@@ -8313,7 +8358,6 @@
             "suggest": {
                 "splicewire/laravel-beam": "Ride the Particle read/write/hydrate pipeline for sync-in/sync-out (the beam-sync-beam bridge)."
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -8380,14 +8424,17 @@
                 }
             ],
             "description": "Generic sync foundation: the Syncable contract, the byte-stable SyncData transit base, a tenancy-blind dependency resolver (scope-expand + Kahn topo-sort), and the SyncSource/SyncTarget ports. Copies a dependency cone BY VALUE across shared-nothing boundaries — usable off a local tenant context AND from remote sources. NOT built on stancl/tenancy's resource-syncing (a different, single-row-mirror mechanism); requires no beam, tenancy, or tower.",
-            "time": "2026-09-08T14:13:40+00:00"
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
         },
         {
             "name": "splicewire/laravel-beam-taxonomy",
             "version": "dev-main",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/splicewire/laravel-beam-taxonomy.git",
+            "dist": {
+                "type": "path",
+                "url": "../../../php/packages/splicewire/laravel-beam-taxonomy",
                 "reference": "bb85a4aaa6ac016752bc2fb9abd698b11f6b29f2"
             },
             "require": {
@@ -8414,7 +8461,6 @@
                 "pestphp/pest": "^4.0",
                 "wikimedia/composer-merge-plugin": "^2.1"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -8476,15 +8522,18 @@
                 }
             ],
             "description": "Beam taxonomy — the reusable Tag/Silo (BeamTag/BeamSilo) surface for beam sites. Ships the tag/silo ParticleResource declarations over host-bound models, so a beam site gets a schema-typed taxonomy CRUD surface with no controller code.",
-            "time": "2026-09-08T12:43:47+00:00"
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
         },
         {
             "name": "splicewire/laravel-beam-ux",
             "version": "dev-main",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/splicewire/laravel-beam-ux.git",
-                "reference": "9332c82538ed16b21bc8eb55104e006cc4036c78"
+            "dist": {
+                "type": "path",
+                "url": "../../../php/packages/splicewire/laravel-beam-ux",
+                "reference": "34cbd162a0533702e29e1ff9959bb759049710be"
             },
             "require": {
                 "illuminate/contracts": "^11.0|^12.0|^13.0",
@@ -8502,7 +8551,7 @@
                 "splicewire/laravel-beam": "*",
                 "splicewire/laravel-beam-accounts": "*",
                 "splicewire/laravel-beam-mdx": "*",
-                "splicewire/laravel-beam-sitemap": "dev-main",
+                "splicewire/laravel-beam-sitemap": "*",
                 "splicewire/laravel-beam-taxonomy": "*",
                 "splicewire/laravel-beam-workflows": "*",
                 "symfony/process": "^6.4|^7.0"
@@ -8513,7 +8562,6 @@
                 "phpunit/phpunit": "^11.0|^12.0",
                 "wikimedia/composer-merge-plugin": "^2.1"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -8576,14 +8624,17 @@
                 "splicewire",
                 "ux"
             ],
-            "time": "2026-09-14T22:54:56+00:00"
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
         },
         {
             "name": "splicewire/laravel-beam-ux-prototype",
             "version": "dev-main",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/splicewire/laravel-beam-ux-prototype.git",
+            "dist": {
+                "type": "path",
+                "url": "../../../php/packages/splicewire/laravel-beam-ux-prototype",
                 "reference": "fc8cb349eeb044b33966a6df4c884ac6c8cd994d"
             },
             "require": {
@@ -8605,7 +8656,6 @@
             "suggest": {
                 "inertiajs/inertia-laravel": "Auto-registers the dev-only /_prototype route + Inertia host page for the monolith default (register_route config)."
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -8658,14 +8708,17 @@
                 "prototype",
                 "splicewire"
             ],
-            "time": "2026-09-09T12:40:42+00:00"
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
         },
         {
             "name": "splicewire/laravel-beam-workflows",
             "version": "dev-main",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/splicewire/laravel-beam-workflows.git",
+            "dist": {
+                "type": "path",
+                "url": "../../../php/packages/splicewire/laravel-beam-workflows",
                 "reference": "8b10b962b1780e86dd84b72999db3f54acde97f9"
             },
             "require": {
@@ -8692,7 +8745,6 @@
                 "splicewire/laravel-beam-calendars": "Adds optional scheduled managed-subject workflow actions without Tower or a composition engine.",
                 "splicewire/laravel-circuit-engine": "Enables the state-machine Circuit node type (Seam B): the local `workflow.apply` capability registers into the kernel's CapabilityManifest so a state machine slots into a Circuit graph. Without it, the Display substrate (Seam A) and the DefinitionBuilder still work standalone."
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -8746,7 +8798,10 @@
                 "symfony-workflow",
                 "workflows"
             ],
-            "time": "2026-09-14T15:52:40+00:00"
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
         },
         {
             "name": "spomky-labs/cbor-php",
@@ -15136,9 +15191,9 @@
         {
             "name": "rushing/laravel-surgeon",
             "version": "dev-main",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/stephenr85/laravel-surgeon.git",
+            "dist": {
+                "type": "path",
+                "url": "../../../php/packages/rushing/laravel-surgeon",
                 "reference": "2e90fdd28e28725724ac97b6ba3ea04fee1f0492"
             },
             "require": {
@@ -15163,7 +15218,6 @@
                 "laravel/mcp": "Ships surgeon:* as reflected MCP tools via Rushing\\Surgeon\\Mcp\\SurgeonMcpServer (auto-registered when installed).",
                 "rushing/laravel-mcp-registry": "The generic artisan-command→MCP-tool reflection bridge the surgeon MCP server mounts."
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -15231,14 +15285,17 @@
                 "surgeon",
                 "topology"
             ],
-            "time": "2026-09-08T14:50:52+00:00"
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
         },
         {
             "name": "rushing/php-package-topology",
             "version": "dev-main",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/stephenr85/php-package-topology.git",
+            "dist": {
+                "type": "path",
+                "url": "../../../php/packages/rushing/php-package-topology",
                 "reference": "46936d35c3abbb016cf6da46330e1e60b7ddf13b"
             },
             "require": {
@@ -15256,7 +15313,6 @@
                 "nikic/php-parser": "BSD-3 — the AST scanner behind graphine's SeamGuard, used by the source-import axis (sourceNeverReferences).",
                 "phpunit/phpunit": "The testing kit (AssertsPackageTopology / PackageTopologyConformance) needs a PHPUnit-providing host."
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "merge-plugin": {
@@ -15303,7 +15359,10 @@
                 "substrate",
                 "topology"
             ],
-            "time": "2026-09-08T12:38:53+00:00"
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
         },
         {
             "name": "sebastian/cli-parser",
@@ -16217,9 +16276,9 @@
         {
             "name": "splicewire/laravel-beam-dev",
             "version": "dev-main",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/splicewire/laravel-beam-dev.git",
+            "dist": {
+                "type": "path",
+                "url": "../../../php/packages/splicewire/laravel-beam-dev",
                 "reference": "dfde84893571adcdc2feea74973ebe48bd3d7efe"
             },
             "require": {
@@ -16235,7 +16294,6 @@
                 "orchestra/testbench": "^9.0|^10.0|^11.0",
                 "phpunit/phpunit": "^11.0|^12.0"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -16294,7 +16352,10 @@
                 "sqlite",
                 "testing"
             ],
-            "time": "2026-09-09T12:09:05+00:00"
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
         },
         {
             "name": "splicewire/laravel-beam-provision",

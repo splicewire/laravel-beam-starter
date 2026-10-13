@@ -1,0 +1,43 @@
+- generic [ref=f1e2]:
+  - generic [ref=f1e3]:
+    - banner [ref=f1e4]:
+      - link "Beam Starter" [ref=f1e5] [cursor=pointer]:
+        - /url: /
+      - generic [ref=f1e9]:
+        - link "Home" [ref=f1e10] [cursor=pointer]:
+          - /url: /
+        - link "About" [ref=f1e11] [cursor=pointer]:
+          - /url: /about
+        - link "Operator" [ref=f1e12] [cursor=pointer]:
+          - /url: /operator
+        - link "Dashboard" [ref=f1e13] [cursor=pointer]:
+          - /url: /dashboard
+        - button "Log out" [ref=f1e14]
+    - main [ref=f1e15]:
+      - generic [ref=f1e17]:
+        - generic [ref=f1e18]:
+          - heading "An editable hero, in place." [level=1] [ref=f1e19]
+          - paragraph [ref=f1e20]: This block is a sealed island — the real component renders in the canvas. Reorder or delete it, add blocks around it, and save.
+        - paragraph [ref=f1e21]: This page is editable in place through the promoted @splicewire/beam-ux/canvas. Everything you see is one JsonDoc body — the same tree the read view renders and the editor edits.
+        - generic [ref=f1e22]:
+          - generic [ref=f1e23]:
+            - generic [ref=f1e24]: Config, not machinery
+            - generic [ref=f1e25]: The host writes a registry + defaults; the canvas is packaged.
+          - generic [ref=f1e26]:
+            - generic [ref=f1e27]: One body, two lenses
+            - generic [ref=f1e28]: The editor edits — and the page renders — the same tree.
+          - generic [ref=f1e29]:
+            - generic [ref=f1e30]: Neutral tokens
+            - generic [ref=f1e31]: Brand look is host config; the package bakes no palette.
+    - contentinfo [ref=f1e32]:
+      - link "Beam Starter" [ref=f1e33] [cursor=pointer]:
+        - /url: /
+      - generic [ref=f1e37]:
+        - link "Home" [ref=f1e38] [cursor=pointer]:
+          - /url: /
+        - link "About" [ref=f1e39] [cursor=pointer]:
+          - /url: /about
+        - link "Dashboard" [ref=f1e40] [cursor=pointer]:
+          - /url: /dashboard
+  - button "Operator" [ref=f1e41] [cursor=pointer]
+  - region "Notifications alt+T"
