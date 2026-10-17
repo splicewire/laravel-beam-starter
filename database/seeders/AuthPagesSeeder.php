@@ -6,6 +6,7 @@ use App\Beam\RealmRegistry;
 use Illuminate\Database\Seeder;
 use Splicewire\Beam\Ux\Models\BeamUxEntry;
 use Splicewire\Beam\Ux\Publish\EntryPublication;
+use Splicewire\Beam\Ux\Provenance\Reasserter;
 use Splicewire\Beam\Ux\Type\UxType;
 
 /**
@@ -81,20 +82,18 @@ class AuthPagesSeeder extends Seeder
         $namespace = config('beam.ux.namespace', 'starter');
         $body = $this->body($island, $heading, $description);
 
-        $publication = app(EntryPublication::class);
-        $entry = BeamUxEntry::firstOrCreate(
+        app(Reasserter::class)->seedBody(
             ['namespace' => $namespace, 'slug' => $slug],
             [
                 'type' => UxType::Page,
+                'format' => 'tsx',
                 'title' => $title,
                 'realm' => RealmRegistry::REALM_AUTH,
                 'realms' => [RealmRegistry::REALM_AUTH],
             ],
+            $body,
+            'package:splicewire/laravel-beam-starter/auth-pages',
         );
-        $publication->assertStorable($entry, $body);
-        $publication->baseline($entry);
-        $publication->write($entry, $body);
-        $publication->publishWritten($entry->refresh());
     }
 
     /**
