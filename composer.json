@@ -156,6 +156,10 @@
         {
             "type": "git",
             "url": "https://github.com/splicewire/laravel-beam-sync.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/schemastud/laravel-blockdoc.git"
         }
     ],
     "require": {
