@@ -85,6 +85,17 @@ class DeveloperZoneReadsTest extends TestCase
         $this->actingAs($this->asOf($member, $team))->getJson('/frame/resources/schemas')->assertForbidden();
     }
 
+    public function test_the_owner_can_list_each_package_catalog(): void
+    {
+        [$team, $owner] = $this->team();
+        $this->actingAs($this->asOf($owner, $team));
+
+        $statuses = collect(['hooks', 'schemas', 'git-repo'])
+            ->mapWithKeys(fn (string $resource): array => [$resource => $this->getJson("/frame/resources/{$resource}")->status()]);
+
+        $this->assertSame(['hooks' => 200, 'schemas' => 200, 'git-repo' => 200], $statuses->all());
+    }
+
     public function test_the_migration_moves_only_the_two_families_and_is_reversible(): void
     {
         [$team] = $this->team();
