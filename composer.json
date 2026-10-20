@@ -152,6 +152,206 @@
         {
             "type": "git",
             "url": "https://github.com/splicewire/laravel-beam-sync.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/splicewire/laravel-satellite.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/splicewire/laravel-connector.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/splicewire/laravel-composition-spine.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/splicewire/tower.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/splicewire/laravel-composition-engine.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/splicewire/laravel-knowledge-engine.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/splicewire/laravel-circuit-engine.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/splicewire/laravel-knowledge-spine.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/splicewire/laravel-circuit-spine.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/stephenr85/laravel-lineage.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/stephenr85/laravel-augmentation-loop.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/stephenr85/laravel-auth-vault.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/stephenr85/laravel-codegen.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/stephenr85/laravel-commerce.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/stephenr85/laravel-data-oscal.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/stephenr85/laravel-inference.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/stephenr85/laravel-notification-status.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/stephenr85/laravel-popcorn-bubble.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/stephenr85/laravel-popcorn-wasm.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/stephenr85/laravel-prism-plus.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/stephenr85/laravel-request-logs.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/stephenr85/laravel-saloon-kernel.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/stephenr85/laravel-timeline-schema.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/stephenr85/laravel-versioning-git.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/stephenr85/prism-cassette.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/schemastud/laravel.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/schemastud/laravel-blockdoc.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/schemastud/laravel-data-schema-org.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/schemastud/laravel-json-reference.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/splicewire/conduit-ecfr.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/splicewire/laravel-beam-analytics.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/splicewire/laravel-beam-commerce.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/splicewire/laravel-beam-embed.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/splicewire/laravel-beam-lineage.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/splicewire/laravel-beam-media.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/splicewire/laravel-beam-notifications.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/splicewire/laravel-beam-tenancy.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/splicewire/laravel-beam-threads.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/splicewire/laravel-beam-versioning.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/splicewire/laravel-composition-engine-music.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/splicewire/laravel-composition-music-spine.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/splicewire/laravel-grounding-kernel.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/splicewire/laravel-grounding-spine.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/splicewire/laravel-satellite-circuit.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/splicewire/laravel-satellite-composition.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/splicewire/laravel-satellite-timeline.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/splicewire/spiders.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/splicewire/laravel-beam-calendars.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/splicewire/laravel-satellite-knowledge.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/stephenr85/laravel-postgres-rls.git"
         }
     ],
     "require": {
@@ -172,7 +372,8 @@
         "schemastud/laravel-frame": "*",
         "schemastud/laravel-data-schemas": "dev-main",
         "wikimedia/composer-merge-plugin": "^2.1",
-        "splicewire/laravel-beam-docs": "dev-main"
+        "splicewire/laravel-beam-docs": "dev-main",
+        "splicewire/tower": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.24",
