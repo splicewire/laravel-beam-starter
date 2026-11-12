@@ -6349,7 +6349,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/schemastud/laravel-frame.git",
-                "reference": "635f8d42962a35290efd9563ed22b1c0c8cccd46"
+                "reference": "ad4869dba922f19bfb279f03a92fdb90a88621d5"
             },
             "require": {
                 "illuminate/contracts": "^11.0|^12.0|^13.0",
@@ -6409,8 +6409,8 @@
             "license": [
                 "MIT"
             ],
-            "description": "The batteries-UX backend rung for schema-driven admin editors: the resource-definition registry (ResourceDefinition), the #[Widget] -> x-stud-widget projector, #[ReadOnlyField], and a served GET /frame/manifest. Sits one level above a filter-schema controller; resolves a resource key to its whole editor wiring. Pairs with @schemastud/frame on the JS side.",
-            "time": "2026-11-01T20:47:24+00:00"
+            "description": "The batteries-UX backend rung for schema-driven admin editors: the resource-definition registry (ResourceDefinition), the #[Widget] -> x-widget projector, #[ReadOnlyField], and a served GET /frame/manifest. Sits one level above a filter-schema controller; resolves a resource key to its whole editor wiring. Pairs with @schemastud/frame on the JS side.",
+            "time": "2026-11-10T18:15:33+00:00"
         },
         {
             "name": "schemastud/laravel-json-ns",
@@ -7965,7 +7965,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/splicewire/laravel-beam.git",
-                "reference": "30d998fb9ff2a5f046a997fc1d27425b41152bc9"
+                "reference": "44f1abf82aeada22b32ef1def7e9c28ecedb2041"
             },
             "require": {
                 "illuminate/contracts": "^11.0|^12.0|^13.0",
@@ -8097,7 +8097,7 @@
                 "MIT"
             ],
             "description": "The schema-driven-CMS core: composes the open schema foundation (schemastud/laravel-data-schemas + schemastud/laravel-frame) and the open versioning foundation (rushing/laravel-versioning) into a schema-typed, snapshot-versioned, migrate-on-read BeamParticle. Depends DOWN on the open foundations (the ADR-0092 direction, paid→open); per ADR-0156 that now includes schemastud/laravel-frame — the agnostic resource-scaffolding rung — so beam natively implements Frame's FrameResourceHandler port (chain: splicewire/beam → schemastud/frame → schemastud/data-schemas, monotonic, no cycle). Also the runtime home of the host-hook registries (webhook / sitemap / doctor), the realm registry, and the particle resource declarations. The media arm (medialibrary + the media model traits + media table) was extracted DOWN into splicewire/laravel-beam-media (HTTP-03 / ADR-0178); base beam no longer requires medialibrary and does NOT require beam-media (no cycle). Headless = no editor SURFACE running; Frame's scaffolding may be present-but-inert. No Beam model is minted; beam is a substrate, not an instance.",
-            "time": "2026-11-08T04:49:35+00:00"
+            "time": "2026-11-12T02:03:06+00:00"
         },
         {
             "name": "splicewire/laravel-beam-accounts",
@@ -8105,7 +8105,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/splicewire/laravel-beam-accounts.git",
-                "reference": "094226bb17535cab3f88cc80d82dce8c9efe5776"
+                "reference": "d9d980b000470ee34d8bca160c86afc8cbb7ed60"
             },
             "require": {
                 "firebase/php-jwt": "^6.0|^7.0",
@@ -8131,12 +8131,14 @@
                 "laravel/pint": "^1.0",
                 "orchestra/testbench": "^9.0|^10.0|^11.0",
                 "pestphp/pest": "^4.0",
+                "splicewire/laravel-beam-analytics": "*",
                 "splicewire/laravel-beam-notifications": "*",
                 "wikimedia/composer-merge-plugin": "^2.1"
             },
             "suggest": {
                 "laravel/sanctum": "Install in a satellite to activate its own opt-in token 'api' guard seam alongside the engine's session/Fortify web guard.",
                 "laravel/socialite": "Install where Route::splicewireAccountsOAuth() mounts OAuth sign-in (purchase-walkthrough M10).",
+                "splicewire/laravel-beam-analytics": "Activates this package's Audience area (`analytics-audience`), which it contributes to `beam.analytics.areas` through an `afterResolving` on the registry's name with the area class named as a string — the contribution is inert without the analytics package, so nothing here requires it at runtime.",
                 "splicewire/laravel-beam-notifications": "Activates this package's `to_roles:` / `to_teams:` recipient kinds, which it registers into `beam.notifications.recipient-kinds` unconditionally — the entries are inert strings without the notify package and live with it, so nothing here probes whether it is installed."
             },
             "default-branch": true,
@@ -8214,7 +8216,7 @@
                 "schemastud",
                 "teams"
             ],
-            "time": "2026-11-08T04:35:14+00:00"
+            "time": "2026-11-11T00:15:09+00:00"
         },
         {
             "name": "splicewire/laravel-beam-analytics",
@@ -8222,16 +8224,19 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/splicewire/laravel-beam-analytics.git",
-                "reference": "14cf808c70bd3eb411958fba3fe7bdbc3437ddcc"
+                "reference": "1017742770f8734f043f90a69ff1674315106b53"
             },
             "require": {
                 "illuminate/console": "^11.0|^12.0|^13.0",
                 "illuminate/contracts": "^11.0|^12.0|^13.0",
                 "illuminate/support": "^11.0|^12.0|^13.0",
                 "illuminate/view": "^11.0|^12.0|^13.0",
-                "php": "^8.2",
+                "php": "^8.3",
                 "rushing/laravel-doctor": "*",
-                "spatie/laravel-package-tools": "^1.16"
+                "rushing/laravel-popcorn": "*",
+                "schemastud/laravel-frame": "*",
+                "spatie/laravel-package-tools": "^1.16",
+                "splicewire/laravel-beam": "*"
             },
             "require-dev": {
                 "laravel/pint": "^1.0",
@@ -8245,6 +8250,20 @@
                 "laravel": {
                     "providers": [
                         "Splicewire\\Beam\\Analytics\\BeamAnalyticsServiceProvider"
+                    ]
+                },
+                "package-topology": {
+                    "because": "analytics is a beam-tier package: its Analytics section is built from particles and Data classes, so it depends DOWN on beam core, frame and popcorn (ADR-0242). beam-ux requires this package to carry the tag on every site, so an edge back to beam-ux would be a cycle, and the composed tower host and the satellite tier sit above it. Packages fill its registries by naming them as strings, which needs no edge in either direction.",
+                    "mustRequire": [
+                        "splicewire/laravel-beam",
+                        "schemastud/laravel-frame",
+                        "rushing/laravel-popcorn"
+                    ],
+                    "mustNotRequire": [
+                        "splicewire/laravel-beam-ux",
+                        "splicewire/tower",
+                        "splicewire/laravel-satellite",
+                        "splicewire/laravel-tower-*"
                     ]
                 },
                 "merge-plugin": {
@@ -8274,8 +8293,8 @@
             "license": [
                 "MIT"
             ],
-            "description": "Provider-agnostic, opt-in, fail-closed frontend analytics for beam satellites. Two Blade directives (@beamAnalyticsHead / @beamAnalyticsBody) render the analytics markup for every configured-and-keyed provider at once and nothing when a provider is keyless, the env is disallowed, or a provider name is unknown. GTM ships as the first adapter; a `splicewire:beam:analytics:doctor` command verifies directive placement and env/config coherence. Never reads a service-account key.",
-            "time": "2026-10-30T12:58:05+00:00"
+            "description": "Analytics for beam hosts: the frontend tag, a declared Event Vocabulary, and the registries an Analytics section is filled from. Two Blade directives (@beamAnalyticsHead / @beamAnalyticsBody) render the markup for every configured-and-keyed provider at once and nothing when a provider is keyless, the env is disallowed, or a provider name is unknown. GTM and GA4 ship as adapters; a `splicewire:beam:analytics:doctor` command verifies directive placement and env/config coherence. A beam-tier package: it requires beam, frame and popcorn, and never beam-ux. Never reads a service-account key.",
+            "time": "2026-11-11T13:33:50+00:00"
         },
         {
             "name": "splicewire/laravel-beam-docs",
@@ -8801,7 +8820,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/splicewire/laravel-beam-ux.git",
-                "reference": "9105ef5d4a96737984082d74fed0112be5b68b54"
+                "reference": "b753357aa5aae1144e35627a87f74054e79ad86d"
             },
             "require": {
                 "illuminate/contracts": "^11.0|^12.0|^13.0",
@@ -8906,7 +8925,7 @@
                 "splicewire",
                 "ux"
             ],
-            "time": "2026-11-07T21:15:50+00:00"
+            "time": "2026-11-12T01:54:24+00:00"
         },
         {
             "name": "splicewire/laravel-beam-ux-prototype",
@@ -16861,13 +16880,13 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "rushing/laravel-surgeon": 20,
+        "splicewire/laravel-beam": 20,
+        "splicewire/laravel-beam-mcp": 20,
         "schemastud/laravel-data-schema-org": 20,
         "schemastud/laravel-data-schemas": 20,
-        "splicewire/laravel-beam": 20,
-        "splicewire/laravel-beam-dev": 20,
         "splicewire/laravel-beam-docs": 20,
-        "splicewire/laravel-beam-mcp": 20,
+        "rushing/laravel-surgeon": 20,
+        "splicewire/laravel-beam-dev": 20,
         "splicewire/laravel-beam-provision": 20
     },
     "prefer-stable": true,
@@ -16875,6 +16894,6 @@
     "platform": {
         "php": "^8.4"
     },
-    "platform-dev": {},
-    "plugin-api-version": "2.9.0"
+    "platform-dev": [],
+    "plugin-api-version": "2.6.0"
 }

@@ -3,7 +3,8 @@
 // Regenerate after any backend route change; the diff is the drift signal (client-sdk-codegen).
 // Source of truth: the in-process route manifest (a RouteManifestSource).
 
-import { useQuery, type UseQueryOptions } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
+import type { UseQueryOptions } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { route } from '@/lib/routes';
 
@@ -14,6 +15,7 @@ export function useBeamDocsSearch(options?: QueryOpts<import("../Splicewire/Beam
         queryKey: ['beam-docs.search'],
         queryFn: async () => {
             const res = await api.get(route('beam-docs.search'));
+
             return res.data.data as import("../Splicewire/Beam/Docs/Data").DocsSearchResultsData;
         },
         ...options,

@@ -93,7 +93,22 @@ class FrameManifestRouterTest extends TestCase
 
         // The two realms must not merely differ — neither may overlap the other, or a projector
         // leaking one realm's list into the other could still satisfy both blocks above.
-        $this->assertSame([], array_values(array_intersect($tenant, $operator)));
+        // The one declared exception: Beam Analytics seats its section in BOTH realms (laravel-beam-analytics
+        // 1cfa31f, analytics-area 05), and laravel-beam-accounts 93cb550 + 74f0688 compose analytics.view from
+        // either grant and wire the Audience area, so an operator sees the section's resources in each realm.
+        // That exact set is kept explicit (as tower-starter 0c307e2 does), so any other cross-realm leak still fails.
+        $sharedAnalyticsRoutes = [
+            'analytics-measurement.index',
+            'analytics-traffic.index',
+            'analytics-events.index',
+            'analytics-site.index',
+            'analytics-audience.index',
+            'analytics-traffic-trend.index',
+            'analytics-traffic-pages.index',
+            'analytics-traffic-referrers.index',
+        ];
+        $this->assertSame([], array_values(array_diff(array_intersect($tenant, $operator), $sharedAnalyticsRoutes)));
+        $this->assertEqualsCanonicalizing($sharedAnalyticsRoutes, array_values(array_intersect($tenant, $operator)));
     }
 
     public function test_it_gives_a_resource_the_per_record_twin_its_own_declaration_allows(): void
