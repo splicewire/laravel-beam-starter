@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Analytics\StarterAnalyticsDestinations;
 use App\Data\SitemapData;
 use App\Models\SitemapRecord;
 use App\Models\User;
@@ -14,6 +15,7 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
 use Rushing\PermissionCascade\Support\CascadePolicyRegistrar;
+use Splicewire\Beam\Analytics\Contracts\AnalyticsDestinations;
 use Splicewire\Beam\Authorization\SeatGate;
 use Splicewire\Beam\Doctor\BeamDoctorManifest;
 use Splicewire\Beam\Ux\Doctor\OrphanedNavItemAudit;
@@ -27,6 +29,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        // analytics-area 18: where the analytics figures lead on this host, its own site editor (the front door, install side).
+        $this->app->bind(AnalyticsDestinations::class, StarterAnalyticsDestinations::class);
+
         // The public /schemas door serves schema documents at their identities. The catalog UI
         // gets its own path through the same plan that projects console routes and navigation.
         $this->app->bind(RouteContextPlan::class, fn (): RouteContextPlan => new RouteContextPlan(
