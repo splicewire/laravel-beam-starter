@@ -13,6 +13,8 @@ use Splicewire\Beam\Accounts\Data\Pages\ProfilePageData;
 use Splicewire\Beam\Accounts\Data\ProfileDeleteInputData;
 use Splicewire\Beam\Accounts\Data\ProfileUpdateInputData;
 use Splicewire\Beam\Accounts\Http\Controllers\ProfileController as AccountProfileController;
+use Splicewire\Beam\Accounts\Localization\PreferredLocale;
+use Splicewire\Beam\Localization\Locales;
 use Splicewire\Beam\Ux\Support\PageEntryRef;
 
 class ProfileController extends Controller
@@ -30,6 +32,9 @@ class ProfileController extends Controller
             'entry' => PageEntryRef::for('settings-profile'),
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => $request->session()->get('status'),
+            // localization 36: the language picker's state (null = automatic).
+            'preferredLocale' => PreferredLocale::of($request->user()),
+            'supportedLocales' => Locales::supported(),
         ]));
     }
 
