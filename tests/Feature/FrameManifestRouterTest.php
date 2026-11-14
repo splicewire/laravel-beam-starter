@@ -56,7 +56,8 @@ class FrameManifestRouterTest extends TestCase
         $route = app('router')->getRoutes()->getByName('frame.manifest');
 
         $this->assertNotNull($route, 'The manifest route must be MOUNTED, not merely callable.');
-        $this->assertSame(FrameManifestController::class, $route->getActionName());
+        // laravel-frame 15642cb (13e) registers the mount as [FrameManifestController::class, '__invoke'] (FrameRoutes.php:31).
+        $this->assertSame(FrameManifestController::class.'@__invoke', $route->getActionName());
 
         $response = $this->actingAs($this->operator())->getJson('/frame/manifest');
 
