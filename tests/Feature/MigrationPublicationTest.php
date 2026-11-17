@@ -22,6 +22,7 @@ it('resolves every published host migration onto its existing copy', function ()
     $files = MigrationFiles::in($paths);
     $offered = [];
     $resolved = [];
+    $hostCopies = [];
 
     // Check every registered publisher: a fresh destination is a defect regardless of which
     // family provider (or third-party provider) constructs it.
@@ -38,6 +39,7 @@ it('resolves every published host migration onto its existing copy', function ()
         }
 
         $offered[$stem] = true;
+        $hostCopies[$stem] = $existing;
 
         foreach ($existing as $file) {
             if (realpath($destination) === realpath($file[2])) {
@@ -48,15 +50,24 @@ it('resolves every published host migration onto its existing copy', function ()
 
     // Spatie publishes this third-party migration to central migrations/, while the host keeps
     // its copy in shared/ so the tenant pass can see it. No family provider re-publishes it.
-    $documentedExceptions = ['create_permission_tables'];
+    $documentedExceptions = ['create_permission_tables' => 1];
 
-    foreach ($documentedExceptions as $exception) {
+    foreach ($offered as $stem => $_) {
+        $expectedCopies = $documentedExceptions[$stem] ?? 1;
+        expect($hostCopies[$stem])->toHaveCount(
+            $expectedCopies,
+            $stem.' has an unexpected number of runnable host copies',
+        );
+    }
+
+    foreach ($documentedExceptions as $exception => $_) {
         expect($offered)->toHaveKey($exception);
+        expect($hostCopies[$exception])->toHaveCount(1);
     }
 
     $wouldDuplicate = array_values(array_diff(
         array_keys(array_diff_key($offered, $resolved)),
-        $documentedExceptions,
+        array_keys($documentedExceptions),
     ));
 
     expect($wouldDuplicate)->toBe([]);
