@@ -30,42 +30,53 @@ const PAGES = [
 const git = (...args) =>
     execFileSync('git', args, { cwd: root, encoding: 'utf8' }).trim();
 
-// the tree the ORIGINAL pages come from: the parent of the commit that introduced resources/js/lib/messages.ts (the conversion),
-// or HEAD while the conversion is still uncommitted. Never the converted tree itself (a comparison with itself proves nothing).
-// HOST_MESSAGES_BASE may override it, but only with an ANCESTOR of HEAD; the resolved sha is printed.
-const introduced = git(
-    'log',
-    '--diff-filter=A',
-    '--format=%H',
-    '-1',
-    '--',
-    'resources/js/lib/messages.ts',
-);
-const BASE = git(
-    'rev-parse',
-    '--verify',
-    `${process.env.HOST_MESSAGES_BASE || (introduced ? `${introduced}^` : 'HEAD')}^{commit}`,
-);
+// the 'before' of each PAGE: the parent of the FIRST commit whose version of that page reads the seam (`git log -S useHostMessages`,
+// oldest first), or HEAD while its conversion is still uncommitted. Never the converted tree itself (a comparison with itself proves
+// nothing). Per page, because a downstream starter's pages are converted by different commits (its own, and the lineage root's that
+// a `git merge upstream/main` brings): one base for every page crashed after a real lineage merge (review of S3, 15:02Z).
+// HOST_MESSAGES_BASE overrides it for EVERY page, but only with an ANCESTOR of HEAD; each resolved sha is printed.
+const verify = (rev) => git('rev-parse', '--verify', `${rev}^{commit}`);
+const OVERRIDE = process.env.HOST_MESSAGES_BASE
+    ? verify(process.env.HOST_MESSAGES_BASE)
+    : null;
 
-if (process.env.HOST_MESSAGES_BASE) {
+if (OVERRIDE) {
     try {
-        git('merge-base', '--is-ancestor', BASE, 'HEAD');
+        git('merge-base', '--is-ancestor', OVERRIDE, 'HEAD');
     } catch {
         console.error(
-            `FAIL HOST_MESSAGES_BASE ${BASE} is not an ancestor of HEAD`,
+            `FAIL HOST_MESSAGES_BASE ${OVERRIDE} is not an ancestor of HEAD`,
         );
         process.exit(1);
     }
 }
 
-console.log(`base ${BASE} (the pages before the conversion)`);
+const baseFor = (p) => {
+    if (OVERRIDE) {
+        return OVERRIDE;
+    }
+
+    const first = git(
+        'log',
+        '--reverse',
+        '--format=%H',
+        '-S',
+        'useHostMessages',
+        '--',
+        `resources/js/${p}`,
+    ).split('\n')[0];
+
+    return verify(first ? `${first}^` : 'HEAD');
+};
+const BASES = Object.fromEntries(PAGES.map((p) => [p, baseFor(p)]));
 
 for (const p of PAGES) {
-    const was = git('show', `${BASE}:resources/js/${p}`);
+    console.log(`base ${BASES[p]} for ${p} (the page before its conversion)`);
+    const was = git('show', `${BASES[p]}:resources/js/${p}`);
 
     if (was.includes('useHostMessages')) {
         console.error(
-            `FAIL the base ${BASE} already has the converted ${p}: no 'before' to compare with`,
+            `FAIL the base ${BASES[p]} already has the converted ${p}: no 'before' to compare with`,
         );
         process.exit(1);
     }
@@ -88,13 +99,22 @@ const STUBS = {
     '@splicewire/beam-inertia': `export const bodyClient = {};`,
     '@splicewire/beam-ux': `import { createElement } from 'react';
         export const ReleasePanel = ({ onCommand }) => { globalThis.__onCommand = onCommand; return createElement('aside', null, 'release-panel'); };`,
-    '@/lib/accounts-api': `export const teamClient = {};`,
+    '@/lib/accounts-api': `export const teamClient = { stubbedBy: 'host-messages-stubs' };`,
 };
 const stubPlugin = {
     name: 'host-messages-stubs',
     enforce: 'pre',
     resolveId(id) {
-        return Object.hasOwn(STUBS, id) ? '\0stub:' + id : null;
+        // vite's alias runs FIRST, so an '@/lib/x' import arrives here as '<root>/resources/js/lib/x': map it back to its '@/' key
+        // (before this the '@/' stubs silently never applied: harmless where the real module loads cleanly, wrong where it does not)
+        const key = id.startsWith(root + '/resources/js/')
+            ? '@/' +
+              id
+                  .slice((root + '/resources/js/').length)
+                  .replace(/\.(tsx?|mjs|js)$/, '')
+            : id;
+
+        return Object.hasOwn(STUBS, key) ? '\0stub:' + key : null;
     },
     load(id) {
         return id.startsWith('\0stub:') ? STUBS[id.slice(6)] : null;
@@ -106,10 +126,14 @@ const ORIG = resolve(root, 'scripts/.host-messages-original');
 rmSync(ORIG, { recursive: true, force: true });
 
 for (const p of PAGES) {
-    const text = execFileSync('git', ['show', `${BASE}:resources/js/${p}`], {
-        cwd: root,
-        encoding: 'utf8',
-    });
+    const text = execFileSync(
+        'git',
+        ['show', `${BASES[p]}:resources/js/${p}`],
+        {
+            cwd: root,
+            encoding: 'utf8',
+        },
+    );
     mkdirSync(dirname(resolve(ORIG, p)), { recursive: true });
     writeFileSync(resolve(ORIG, p), text);
 }
@@ -335,6 +359,14 @@ try {
         ),
     );
 
+    // the '@/' stubs APPLY (vite's alias rewrites '@/lib/x' before resolveId; S1 follow-up): the team page holds the STUBBED client
+    const team = await render('/resources/js/pages/account/team.tsx', false);
+    check(
+        "an '@/lib' stub applies (the team page's client is the accounts-api stub)",
+        team.services?.client?.stubbedBy === 'host-messages-stubs',
+        team.services?.client,
+    );
+
     // the catalog: every key the pages use exists, and every key is used (no dead lines)
     const src = PAGES.map((p) =>
         execFileSync('cat', [resolve(root, 'resources/js', p)], {
@@ -342,7 +374,7 @@ try {
         }),
     ).join('\n');
     const used = new Set(
-        [...src.matchAll(/messages\.t\('([a-z_]+\.[a-z_]+)'/g)].map(
+        [...src.matchAll(/messages\.t\(\s*'([a-z_]+\.[a-z_]+)'/g)].map(
             (m) => m[1],
         ),
     );
