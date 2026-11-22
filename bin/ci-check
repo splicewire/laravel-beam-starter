@@ -143,8 +143,14 @@ $prelude = [...$phpRun, 'artisan', 'config:clear', '--ansi'];
  * one is phpstan, the npm one is tsc. Both print, so neither can be mistaken for the other.
  */
 $gates = [
+    // ticket 13 host-mount contract: the Browser testsuite (vendor/splicewire/*/tests/Browser, mounted
+    // in phpunit.xml) is EXCLUDED from the default CI gate. Browser tests require a provisioned node +
+    // playwright env and run ONLY on an explicit `artisan test --testsuite=Browser`. Without this the
+    // default gate discovers the vendored browser suites and hard-throws PlaywrightNotInstalled on any
+    // clone that has not installed the playwright browsers (CI has no browser-provision step). Default
+    // gate stays green; browser is explicit + provisioned.
     'php:test' => [
-        'cmd' => [...$phpRun, 'artisan', 'test'],
+        'cmd' => [...$phpRun, 'artisan', 'test', '--exclude-testsuite=Browser'],
         'env' => ['PAO_DISABLE' => '1'] + $phpEnv,
         'witness' => true,
         'count' => true,
