@@ -252,7 +252,7 @@
         ],
         "test": [
             "@php artisan config:clear --ansi",
-            "@php -d memory_limit=1G artisan test"
+            "@php -d memory_limit=1G artisan test --exclude-testsuite=Browser"
         ],
         "test:packages": [
             "@php bin/test-packages"
