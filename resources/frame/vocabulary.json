@@ -20,6 +20,7 @@
         "context-block:actions[].key",
         "context-block:actions[].label",
         "context-block:actions[].method",
+        "context-block:actions[].requires",
         "context-block:actions[].result",
         "context-block:actions[].scope",
         "context-block:actions[].url",
