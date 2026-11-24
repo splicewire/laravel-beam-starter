@@ -61,7 +61,7 @@
         "@schemastud/chat": "github:schemastud/js#9155a99b2b6b6f5ead0d412a7b2e4eb819b67e69&path:/chat",
         "@schemastud/combobox": "github:schemastud/js#9d4997753a6c0a241534453cffdc0ee00c494077&path:/combobox",
         "@schemastud/facets": "github:schemastud/js#4414044f4b3297a84b1eb158be39236ce966fa17&path:/facets",
-        "@schemastud/frame": "github:schemastud/js#c84b1a8a77cdb0a0ff6f2dabb6414b511ea1831c&path:/frame",
+        "@schemastud/frame": "github:schemastud/js#3f927322b2664159cd32bb1e8df702bfc921fce7&path:/frame",
         "@schemastud/frame-remote": "github:schemastud/js#ba915f21b56c4aa4adfb90d8a18ad8417742a115&path:/frame-remote",
         "@schemastud/mainframe": "github:schemastud/js#8ce718cc476a60245237ff0cdd4db801e0310b83&path:/mainframe",
         "@schemastud/messages": "github:schemastud/js#d512ca82472a09a39370bd0b42606899cdee8003&path:/messages",
