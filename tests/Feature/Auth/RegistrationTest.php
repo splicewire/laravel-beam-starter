@@ -2,10 +2,14 @@
 
 namespace Tests\Feature\Auth;
 
+use App\Actions\Fortify\CreateNewUser as HostCreateNewUser;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
 use Mockery;
+use Splicewire\Beam\Accounts\Enums\Role;
 use Splicewire\Beam\Accounts\Fortify\CreateNewUser;
+use Splicewire\Beam\Accounts\Models\Team;
 use Splicewire\Beam\Agreements\AssentRecorder;
 use Splicewire\Beam\Agreements\Data\OutstandingRequirementData;
 use Splicewire\Beam\Agreements\RequirementAdmission;
@@ -44,10 +48,33 @@ class RegistrationTest extends TestCase
         $response->assertRedirect(route('dashboard', absolute: false));
     }
 
+    public function test_open_registration_provisions_a_personal_team_for_the_new_user(): void
+    {
+        $this->post(route('register.store'), [
+            'name' => 'Personal Team Registrant',
+            'email' => 'personal-team@example.test',
+            'password' => 'password',
+            'passwordConfirmation' => 'password',
+        ])->assertRedirect(route('dashboard', absolute: false));
+
+        $user = User::query()->where('email', 'personal-team@example.test')->sole();
+        $this->assertAuthenticatedAs($user);
+        $this->assertDatabaseHas((new Team)->getTable(), [
+            'user_id' => $user->getKey(),
+            'personal_team' => true,
+        ]);
+
+        $team = Team::query()->where('user_id', $user->getKey())->where('personal_team', true)->sole();
+        $this->assertSame(Role::Owner, $team->memberRole($user));
+        $this->assertSame((string) $team->getKey(), (string) $user->fresh()->current_team_id);
+    }
+
     public function test_a_registrant_is_created_through_the_door_checked_action()
     {
-        $this->assertInstanceOf(CreateNewUser::class, app(CreatesNewUsers::class));
-        $this->assertFileDoesNotExist(app_path('Actions/Fortify/CreateNewUser.php'));
+        $action = app(CreatesNewUsers::class);
+        $this->assertSame(HostCreateNewUser::class, $action::class);
+        $this->assertInstanceOf(CreateNewUser::class, $action);
+        $this->assertSame(CreateNewUser::class, (new \ReflectionMethod($action, 'create'))->getDeclaringClass()->getName());
     }
 
     public function test_null_agreement_member_refuses_registration_before_creating_the_user(): void

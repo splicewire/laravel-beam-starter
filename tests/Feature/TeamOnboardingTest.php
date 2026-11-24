@@ -15,10 +15,10 @@ use Tests\TestCase;
 
 /**
  * This host's wiring of `splicewire/laravel-beam-accounts`' team onboarding (`routes/web.php`,
- * `Route::splicewireTeamRoutes()`): a fresh registration here provisions no team, so creating one and
- * accepting an emailed invitation are the only ways onto one. The package's own suite covers the
- * verdicts; this proves THIS host mounts them where a guest can reach the link, with its own User model
- * and its own teamless `CreateNewUser`.
+ * `Route::splicewireTeamRoutes()`): registration provisions a personal team. Existing teamless users
+ * can still create a team, and a new registrant can accept an emailed invitation to another team.
+ * The package's own suite covers the verdicts; this proves this host mounts the guest link with its
+ * own User model and its registration hook.
  */
 class TeamOnboardingTest extends TestCase
 {

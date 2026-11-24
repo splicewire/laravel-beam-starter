@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Actions\Fortify\CreateNewUser;
 /* @chisel-registration */
 
 /* @end-chisel-registration */
@@ -49,7 +50,8 @@ class FortifyServiceProvider extends ServiceProvider
     {
         // Password reset and registration both use beam-accounts' actions and its camel `passwordConfirmation` wire.
         Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
-        // Registration uses beam-accounts' door-checked CreateNewUser (BUY-05); a host extends it, never copies it.
+        // The host extends the package's door-checked action with personal-team provisioning.
+        Fortify::createUsersUsing(CreateNewUser::class);
     }
 
     /**

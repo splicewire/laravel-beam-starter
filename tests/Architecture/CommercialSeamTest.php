@@ -21,7 +21,7 @@ class CommercialSeamTest extends TestCase
 
     protected function commercialSeamRatchet(): array
     {
-        // Empty: BUY-05 phase C declared the registration door and deleted the starter's CreateNewUser.
+        // Empty: the package owns the registration door; the host hook only provisions its personal team.
         return [];
     }
 }
