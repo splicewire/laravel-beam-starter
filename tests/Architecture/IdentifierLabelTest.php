@@ -73,6 +73,11 @@ class IdentifierLabelTest extends TestCase
             'Splicewire\Beam\Ux\Type\UxType' => 'APP-09b: declare ProvidesEnumLabel (beam-ux)',
             'Splicewire\Beam\Workflows\Data\WorkflowProjectionData' => 'APP-09b: declare #[Title] (beam-workflows)',
             'Splicewire\Beam\Workflows\Data\WorkflowTransitionRequestData' => 'APP-09b: declare #[Title] (beam-workflows)',
+            'Splicewire\Composition\NodeActions\NodeActionDecisionData' => 'APP-09b: declare #[Title] (composition)',
+            'Splicewire\Composition\NodeActions\NodeActionMode' => 'APP-09b: declare ProvidesEnumLabel (composition)',
+            'Splicewire\Composition\NodeActions\NodeActionRevisionData' => 'APP-09b: declare #[Title] (composition)',
+            'Splicewire\Composition\NodeActions\NodeActionSnapshotData' => 'APP-09b: declare #[Title] (composition)',
+            'Splicewire\Composition\NodeActions\NodeActionVerdictData' => 'APP-09b: declare #[Title] (composition)',
         ];
     }
 }
