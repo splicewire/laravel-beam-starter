@@ -79,6 +79,21 @@ class ReleasePrerequisiteTest extends TestCase
         $this->assertSame($ref, $entry->fresh()->published_version);
     }
 
+    public function test_http_release_member_carries_its_kind_ref_and_entry_type(): void
+    {
+        // The account Release panel groups members Page · Theme · Other by the member's own entryType
+        // (@splicewire/beam-ux 0.18). The served member must carry it through the real controller, or
+        // every member lands under "Other".
+        $author = $this->author();
+        $entry = $this->theme();
+        $ref = $this->draft($entry, '#7c3aed');
+        $this->actingAs($author)->postJson("/beam-ux-entries/{$entry->id}/publish", ['ref' => $ref])
+            ->assertSuccessful()
+            ->assertJsonPath('data.release.members.0.kind', 'entry')
+            ->assertJsonPath('data.release.members.0.ref', (string) $entry->id)
+            ->assertJsonPath('data.release.members.0.entryType', 'theme');
+    }
+
     public function test_review_keeps_selected_version_despite_later_draft_and_denies_self_approval(): void
     {
         config(['beam.ux.releases.review_required' => true]);
