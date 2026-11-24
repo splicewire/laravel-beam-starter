@@ -43,6 +43,10 @@
         },
         {
             "type": "git",
+            "url": "https://github.com/splicewire/laravel-beam-agreements.git"
+        },
+        {
+            "type": "git",
             "url": "https://github.com/splicewire/laravel-beam-sitemap.git"
         },
         {
@@ -64,6 +68,10 @@
         {
             "type": "git",
             "url": "https://github.com/stephenr85/laravel-permission-cascade.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/stephenr85/laravel-agreements.git"
         },
         {
             "type": "git",
@@ -183,6 +191,8 @@
         "splicewire/laravel-beam-mdx": "*",
         "splicewire/laravel-beam-ux": "*",
         "splicewire/laravel-beam-accounts": "*",
+        "splicewire/laravel-beam-agreements": "dev-main",
+        "rushing/laravel-agreements": "dev-main",
         "splicewire/laravel-beam-sitemap": "*",
         "splicewire/laravel-beam-ux-prototype": "*",
         "schemastud/laravel-frame": "*",
