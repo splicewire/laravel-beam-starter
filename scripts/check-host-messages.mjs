@@ -26,6 +26,7 @@ const PAGES = [
     'pages/account/team.tsx',
     'pages/account/tokens.tsx',
     'pages/account/canonical-mdx-review.tsx',
+    'pages/account/agreements.tsx',
 ];
 const git = (...args) =>
     execFileSync('git', args, { cwd: root, encoding: 'utf8' }).trim();
@@ -95,6 +96,8 @@ const STUBS = {
         export const TeamPage = () => createElement('section', null, 'team-body');
         export const TokensRoster = () => createElement('section', null, 'tokens-body');
         export const createTokensClient = () => ({});`,
+    '@splicewire/beam-agreements': `import { createElement } from 'react';
+        export const AgreementsAndConsents = () => createElement('section', null, 'agreements-body');`,
     '@schemastud/frame/session': `export const createSessionRequest = () => () => null;`,
     '@splicewire/beam-inertia': `export const bodyClient = {};`,
     '@splicewire/beam-ux': `import { createElement } from 'react';
@@ -240,6 +243,7 @@ try {
     const DATA = new Set([
         'team-body',
         'tokens-body',
+        'agreements-body',
         'release-panel',
         'Guide',
         'Spring (draft)',
