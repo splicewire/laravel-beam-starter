@@ -17,6 +17,9 @@
         <testsuite name="Browser">
             <directory>vendor/splicewire/*/tests/Browser</directory>
         </testsuite>
+        <testsuite name="HostBrowser">
+            <directory>tests/Browser</directory>
+        </testsuite>
     </testsuites>
     <source>
         <include>

@@ -16,8 +16,7 @@ use Tests\TestCase;
 /**
  * A host-registered record-grain context reaches the served manifest (frame-foundation 92, box 3's server half).
  *
- * The browser half, the widget drawn and the fallback drawn, waits on browser-journeys: a mounted package suite cannot
- * yet bring its own fixtures or front-end entry, and this starter authors no browser tests of its own (ticket 13).
+ * The browser half, the widget drawn and the fallback drawn, is tests/Browser/HostContextFlowTest.php.
  */
 class HostContextManifestTest extends TestCase
 {

@@ -149,8 +149,9 @@ $gates = [
     // default gate discovers the vendored browser suites and hard-throws PlaywrightNotInstalled on any
     // clone that has not installed the playwright browsers (CI has no browser-provision step). Default
     // gate stays green; browser is explicit + provisioned.
+    // frame-foundation 92: the starter's own HostBrowser suite (tests/Browser) is excluded for the same reason.
     'php:test' => [
-        'cmd' => [...$phpRun, 'artisan', 'test', '--exclude-testsuite=Browser'],
+        'cmd' => [...$phpRun, 'artisan', 'test', '--exclude-testsuite=Browser,HostBrowser'],
         'env' => ['PAO_DISABLE' => '1'] + $phpEnv,
         'witness' => true,
         'count' => true,
